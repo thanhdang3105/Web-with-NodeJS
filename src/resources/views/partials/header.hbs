@@ -1,0 +1,72 @@
+<div class="hotline">
+    <div class="container">
+        <a href="" class="hotline_link">Email: <span class="hotline_email">thanhls1235ls12@gmail.com</span></a>
+        <a href="" class="hotline_link">Hotline: <span class="hotline_phone">0852407686</span></a>
+    </div>
+</div>
+<nav class="navbar navbar-expand-lg navbar-light navbar_header">
+    <div class="container">
+        <a class="navbar-brand" href="/">Thanh Đặng</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto control_heading">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Trang chủ <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products?sale=sale">Sale</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Sản phẩm
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/products">Tất cả sản phẩm</a>
+                        <a class="dropdown-item" href="/products?sort=top">Áo<span class="oi oi-chevron-right"></span></a>
+                        <a class="dropdown-item" href="/products?sort=bottom">Quần<span class="oi oi-chevron-right"></span></a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/introduce">Giới thiệu</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 d-flex mr-2">
+                <button class="btn my-2 my-sm-0 btn_submitSearch" type="submit"><a
+                        class="oi oi-magnifying-glass"></a></button>
+                <input class="form-control mr-sm-2 input_search" type="search" placeholder="Search" aria-label="Search">
+            </form>
+            <div class="menu_setting-dropdown">
+                <button class="btn my-2 my-sm-0 dropdown-toggle" id="menuSettingDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button"></button>
+                <div class="dropdown-menu" aria-labelledby="menuSettingDropdown">
+                    <a class="dropdown-item" href="/account">Tài khoản</a>
+                    <a class="dropdown-item" href="/setting">Cài đặt</a>
+                    <a class="dropdown-item" href="/help">Hỗ trợ</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/acount/logOut">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    const navbarHeader = document.querySelector('.navbar_header')
+
+    document.onscroll = (e) =>{
+        if(e.target.scrollingElement.scrollTop > 100){
+            navbarHeader.style.position = 'fixed'
+            navbarHeader.style.animation = 'fadeIn 0.5s linear'
+        }
+        else{
+            navbarHeader.style.position = 'unset'
+            navbarHeader.style.animation = 'unset'
+        }
+
+    }
+</script>
