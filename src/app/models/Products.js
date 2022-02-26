@@ -31,6 +31,11 @@ const Products = new Schema({
     miniType:{
         type: String,
     },
+    datedAt: {
+        type: Date,
+        default: Date.now(),
+    }
+    ,
     slug: {
         type: String,
         slug: 'name',

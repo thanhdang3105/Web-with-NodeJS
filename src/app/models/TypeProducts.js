@@ -11,7 +11,8 @@ const TypeProducts = new Schema({
         unique: true,
     },
     miniType: {
-        type: Array
+        type: Array,
+        unique: true,
     },
     slug: {
         type: String,

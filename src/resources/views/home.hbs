@@ -93,17 +93,17 @@
         </a>
         <div class="card-group listProducts_newArrival">
             {{#each products}}
-                <div class="card">
-                <a href="/products">
+            <div class="card">
+                <a href="/products/{{this.slug}}">
                     <img class="card-img-top" src="/img/products/{{this.img}}" alt="Card image cap">
                 </a>
                 <div class="card-body">
-                    <a href="/products/:slug" class="card-title">{{this.name}}</a>
-                    <p class="card-text">{{this.price}}đ</p>
+                    <a href="/products/{{this.slug}}" class="card-title">{{this.name}}</a>
+                    <p class="card-text">{{this.price}}</p>
                 </div>
                 <div class="card-footer">
                     {{#each imageProducts}}
-                        <img src="/img/products/{{this}}" alt="" class="card-img-footer">
+                    <img src="/img/products/{{this}}" alt="" class="card-img-footer">
                     {{/each}}
                 </div>
             </div>
@@ -114,11 +114,21 @@
 </div>
 
 <script>
-    const imgFooter = document.querySelectorAll('.card-img-footer')
+    document.addEventListener("DOMContentLoaded", function () {
+        const imgFooter = [...document.querySelectorAll('.card-img-footer')]
+        imgFooter.map(img => {
+            img.onmouseenter = (e) => {
+                const card = e.target.offsetParent
+                card.querySelector('.card-img-top').src = e.target.src
+            }
+        })
+
+        const prices = [...document.querySelectorAll('.card-text')]
+        prices.map(price=>{
+            price.innerText = Number(price.innerText).toLocaleString('en-gb') + ' đ'
+        })
+
     
-    Array(imgFooter).map(img => {
-        img.onmouseenter = (e) => {
-            console.log(e.target)
-    }
     })
+
 </script>

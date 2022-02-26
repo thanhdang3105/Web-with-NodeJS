@@ -26,10 +26,9 @@
                 <label for="type">Loại sản phẩm</label>
                 <select name="type" class="form-control" required>
                     <option value="">--Chọn--</option>
-                    <option value="ao">Áo</option>
-                    <option value="quan">Quần</option>
-                    <option value="giaydep">Giày dép</option>
-                    <option value="phukien">Phụ kiện</option>
+                    {{#each type}}
+                        <option value="{{this.type}}">{{this.type}}</option>
+                    {{/each}}
                     <option value="addTypeProducts">thêm loại hàng...</option>
                 </select>
             </div>
@@ -37,10 +36,6 @@
                 <label for="miniType">Loại hàng</label>
                 <select name="miniType" class="form-control" disabled required>
                     <option value="">--Chọn--</option>
-                    <option>Áo khoác</option>
-                    <option>Quần bò</option>
-                    <option>Giày thể thao</option>
-                    <option>Vớ</option>
                     <option value="addMiniTypeProducts">thêm loại hàng...</option>
                 </select>
             </div>
@@ -71,6 +66,7 @@
         element.onchange = (e) => {
             element2 ? element2[0].setAttribute('selected', 'true') : element[0].removeAttribute('selected')
             if (element.value === value) {
+                element.removeAttribute('value')
                 element2 ? element2.setAttribute('disabled', 'true') : ''
                 //Tạo thẻ input để thêm loại hàng
                 if (document.querySelector('.add_TYPE')) {
@@ -78,6 +74,7 @@
                 }
                 console.log('a')
                 const inputAddType = document.createElement("input")
+                inputAddType.setAttribute("required", 'true')
                 inputAddType.classList.add('form-control', 'add_TYPE')
                 inputAddType.placeholder = 'Nhập loại sản phẩm muốn thêm'
                 element.parentElement.appendChild(inputAddType)
@@ -88,13 +85,8 @@
                         e.preventDefault()
                         //Tạo thẻ option mới chứa value cần thêm
                         const option = document.createElement('option')
-                        // loại bỏ dấu của tiếng việt và khoảng trắng giữa các chữ
-                        const value = inputAddType.value.normalize('NFD')
-                            .replace(/[\u0300-\u036f]/g, '')
-                            .replace(/đ/g, 'd').replace(/Đ/g, 'D')
-                            .split(' ').join('')
                         //Thêm value vào option và đẩy vào select
-                        option.value = value
+                        option.value = inputAddType.value
                         option.innerText = inputAddType.value;
                         option.setAttribute('selected', 'true')
                         element.insertBefore(option, element.lastElementChild);
@@ -153,3 +145,9 @@
 
 
 </script>
+
+{{!-- 
+// loại bỏ dấu của tiếng việt và khoảng trắng giữa các chữ
+                        const value = inputAddType.value.normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/đ/g, 'd').replace(/Đ/g, 'D') --}}
