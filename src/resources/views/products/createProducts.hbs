@@ -1,0 +1,155 @@
+<div class="container mt-4 mb-4">
+    <h1>Thêm sản phẩm mới</h1>
+    <form method="post" action="/products">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="name">Tên sản phẩm</label>
+                <input type="text" class="form-control" required name="name" placeholder="Nhập tên sản phẩm...">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="price">Nhập giá sản phẩm</label>
+                <input type="number" class="form-control" required name="price" placeholder="Nhập giá sản phẩm...">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="color">Màu sắc</label>
+                <input type="text" class="form-control" required name="color"
+                    placeholder="Nhập các màu sản phẩm cách nhau bởi dấu ','">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="size">Kích cỡ</label>
+                <input type="text" class="form-control" required name="size"
+                    placeholder="Nhập các kích cỡ của sản phẩm cách nhau bởi dấu ','">
+            </div>
+            <div class="form-group col-md-3 form_type">
+                <label for="type">Loại sản phẩm</label>
+                <select name="type" class="form-control" required>
+                    <option value="">--Chọn--</option>
+                    <option value="ao">Áo</option>
+                    <option value="quan">Quần</option>
+                    <option value="giaydep">Giày dép</option>
+                    <option value="phukien">Phụ kiện</option>
+                    <option value="addTypeProducts">thêm loại hàng...</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="miniType">Loại hàng</label>
+                <select name="miniType" class="form-control" disabled required>
+                    <option value="">--Chọn--</option>
+                    <option>Áo khoác</option>
+                    <option>Quần bò</option>
+                    <option>Giày thể thao</option>
+                    <option>Vớ</option>
+                    <option value="addMiniTypeProducts">thêm loại hàng...</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description">Mô tả sản phẩm</label>
+            <textarea type="text" class="form-control" required name="description"
+                placeholder="Nhập mô tả sản phẩm"></textarea>
+        </div>
+        <div class="form-group col-md-4 d-flex flex-column">
+            <label for="imageProducts">Chọn ảnh sản phẩm ( Có thể chọn nhiều ảnh 1 lần )</label>
+            <input type="file" accept="image/*" name="imageProducts" multiple required>
+        </div>
+        <div class="list_imgUpload">
+
+        </div>
+        <button class="btn btn-primary btn_create mt-3">Thêm sản phẩm</button>
+    </form>
+</div>
+
+<script>
+    const selectType = document.querySelector('select[name="type"]')
+    const selectMiniType = document.querySelector('select[name="miniType"]')
+    const btn_submit = document.querySelector('.btn_create')
+    const input_imgUpload = document.querySelector('input[name="imageProducts"]')
+    //Sự kiện chọn của thẻ select name = type để chọn lại hàng
+    function addType(element, value, element2) {
+        element.onchange = (e) => {
+            element2 ? element2[0].setAttribute('selected', 'true') : element[0].removeAttribute('selected')
+            if (element.value === value) {
+                element2 ? element2.setAttribute('disabled', 'true') : ''
+                //Tạo thẻ input để thêm loại hàng
+                if (document.querySelector('.add_TYPE')) {
+                    document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE'))
+                }
+                console.log('a')
+                const inputAddType = document.createElement("input")
+                inputAddType.classList.add('form-control', 'add_TYPE')
+                inputAddType.placeholder = 'Nhập loại sản phẩm muốn thêm'
+                element.parentElement.appendChild(inputAddType)
+                //bắt sự kiện enter của input để thêm loại hàng vào data
+                inputAddType.onkeypress = (e) => {
+                    if (e.keyCode == 13 && inputAddType.value != '') {
+                        //Tắt sự kiện submit của form
+                        e.preventDefault()
+                        //Tạo thẻ option mới chứa value cần thêm
+                        const option = document.createElement('option')
+                        // loại bỏ dấu của tiếng việt và khoảng trắng giữa các chữ
+                        const value = inputAddType.value.normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+                            .split(' ').join('')
+                        //Thêm value vào option và đẩy vào select
+                        option.value = value
+                        option.innerText = inputAddType.value;
+                        option.setAttribute('selected', 'true')
+                        element.insertBefore(option, element.lastElementChild);
+                        //Xoá ô input khi thêm xong value
+                        element.parentElement.removeChild(inputAddType)
+                        element2 ? selectMiniType.removeAttribute('disabled') : ''
+                    }
+                }
+            }
+            else if (element.value != element[0].value) {
+                document.querySelector('.add_TYPE') ? document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE')) : ''
+                element2 ? element2.removeAttribute('disabled') : ''
+            }
+            else {
+                document.querySelector('.add_TYPE') ? document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE')) : ''
+                element2 ? element2.setAttribute('disabled', 'true') : ''
+            }
+        }
+    }
+
+    addType(selectType, 'addTypeProducts', selectMiniType)
+    addType(selectMiniType, 'addMiniTypeProducts')
+
+
+    input_imgUpload.onchange = () => {
+        var preview = document.querySelector('.list_imgUpload');
+        var files = input_imgUpload.files;
+
+        preview.childElementCount > 0 ? preview.removeChild(document.querySelector('img')) : ''
+
+        function readAndPreview(file) {
+
+            // Make sure `file.name` matches our extensions criteria
+            if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                var reader = new FileReader();
+
+                reader.addEventListener("load", function () {
+                    var image = new Image();
+                    image.height = 190;
+                    image.width = 190;
+                    image.title = file.name;
+                    image.src = this.result;
+                    preview.appendChild(image);
+                }, false);
+
+                reader.readAsDataURL(file);
+            }
+
+        }
+
+        if (files) {
+            [].forEach.call(files, readAndPreview);
+        }
+
+    }
+
+
+</script>

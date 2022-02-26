@@ -48,7 +48,7 @@ html {
 nav.navbar_header {
     background: $color-partials;
     height: $navbars-height;
-    z-index: 1;
+    z-index: 1000;
     width: 100%;
     top: 0;
     .navbar-brand {
@@ -227,6 +227,11 @@ nav.navbar_header {
             flex: calc(25% - 1.5rem) 0 0;
             border: none;
 
+            .card-img-top{
+                width:260px;
+                height:280px;
+            }
+
             // width: calc();
             .card-title {
                 font-size: 1.2rem;
@@ -242,6 +247,11 @@ nav.navbar_header {
 
             .card-title:hover {
                 color: #888;
+            }
+
+            .card-img-footer{
+                width: 60px;
+                height:60px;
             }
         }
     }
@@ -298,4 +308,16 @@ nav.navbar_header {
             }
         }
     }
+}
+
+//Products/create
+
+.list_imgUpload{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 5px;
+    padding:1rem;
 }

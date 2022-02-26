@@ -92,103 +92,33 @@
             <img src="/img/banners/new-arrival-banner.jpg" alt="banner_newArrival" class="img_newArrival">
         </a>
         <div class="card-group listProducts_newArrival">
-            <div class="card">
+            {{#each products}}
+                <div class="card">
                 <a href="/products">
-                    <img class="card-img-top" src="/img/products/shortessential.jpg" alt="Card image cap">
+                    <img class="card-img-top" src="/img/products/{{this.img}}" alt="Card image cap">
                 </a>
                 <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
+                    <a href="/products/:slug" class="card-title">{{this.name}}</a>
+                    <p class="card-text">{{this.price}}đ</p>
                 </div>
                 <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
+                    {{#each imageProducts}}
+                        <img src="/img/products/{{this}}" alt="" class="card-img-footer">
+                    {{/each}}
                 </div>
             </div>
-            <div class="card">
-                <a href="/products">
-                    <img class="card-img-top" src="/img/products/IMG_0986.JPG" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                </div>
-            </div>
-            <div class="card">
-                <a href="/products">
-                    <img class="card-img-top" src="/img/products/depchampion.jpg" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                </div>
-            </div>
-            <div class="card">
-                <a href="/products">
-                    <img class="card-img-top" src="/img/products/depchampion.jpg" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                </div>
-            </div>
-            <div class="card">
-                <a href="/products">
-                    <img class="card-img-top" src="/img/products/depchampion.jpg" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                </div>
-            </div>
-            <div class="card">
-                <a href="/products">
-                    <img class="card-img-top" src="/img/products/depchampion.jpg" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                </div>
-            </div>
-            <div class="card">
-                <a href="/products">
-                    <img class="card-img-top" src="/img/products/depchampion.jpg" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                </div>
-            </div>
-            <div class="card">
-                <a href="/products">
-                    <img class="card-img-top" src="/img/products/depchampion.jpg" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/:id" class="card-title">Tên sản phẩm</a>
-                    <p class="card-text">Giá sản phẩm</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                </div>
-            </div>
+            {{/each}}
         </div>
         <a href="/products" class="allProducts_newArrival">Xem tất cả <span class="oi oi-chevron-bottom"></span></a>
     </div>
 </div>
+
+<script>
+    const imgFooter = document.querySelectorAll('.card-img-footer')
+    
+    Array(imgFooter).map(img => {
+        img.onmouseenter = (e) => {
+            console.log(e.target)
+    }
+    })
+</script>

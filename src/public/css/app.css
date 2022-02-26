@@ -33,7 +33,7 @@ html {
 nav.navbar_header {
   background: #569BDB;
   height: 7vh;
-  z-index: 1;
+  z-index: 1000;
   width: 100%;
   top: 0; }
   nav.navbar_header .navbar-brand {
@@ -157,6 +157,9 @@ nav.navbar_header {
     .newArrival_products .listProducts_newArrival .card {
       flex: calc(25% - 1.5rem) 0 0;
       border: none; }
+      .newArrival_products .listProducts_newArrival .card .card-img-top {
+        width: 260px;
+        height: 280px; }
       .newArrival_products .listProducts_newArrival .card .card-title {
         font-size: 1.2rem;
         font-weight: bold;
@@ -167,6 +170,9 @@ nav.navbar_header {
         font-weight: 600; }
       .newArrival_products .listProducts_newArrival .card .card-title:hover {
         color: #888; }
+      .newArrival_products .listProducts_newArrival .card .card-img-footer {
+        width: 60px;
+        height: 60px; }
   .newArrival_products .allProducts_newArrival {
     color: #444;
     font-weight: 600; }
@@ -199,3 +205,12 @@ nav.navbar_header {
           font-size: 2.5rem; }
       .main_footer .store_location .location a.policy_link:hover {
         color: #5D5C61; }
+
+.list_imgUpload {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  border: 1px solid #d4d4d4;
+  border-radius: 5px;
+  padding: 1rem; }
