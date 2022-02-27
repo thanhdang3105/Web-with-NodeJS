@@ -28,7 +28,7 @@
                 <select name="type" class="form-control" required>
                     <option value="">--Chọn--</option>
                     {{#each type}}
-                    <option value="{{this.type}}">{{this.type}}</option>
+                    <option value="{{this.type}}" data-miniType="{{this.miniType}}">{{this.type}}</option>
                     {{/each}}
                     <option value="addTypeProducts">thêm loại hàng...</option>
                 </select>
@@ -37,7 +37,6 @@
                 <label for="miniType">Loại hàng</label>
                 <select name="miniType" class="form-control" disabled required>
                     <option value="">--Chọn--</option>
-                       {{{check type document.querySelector('input[name="type"]')}}}
                     <option value="addMiniTypeProducts">thêm loại hàng...</option>
                 </select>
             </div>
@@ -77,6 +76,20 @@
     }
     //Sự kiện chọn của thẻ select name = type để chọn lại hàng
     function addType(element, value, element2) {
+        function setMiniType(){
+                    if (element2) {
+                    [...element.children].map(option => {
+                        if (option.value == element.value) {
+                            const miniType = option.getAttribute('data-miniType') ? option.getAttribute('data-miniType').split(',') : ''
+                            console.log(miniType)
+                            const html = miniType ? miniType.map(value => {
+                                return `<option value="${value}">${value}</option>`
+                            }) : ''
+                            element2.innerHTML = ['<option value="">--Chọn--</option>',...html,'<option value="addMiniTypeProducts">thêm loại hàng...</option>']
+                        }
+                    })
+                }
+        }
         element.onchange = (e) => {
             element2 ? element2[0].setAttribute('selected', 'true') : element[0].removeAttribute('selected')
             if (element.value === value) {
@@ -86,7 +99,6 @@
                 if (document.querySelector('.add_TYPE')) {
                     document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE'))
                 }
-                console.log('a')
                 const inputAddType = document.createElement("input")
                 inputAddType.setAttribute("required", 'true')
                 inputAddType.classList.add('form-control', 'add_TYPE')
@@ -101,18 +113,20 @@
                         const option = document.createElement('option')
                         //Thêm value vào option và đẩy vào select
                         option.value = inputAddType.value
-                        option.innerText = inputAddType.value;
+                        option.innerText = inputAddType.value
                         option.setAttribute('selected', 'true')
                         element.insertBefore(option, element.lastElementChild);
                         //Xoá ô input khi thêm xong value
                         element.parentElement.removeChild(inputAddType)
                         element2 ? selectMiniType.removeAttribute('disabled') : ''
+                        setMiniType()
                     }
                 }
             }
             else if (element.value != element[0].value) {
                 document.querySelector('.add_TYPE') ? document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE')) : ''
                 element2 ? element2.removeAttribute('disabled') : ''
+                setMiniType()
             }
             else {
                 document.querySelector('.add_TYPE') ? document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE')) : ''
@@ -120,23 +134,17 @@
             }
         }
     }
-
     addType(selectType, 'addTypeProducts', selectMiniType)
     addType(selectMiniType, 'addMiniTypeProducts')
-
 
     input_imgUpload.onchange = () => {
         var preview = document.querySelector('.list_imgUpload');
         var files = input_imgUpload.files;
-
         preview.childElementCount > 0 ? preview.removeChild(document.querySelector('img')) : ''
-
         function readAndPreview(file) {
-
             // Make sure `file.name` matches our extensions criteria
             if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
                 var reader = new FileReader();
-
                 reader.addEventListener("load", function () {
                     var image = new Image();
                     image.height = 190;
@@ -145,18 +153,13 @@
                     image.src = this.result;
                     preview.appendChild(image);
                 }, false);
-
                 reader.readAsDataURL(file);
             }
-
         }
-
         if (files) {
             [].forEach.call(files, readAndPreview);
         }
-
     }
-
 
 </script>
 
