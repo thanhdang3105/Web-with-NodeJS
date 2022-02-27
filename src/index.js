@@ -20,6 +20,17 @@ app.use(express.json())
 //set template engine
 app.engine('hbs', hbs.engine({
     extname: 'hbs',
+    helpers: {
+        check: (data,target) => {
+            target.onchange = (e) => {
+                if(e.target.value === data.type){
+                    data.miniType.map(miniType =>{
+                        return `<option value="${miniType}">${miniType}</option>`
+                    })
+                }
+            }
+        }
+    }
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'resources', 'views'))

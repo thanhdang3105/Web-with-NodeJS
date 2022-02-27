@@ -10,7 +10,7 @@ const Products = new Schema({
         required: true
     },
     price: {
-        type: Number,
+        type: String,
     },
     color:{
         type: String,

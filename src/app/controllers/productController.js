@@ -1,7 +1,9 @@
 const Products = require('../models/Products')
 const TypeProducts = require('../models/TypeProducts')
 
-const { mutipleMongoosetoObject } = require('../../resources/util/mongoose')
+const {
+    mutipleMongoosetoObject
+} = require('../../resources/util/mongoose')
 
 class ProductController {
 
@@ -12,9 +14,9 @@ class ProductController {
     create(req, res, next) {
         TypeProducts.find({})
             .then(type => {
-                    res.render('products/createProducts',{
-                        type: mutipleMongoosetoObject(type)
-                    })
+                res.render('products/createProducts', {
+                    type: mutipleMongoosetoObject(type)
+                })
             })
             .catch(next);
     }
@@ -24,56 +26,63 @@ class ProductController {
                 type: req.body.type
             })
             .then(type => {
-                if(type.length !== 0){
-                    type.map(type => {
-                        // if (type.miniType.includes(req.body.miniType)) {
-                        //     const products = new Products(req.body);
-                        //     products.save(err => {
-                        //         if (err) return next
-                        //         res.redirect('back')
-                        //     })
-                        // } else {
-                        //     const newMiniType = [...type.miniType, req.body.miniType]
-                        //     const typeProducts = new TypeProducts({
-                        //         type: req.body.type,
-                        //         miniType: newMiniType
-                        //     })
-                        //     typeProducts.save(err => {
-                        //         if (err) return next
-                        //         res.redirect('back')
-                        //     })
-                        // }
-                    })
-                }
-                else {
+                if (type.length == 0) {
                     const typeProducts = new TypeProducts({
-                                type: req.body.type,
-                                miniType: req.body.miniType
-                            })
-                            typeProducts.save(err => {
-                                if (err) return next
-                                next()
-                            })
-                    const products = new Products(req.body);
-                            products.save(err => {
-                                if (err) return next
-                                res.redirect('back')
-                            })
-                }
-                
-            })
-            .catch(() => {
-                    const products = new Products(req.body);
-                    products.save(error => {
-                        if (error) return next
+                        type: req.body.type,
+                        miniType: [req.body.miniType]
+                    })
+                    typeProducts.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            next()
+                        }
+                    })
+                    const products = new Products(req.body)
+                    products.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            res.redirect('back')
+                        }
+                    })
+                } else if (type[0].miniType.includes(req.body.miniType)) {
+                    const products = new Products(req.body)
+                    products.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            res.redirect('back')
+                        }
+                    })
+                } else {
+                    const products = new Products(req.body)
+                    products.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            next()
+                        }
+                    })
+                    const newMiniType = [...type[0].miniType, req.body.miniType]
+                    TypeProducts.updateOne({
+                        type: req.body.type
+                    }, {
+                        type: req.body.type,
+                        miniType: newMiniType
+                    })
+                    .then(() => {
                         res.redirect('back')
                     })
-                })
-
-
-
-
-
+                    .catch(err => {
+                        res.json(err)
+                    })
+                    
+                }
+            })
+            .catch(err => {
+                res.json(err)
+            })
     }
 
 }

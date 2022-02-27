@@ -8,7 +8,8 @@
             </div>
             <div class="form-group col-md-2">
                 <label for="price">Nhập giá sản phẩm</label>
-                <input type="number" class="form-control" required name="price" placeholder="Nhập giá sản phẩm...">
+                <input type="text" class="form-control" required name="price" placeholder="Nhập giá sản phẩm...">
+                <p class="messErr text-danger position-absolute mt-1"></p>
             </div>
             <div class="form-group col-md-4">
                 <label for="color">Màu sắc</label>
@@ -16,7 +17,7 @@
                     placeholder="Nhập các màu sản phẩm cách nhau bởi dấu ','">
             </div>
         </div>
-        <div class="form-row">
+        <div class="form-row mt-2">
             <div class="form-group col-md-6">
                 <label for="size">Kích cỡ</label>
                 <input type="text" class="form-control" required name="size"
@@ -27,7 +28,7 @@
                 <select name="type" class="form-control" required>
                     <option value="">--Chọn--</option>
                     {{#each type}}
-                        <option value="{{this.type}}">{{this.type}}</option>
+                    <option value="{{this.type}}">{{this.type}}</option>
                     {{/each}}
                     <option value="addTypeProducts">thêm loại hàng...</option>
                 </select>
@@ -36,6 +37,7 @@
                 <label for="miniType">Loại hàng</label>
                 <select name="miniType" class="form-control" disabled required>
                     <option value="">--Chọn--</option>
+                       {{{check type document.querySelector('input[name="type"]')}}}
                     <option value="addMiniTypeProducts">thêm loại hàng...</option>
                 </select>
             </div>
@@ -61,6 +63,18 @@
     const selectMiniType = document.querySelector('select[name="miniType"]')
     const btn_submit = document.querySelector('.btn_create')
     const input_imgUpload = document.querySelector('input[name="imageProducts"]')
+    const inputPrice = document.querySelector('input[name="price"]')
+
+    inputPrice.oninput = (e) => {
+        const price = Number(e.target.value.split(',').join(''))
+        if (isFinite(price)) {
+            inputPrice.value = price.toLocaleString('en-gb')
+            document.querySelector('.messErr').innerText = ''
+        }
+        else {
+            document.querySelector('.messErr').innerText = 'Vui lòng chỉ nhập số!!'
+        }
+    }
     //Sự kiện chọn của thẻ select name = type để chọn lại hàng
     function addType(element, value, element2) {
         element.onchange = (e) => {
@@ -146,8 +160,8 @@
 
 </script>
 
-{{!-- 
+{{!--
 // loại bỏ dấu của tiếng việt và khoảng trắng giữa các chữ
-                        const value = inputAddType.value.normalize('NFD')
-                            .replace(/[\u0300-\u036f]/g, '')
-                            .replace(/đ/g, 'd').replace(/Đ/g, 'D') --}}
+const value = inputAddType.value.normalize('NFD')
+.replace(/[\u0300-\u036f]/g, '')
+.replace(/đ/g, 'd').replace(/Đ/g, 'D') --}}

@@ -14,9 +14,9 @@ class SiteController {
                 
 
                 res.render('home', {
-                    products: mutipleMongoosetoObject(products).map((a,index) => {
-                        a.img = img[index]
-                        return a
+                    products: mutipleMongoosetoObject(products).map((product,index) => {
+                        product.img = img[index]
+                        return product
                     }),
                    
                 }) 
