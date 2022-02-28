@@ -103,7 +103,7 @@
                 </div>
                 <div class="card-footer">
                     {{#each imageProducts}}
-                    <img src="/img/products/{{this}}" alt="" class="card-img-footer">
+                    <img src="{{this}}" data-img="{{this}}" alt="" class="card-img-footer">
                     {{/each}}
                 </div>
             </div>
@@ -117,10 +117,11 @@
     document.addEventListener("DOMContentLoaded", function () {
         const imgFooter = [...document.querySelectorAll('.card-img-footer')]
         imgFooter.map(img => {
-            img.onmouseenter = (e) => {
+            {{!-- img.onmouseenter = (e) => {
                 const card = e.target.offsetParent
                 card.querySelector('.card-img-top').src = e.target.src
-            }
+            } --}}
+            console.log(window.URL.createObjectURL(img.src))
         })
 
         const prices = [...document.querySelectorAll('.card-text')]
