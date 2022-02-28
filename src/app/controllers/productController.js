@@ -1,5 +1,7 @@
 const Products = require('../models/Products')
 const TypeProducts = require('../models/TypeProducts')
+const formidable = require('formidable')
+const fs = require('fs')
 
 const {
     mutipleMongoosetoObject
@@ -22,7 +24,19 @@ class ProductController {
     }
 
     stored(req, res, next) {
-        res.json(req.body)
+        const form = formidable({
+            multiples: true
+        });
+
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                next(err);
+                return;
+            }
+            
+
+            res.json(files)
+        });
         // TypeProducts.find({
         //         type: req.body.type
         //     })
@@ -78,7 +92,7 @@ class ProductController {
         //             .catch(err => {
         //                 res.json(err)
         //             })
-                    
+
         //         }
         //     })
         //     .catch(err => {
