@@ -18,9 +18,7 @@ class SiteController {
                         product.img = img[index]
                         return product
                     }),
-                   
                 }) 
-               
             })
             .catch(next)
     }
