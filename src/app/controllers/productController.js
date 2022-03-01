@@ -1,7 +1,7 @@
 const Products = require('../models/Products')
 const TypeProducts = require('../models/TypeProducts')
 const formidable = require('formidable')
-const fs = require('fs')
+const path = require('path')
 
 const {
     mutipleMongoosetoObject
@@ -24,80 +24,88 @@ class ProductController {
     }
 
     stored(req, res, next) {
-        const form = formidable({
-            multiples: true
-        });
-
-        form.parse(req, (err, fields, files) => {
-            if (err) {
-                next(err);
-                return;
+        const form = new formidable.IncomingForm({multiples: true});
+        //Tiến hành parse form
+        form.parse(req,function(err,fields,files){
+            function setImageProducts(){
+                if(files.imageProducts.length){
+                    const imageProducts = [...files.imageProducts].map(img =>{
+                        return img.originalFilename
+                    })
+                    return fields.imageProducts = imageProducts
+                }
+                else{
+                    return fields.imageProducts = files.imageProducts.originalFilename
+                }
             }
-            
+            setImageProducts()
+            TypeProducts.find({
+                type: fields.type
+            })
+            .then(type => {
+                if (type.length == 0) {
+                    const typeProducts = new TypeProducts({
+                        type: fields.type,
+                        miniType: [fields.miniType]
+                    })
+                    typeProducts.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            next()
+                        }
+                    })
+                    const products = new Products(fields)
+                    products.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            res.redirect('back')
+                        }
+                    })
+                } else if (type[0].miniType.includes(fields.miniType)) {
+                    const products = new Products(fields)
+                    products.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            res.redirect('back')
+                        }
+                    })
+                } else {
+                    const products = new Products(fields)
+                    products.save(err => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            next()
+                        }
+                    })
+                    const newMiniType = [...type[0].miniType, fields.miniType]
+                    TypeProducts.updateOne({
+                        type: fields.type
+                    }, {
+                        type: fields.type,
+                        miniType: newMiniType
+                    })
+                    .then(() => {
+                        res.redirect('back')
+                    })
+                    .catch(err => {
+                        res.json(err)
+                    })
 
-            res.json(files)
-        });
-        // TypeProducts.find({
-        //         type: req.body.type
-        //     })
-        //     .then(type => {
-        //         if (type.length == 0) {
-        //             const typeProducts = new TypeProducts({
-        //                 type: req.body.type,
-        //                 miniType: [req.body.miniType]
-        //             })
-        //             typeProducts.save(err => {
-        //                 if (err) {
-        //                     res.json(err)
-        //                 } else {
-        //                     next()
-        //                 }
-        //             })
-        //             const products = new Products(req.body)
-        //             products.save(err => {
-        //                 if (err) {
-        //                     res.json(err)
-        //                 } else {
-        //                     res.redirect('back')
-        //                 }
-        //             })
-        //         } else if (type[0].miniType.includes(req.body.miniType)) {
-        //             const products = new Products(req.body)
-        //             products.save(err => {
-        //                 if (err) {
-        //                     res.json(err)
-        //                 } else {
-        //                     res.redirect('back')
-        //                 }
-        //             })
-        //         } else {
-        //             const products = new Products(req.body)
-        //             products.save(err => {
-        //                 if (err) {
-        //                     res.json(err)
-        //                 } else {
-        //                     next()
-        //                 }
-        //             })
-        //             const newMiniType = [...type[0].miniType, req.body.miniType]
-        //             TypeProducts.updateOne({
-        //                 type: req.body.type
-        //             }, {
-        //                 type: req.body.type,
-        //                 miniType: newMiniType
-        //             })
-        //             .then(() => {
-        //                 res.redirect('back')
-        //             })
-        //             .catch(err => {
-        //                 res.json(err)
-        //             })
-
-        //         }
-        //     })
-        //     .catch(err => {
-        //         res.json(err)
-        //     })
+                }
+            })
+            .catch(err => {
+                res.json(err)
+            })
+        })
+        
+        form.on('fileBegin',function(name,file){
+            const localpath = 'C:\\Users\\Admin\\Desktop\\sản phẩm nodeJS\\src\\public\\img'
+            file.filepath = path.join(localpath,'products',file.originalFilename)
+        })
     }
 
 }
