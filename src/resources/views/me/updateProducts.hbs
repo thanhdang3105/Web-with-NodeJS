@@ -1,0 +1,171 @@
+<div class="container mt-4 mb-4">
+    <h1>Cập nhật sản phẩm</h1>
+    <form method="post" action="/me/products/{{products._id}}?_method=put" enctype="multipart/form-data">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="name">Tên sản phẩm</label>
+                <input type="text" class="form-control" required name="name" value="{{products.name}}">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="price">Nhập giá sản phẩm</label>
+                <input type="text" class="form-control" required name="price" value="{{products.price}}">
+                <p class="messErr text-danger position-absolute mt-1"></p>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="color">Màu sắc</label>
+                <input type="text" class="form-control" required name="color"
+                    value="{{products.color}}">
+            </div>
+        </div>
+        <div class="form-row mt-2">
+            <div class="form-group col-md-6">
+                <label for="size">Kích cỡ</label>
+                <input type="text" class="form-control" required name="size"
+                    value="{{products.size}}">
+            </div>
+            <div class="form-group col-md-3 form_type">
+                <label for="type">Loại sản phẩm</label>
+                <select name="type" class="form-control" required>
+                    <option value="">--Chọn--</option>
+                    {{#each type}}
+                        <option value="{{this.type}}" {{this.selected}} data-indexMiniType="{{this.miniTypeIndex}}" data-miniType="{{this.miniType}}">{{this.type}}</option>
+                    {{/each}}
+                    <option value="addTypeProducts">thêm loại hàng...</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="miniType">Loại hàng</label>
+                <select name="miniType" class="form-control" disabled required>
+                    <option value="">--Chọn--</option>
+                    <option value="addMiniTypeProducts">thêm loại hàng...</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description">Mô tả sản phẩm</label>
+            <textarea type="text" class="form-control" required name="description"
+                >{{products.description}}</textarea>
+        </div>
+        <div class="form-group col-md-6 d-flex flex-column pl-0">
+            <label for="imageProducts">Nếu muốn thay ảnh hãy xoá tên ảnh bạn muốn và thêm ảnh khác ở bên dưới:</label>
+            <input type="text" class="form-control mb-1" required name="imageProducts"
+                    value="{{products.imageProducts}}">
+            <label for="imageProducts">Thêm ảnh sản phẩm ( Có thể chọn nhiều ảnh 1 lần )</label>
+            <input type="file" accept="image/*" name="imageProducts" multiple>
+        </div>
+        <div class="list_imgUpload">
+
+        </div>
+        <button class="btn btn-primary btn_create mt-3">Thêm sản phẩm</button>
+    </form>
+</div>
+
+<script>
+    const selectType = document.querySelector('select[name="type"]')
+    const selectMiniType = document.querySelector('select[name="miniType"]')
+    const btn_submit = document.querySelector('.btn_create')
+    const input_imgUpload = document.querySelector('input[name="imageProducts"]')
+    const inputPrice = document.querySelector('input[name="price"]')
+
+    inputPrice.oninput = (e) => {
+        const price = Number(e.target.value.split(',').join(''))
+        if (isFinite(price)) {
+            inputPrice.value = price.toLocaleString('en-gb')
+            document.querySelector('.messErr').innerText = ''
+        }
+        else {
+            document.querySelector('.messErr').innerText = 'Vui lòng chỉ nhập số!!'
+        }
+    }
+    function setMiniType(element,element2){
+                    if (element2) {
+                    [...element.children].map(option => {
+                        if (option.value == element.value) {
+                            const miniType = option.getAttribute('data-miniType') ? option.getAttribute('data-miniType').split(',') : ''
+                            const indexMiniType = option.getAttribute('data-indexMiniType') ? option.getAttribute('data-indexMiniType') : 'false'
+                            const html = miniType ? miniType.map((value,index) => {
+                                return `<option value="${value}" ${Number(indexMiniType) === index ? 'selected' : ''}>${value}</option>`
+                            }) : ''
+                            element2.innerHTML = ['<option value="">--Chọn--</option>',...html,'<option value="addMiniTypeProducts">thêm loại hàng...</option>']
+                            element2.removeAttribute('disabled')
+                        }
+                    })
+                }
+    }
+
+    setMiniType(selectType,selectMiniType)
+
+    //Sự kiện chọn của thẻ select name = type để chọn lại hàng
+    function addType(element, value, element2) {
+        element.onchange = (e) => {
+            element2 ? element2[0].setAttribute('selected', 'true') : element[0].removeAttribute('selected')
+            if (element.value === value) {
+                element.removeAttribute('value')
+                element2 ? element2.setAttribute('disabled', 'true') : ''
+                //Tạo thẻ input để thêm loại hàng
+                if (document.querySelector('.add_TYPE')) {
+                    document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE'))
+                }
+                const inputAddType = document.createElement("input")
+                inputAddType.setAttribute("required", 'true')
+                inputAddType.classList.add('form-control', 'add_TYPE')
+                inputAddType.placeholder = 'Nhập loại sản phẩm muốn thêm'
+                element.parentElement.appendChild(inputAddType)
+                //bắt sự kiện enter của input để thêm loại hàng vào data
+                inputAddType.onkeypress = (e) => {
+                    if (e.keyCode == 13 && inputAddType.value != '') {
+                        //Tắt sự kiện submit của form
+                        e.preventDefault()
+                        //Tạo thẻ option mới chứa value cần thêm
+                        const option = document.createElement('option')
+                        //Thêm value vào option và đẩy vào select
+                        option.value = inputAddType.value
+                        option.innerText = inputAddType.value
+                        option.setAttribute('selected', 'true')
+                        element.insertBefore(option, element.lastElementChild);
+                        //Xoá ô input khi thêm xong value
+                        element.parentElement.removeChild(inputAddType)
+                        element2 ? selectMiniType.removeAttribute('disabled') : ''
+                        setMiniType(element,element2)
+                    }
+                }
+            }
+            else if (element.value != element[0].value) {
+                document.querySelector('.add_TYPE') ? document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE')) : ''
+                element2 ? element2.removeAttribute('disabled') : ''
+                setMiniType(element,element2)
+            }
+            else {
+                document.querySelector('.add_TYPE') ? document.querySelector('.add_TYPE').parentElement.removeChild(document.querySelector('.add_TYPE')) : ''
+                element2 ? element2.setAttribute('disabled', 'true') : ''
+            }
+        }
+    }
+    addType(selectType, 'addTypeProducts', selectMiniType)
+    addType(selectMiniType, 'addMiniTypeProducts')
+
+    input_imgUpload.onchange = () => {
+        var preview = document.querySelector('.list_imgUpload');
+        var files = input_imgUpload.files;
+        preview.childElementCount > 0 ? preview.removeChild(document.querySelector('img')) : ''
+        function readAndPreview(file) {
+            // Make sure `file.name` matches our extensions criteria
+            if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                var reader = new FileReader();
+                reader.addEventListener("load", function () {
+                    var image = new Image();
+                    image.height = 190;
+                    image.width = 190;
+                    image.title = file.name;
+                    image.src = this.result;
+                    preview.appendChild(image);
+                }, false);
+                reader.readAsDataURL(file);
+            }
+        }
+        if (files) {
+            [].forEach.call(files, readAndPreview);
+        }
+    }
+
+</script>

@@ -4,6 +4,7 @@ const express = require('express')
 const hbs = require('express-handlebars')
 const db = require('./config/db')
 const routes = require('./resources/routes')
+const methodOverride = require('method-override')
 
 const app = express()
 const port = 3000
@@ -16,6 +17,8 @@ app.use(express.urlencoded({
     extended: true,
 }))
 app.use(express.json())
+
+app.use(methodOverride('_method'))
 
 //set template engine
 app.engine('hbs', hbs.engine({

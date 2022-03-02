@@ -1,15 +1,15 @@
-<div class="container mt-5 mb-5">
-    <h1>Danh sách sản phẩm</h1>
-    <div class="control d-flex justify-content-between align-items-center">
-        <button type="submit" class="btn btn-primary" disabled>Xoá nhiều</button>
-        <a href="/me/products/trash">Thùng rác</a>
+<form method="post" action="/me/products/removeMany" name="container" class="container mt-5 mb-5">
+    <div class="header d-flex align-items-center" style="gap:10px">
+        <h1 class="mb-1">Danh sách sản phẩm</h1>
+        <a href="/me/products/create" class="oi oi-plus"></a>
     </div>
+    <button type="button" data-toggle="modal" data-target="#removeProducts" class="btn btn-primary" >Xoá nhiều</button>
     <table class="table table-striped mt-1">
         <thead style="background-color: #569BDB;color:white">
             <tr>
                 <th scope="col">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1">
                     </div>
                 </th>
                 <th scope="col">Tên sản phẩm</th>
@@ -25,7 +25,7 @@
             <tr>
                 <th>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                        <input class="form-check-input" type="checkbox" name="productsID[]" id="inlineCheckbox1" value="{{this._id}}">
                     </div>
                 </th>
                 <td>{{this.name}}</td>
@@ -35,11 +35,56 @@
                 <td>{{this.miniType}}</td>
                 <td>{{this.price}}đ</td>
                 <td style="text-align:center">
-                    <button class="btn btn-primary">Cập nhật</button>
-                    <button class="btn btn-danger">Xoá</button>
+                    <a href="/me/products/{{this._id}}/edit" class="btn btn-primary">Cập nhật</a>
+                    <button type="button" class="btn btn-danger" id="remove" data-toggle="modal" data-target="#removeProducts" data-id="{{this._id}}">Xoá</button>
                 </td>
             </tr>
             {{/each}}
         </tbody>
     </table>
+</form>
+
+<div class="modal fade" id="removeProducts" tabindex="-1" role="dialog" aria-labelledby="removeProductsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="removeProductsLabel">Xoá sản phẩm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc muốn xoá nhiều sản phẩm !!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary accept-remove">Save changes</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<form name="removeProducts" method="post"></form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var productsID
+        const btn_remove = document.querySelector('.accept-remove')
+        $('#removeProducts').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            productsID = button.data('id')
+            if(productsID){
+                document.querySelector('.modal-body').innerHTML = 'Bạn có chắc muốn xoá sản phẩm có id: ' + productsID +' !!'
+                btn_remove.onclick = function() {
+                    document.forms['removeProducts'].action = `/me/products/${productsID}?_method=delete`
+                    document.forms['removeProducts'].submit()
+               }
+            }
+            else{
+                btn_remove.onclick = function(){
+                    document.forms['container'].submit()
+                }
+            }
+        })
+    })
+</script>

@@ -11,8 +11,6 @@ class SiteController {
                 const img = mutipleMongoosetoObject(products).map(Products => {
                     return Products.imageProducts[0]
                 })
-                
-
                 res.render('home', {
                     products: mutipleMongoosetoObject(products).map((product,index) => {
                         product.img = img[index]
