@@ -1,0 +1,88 @@
+<div class="paginationHeader">
+    <a href="/">Trang chủ</a>/<a href="/products">Sản phẩm</a>/<p style="color:#555">{{products.name}}</p>
+</div>
+<div class="container mt-5">
+    <div class="productsBody">
+        <div class="slide_imgProducts">
+            <div class="slide_column">
+                <a class="oi oi-chevron-top"></a>
+                <div class="list_img">
+                    {{#each products.imageProducts}}
+                    <div class="imgBox {{{checkActive @index}}}">
+                        <img src="/img/products/{{this}}" alt="{{@index}}" class="slide_img">
+                    </div>
+                    {{/each}}
+                </div>
+                <a class="oi oi-chevron-bottom"></a>
+            </div>
+            <div class="slide_row">
+                {{#each products.imageProducts}}
+                <div class="imgBox">
+                    <img src="/img/products/{{this}}" alt="{{@index}}" class="slide_img">
+                </div>
+                {{/each}}
+                <div class="control_slide">
+                    <a class="oi oi-chevron-left"></a>
+                    <a class="oi oi-chevron-right"></a>
+                </div>
+            </div>
+        </div>
+        <div class="info_products">
+            <p class="nameProdcuts">{{products.name}}</p>
+            <span class="stroke"></span>
+            <p class="productsPrice">{{products.price}}</p>
+            <span class="stroke"></span>
+            <ul class="list_color">
+                {{#each products.color}}
+                <li class="colorProducts">{{this}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    var transition = 0
+    function controlSlide(next, prev, length, element, type, length2, element2, type2) {
+        const img_slideRow = [...document.querySelectorAll(`${element} .imgBox`)]
+        const img_slideColumn = [...document.querySelectorAll(`${element2} .imgBox`)]
+        document.querySelector(next).onclick = () => {
+            transition = (transition + 1)
+            if (transition >= img_slideRow.length - 1) {
+                transition = img_slideRow.length
+            }
+            transformSlide(img_slideRow,img_slideColumn,type,type2,length,length2)
+        }
+        document.querySelector(prev).onclick = () => {
+            transition = (transition - 1)
+            if (transition <= 0) {
+                transition = 0
+            }
+            transformSlide(img_slideRow,img_slideColumn,type,type2,length,length2)
+        }
+
+        img_slideColumn.map(img =>{
+            img.onclick = () =>{
+                transition = Number(img.children[0].alt)
+                transformSlide(img_slideRow,img_slideColumn,type,type2,length,length2)
+            } 
+        })
+        
+    }
+
+    function transformSlide(list_imgRow, list_imgColumn,type,type2,length,length2) {
+        list_imgRow.map(img => {
+            img.style.transform = `translate${type}(-${transition * length}px)`
+        })
+        list_imgColumn.map(img => {
+            list_imgColumn.length <= 3 ? '' : img.style.transform = `translate${type2}(-${transition * length2}px)`
+            img.classList.remove('active');
+            if (Number(img.children[0].alt) == transition) {
+                img.classList.add('active')
+            }
+        })
+    }
+
+    controlSlide('.oi.oi-chevron-right', '.oi.oi-chevron-left', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
+    controlSlide('.oi.oi-chevron-bottom', '.oi.oi-chevron-top', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
+</script>

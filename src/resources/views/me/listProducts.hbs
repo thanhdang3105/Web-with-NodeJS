@@ -3,13 +3,14 @@
         <h1 class="mb-1">Danh sách sản phẩm</h1>
         <a href="/me/products/create" class="oi oi-plus"></a>
     </div>
-    <button type="button" data-toggle="modal" data-target="#removeProducts" class="btn btn-primary" >Xoá nhiều</button>
+    <button type="button" data-toggle="modal" data-target="#removeProducts" class="btn btn-primary removeMany"
+        disabled>Xoá nhiều</button>
     <table class="table table-striped mt-1">
         <thead style="background-color: #569BDB;color:white">
             <tr>
                 <th scope="col">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1">
+                        <input class="form-check-input" type="checkbox" id="checkAllProducts">
                     </div>
                 </th>
                 <th scope="col">Tên sản phẩm</th>
@@ -25,7 +26,8 @@
             <tr>
                 <th>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="productsID[]" id="inlineCheckbox1" value="{{this._id}}">
+                        <input class="form-check-input" type="checkbox" name="productsID[]" id="checkProducts"
+                            value="{{this._id}}">
                     </div>
                 </th>
                 <td>{{this.name}}</td>
@@ -36,7 +38,8 @@
                 <td>{{this.price}}đ</td>
                 <td style="text-align:center">
                     <a href="/me/products/{{this._id}}/edit" class="btn btn-primary">Cập nhật</a>
-                    <button type="button" class="btn btn-danger" id="remove" data-toggle="modal" data-target="#removeProducts" data-id="{{this._id}}">Xoá</button>
+                    <button type="button" class="btn btn-danger" id="remove" data-toggle="modal"
+                        data-target="#removeProducts" data-id="{{this._id}}">Xoá</button>
                 </td>
             </tr>
             {{/each}}
@@ -44,47 +47,71 @@
     </table>
 </form>
 
-<div class="modal fade" id="removeProducts" tabindex="-1" role="dialog" aria-labelledby="removeProductsLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="removeProductsLabel">Xoá sản phẩm</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Bạn có chắc muốn xoá nhiều sản phẩm !!
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary accept-remove">Save changes</button>
-      </div>
+<div class="modal fade" id="removeProducts" tabindex="-1" role="dialog" aria-labelledby="removeProductsLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeProductsLabel">Xoá sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá nhiều sản phẩm !!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn btn-primary accept-remove">Xoá</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <form name="removeProducts" method="post"></form>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         var productsID
         const btn_remove = document.querySelector('.accept-remove')
+        const btn_removeMany = document.querySelector('.removeMany')
         $('#removeProducts').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             productsID = button.data('id')
-            if(productsID){
-                document.querySelector('.modal-body').innerHTML = 'Bạn có chắc muốn xoá sản phẩm có id: ' + productsID +' !!'
-                btn_remove.onclick = function() {
+            if (productsID) {
+                document.querySelector('.modal-body').innerHTML = 'Bạn có chắc muốn xoá sản phẩm có id: ' + productsID + ' !!'
+                btn_remove.onclick = function () {
                     document.forms['removeProducts'].action = `/me/products/${productsID}?_method=delete`
                     document.forms['removeProducts'].submit()
-               }
+                }
             }
-            else{
-                btn_remove.onclick = function(){
+            else {
+                btn_remove.onclick = function () {
                     document.forms['container'].submit()
                 }
             }
         })
+        const checkProducts = [...document.querySelectorAll('#checkProducts')]
+        const checkAllProducts = document.querySelector('#checkAllProducts')
+        checkAllProducts.onchange = () => {
+            checkProducts.map(check => {
+                check.checked = checkAllProducts.checked
+                check.onclick = () => {
+                    const checkedProducts = document.querySelectorAll('input[name="productsID[]"]:checked')
+                    let removeDisabled = true
+                    if (checkedProducts.length > 1) {
+                        removeDisabled = !removeDisabled
+                        if (checkedProducts.length == checkProducts.length) {
+                            checkAllProducts.checked = true
+                        }
+                        else{
+                            checkAllProducts.checked = false
+                        }
+                    }
+                    btn_removeMany.toggleAttribute('disabled', removeDisabled)
+                }
+            })
+            btn_removeMany.toggleAttribute('disabled', !checkAllProducts.checked)
+        }
     })
 </script>

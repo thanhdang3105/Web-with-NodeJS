@@ -190,7 +190,7 @@ class MeController {
                             if (err) {
                                 res.json(err)
                             } else {
-                                res.redirect('back')
+                                res.redirect('/me/products/list-products')
                             }
                         })
                     } else if (type[0].miniType.includes(fields.miniType)) {
@@ -199,7 +199,7 @@ class MeController {
                             if (err) {
                                 res.json(err)
                             } else {
-                                res.redirect('back')
+                                res.redirect('/me/products/list-products')
                             }
                         })
                     } else {
@@ -219,7 +219,7 @@ class MeController {
                                 miniType: newMiniType
                             })
                             .then(() => {
-                                res.redirect('back')
+                                res.redirect('/me/products/list-products')
                             })
                             .catch(err => {
                                 res.json(err)

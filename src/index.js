@@ -23,6 +23,11 @@ app.use(methodOverride('_method'))
 //set template engine
 app.engine('hbs', hbs.engine({
     extname: 'hbs',
+    helpers:{
+        checkActive: (index) => {
+            return Number(index) == 0 ? 'active' : ''
+        }
+    }
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'resources', 'views'))
