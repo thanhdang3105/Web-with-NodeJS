@@ -42,6 +42,10 @@
                         data-target="#removeProducts" data-id="{{this._id}}">Xoá</button>
                 </td>
             </tr>
+            {{else}}
+            <tr>
+                <th colspan="7"><h1>Không có sản phẩm</h1></th>
+            </tr>
             {{/each}}
         </tbody>
     </table>
@@ -58,7 +62,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                Bạn có chắc muốn xoá nhiều sản phẩm !!
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
@@ -86,6 +90,7 @@
                 }
             }
             else {
+                document.querySelector('.modal-body').innerHTML = 'Bạn có chắc muốn xoá nhiều sản phẩm !!'
                 btn_remove.onclick = function () {
                     document.forms['container'].submit()
                 }

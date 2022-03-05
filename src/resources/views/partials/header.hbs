@@ -27,8 +27,10 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/products">Tất cả sản phẩm</a>
-                        <a class="dropdown-item" href="/products?sort=top">Áo<span class="oi oi-chevron-right"></span></a>
-                        <a class="dropdown-item" href="/products?sort=bottom">Quần<span class="oi oi-chevron-right"></span></a>
+                        <a class="dropdown-item" href="/products?sort=top">Áo<span
+                                class="oi oi-chevron-right"></span></a>
+                        <a class="dropdown-item" href="/products?sort=bottom">Quần<span
+                                class="oi oi-chevron-right"></span></a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -40,6 +42,27 @@
                         class="oi oi-magnifying-glass"></a></button>
                 <input class="form-control mr-sm-2 input_search" type="search" placeholder="Search" aria-label="Search">
             </form>
+            <div class="menu_cart">
+                <button class="btn my-2 my-sm-0 btn_cart"><a class="oi oi-cart"></a></button>
+                <div class="cartBox">
+                    <h3>Giỏ hàng</h3>
+                    <ul class="cart_list">
+                        <li class="cart_item">
+                            <div class="cart_item-img">
+                                <img src="/img/products/jordan-1-low-black-toe.jpg" alt="">
+                            </div>
+                            <div class="cart_item-info">
+                                <a href="/products/{{products.slug}}" class="item_name">{{products.name}}</a>
+                                <span class="item_type">color / size</span>
+                                <span class="item_price">{{products.price}} đ</span>
+                                <p class="item_count"><span>-</span> <strong contenteditable="true">1</strong> <span>+</span></pcl>
+                            </div>
+                            <a href="" style="color:black" class="oi oi-trash mr-3"></a>
+                        </li>
+                    </ul>
+                    <button class="btn btn-dark">Thanh toán</button>
+                </div>
+            </div>
             <div class="menu_setting-dropdown">
                 <button class="btn my-2 my-sm-0 dropdown-toggle" id="menuSettingDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button"></button>
@@ -58,15 +81,16 @@
 <script>
     const navbarHeader = document.querySelector('.navbar_header')
 
-    document.onscroll = (e) =>{
-        if(e.target.scrollingElement.scrollTop > 100){
+    document.onscroll = (e) => {
+        if (e.target.scrollingElement.scrollTop > 100) {
             navbarHeader.style.position = 'fixed'
             navbarHeader.style.animation = 'fadeIn 0.5s linear'
         }
-        else{
+        else {
             navbarHeader.style.position = 'unset'
             navbarHeader.style.animation = 'unset'
         }
-
     }
+
+
 </script>

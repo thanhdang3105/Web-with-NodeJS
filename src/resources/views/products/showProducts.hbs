@@ -28,15 +28,23 @@
             </div>
         </div>
         <div class="info_products">
-            <p class="nameProdcuts">{{products.name}}</p>
+            <h1 class="nameProdcuts">{{products.name}}</h1>
             <span class="stroke"></span>
-            <p class="productsPrice">{{products.price}}</p>
+            <p class="priceProducts">{{products.price}} đ</p>
             <span class="stroke"></span>
             <ul class="list_color">
+                <h5 class="listHeading">Màu sắc:</h5>
                 {{#each products.color}}
-                <li class="colorProducts">{{this}}</li>
+                <li class="colorProducts" value="{{this}}">{{this}}</li>
                 {{/each}}
             </ul>
+            <ul class="list_size">
+                <h5 class="listHeading">Kích thước:</h5>
+                {{#each products.size}}
+                <li class="sizeProducts">{{this}}</li>
+                {{/each}}
+            </ul>
+            <button type="button" class="btn btn-dark addCartProducts">Thêm vào giỏ hàng</button>
         </div>
     </div>
 </div>
@@ -49,28 +57,29 @@
         document.querySelector(next).onclick = () => {
             transition = (transition + 1)
             if (transition >= img_slideRow.length - 1) {
-                transition = img_slideRow.length
+                transition = img_slideRow.length - 1
             }
-            transformSlide(img_slideRow,img_slideColumn,type,type2,length,length2)
+            transformSlide(img_slideRow, img_slideColumn, type, type2, length, length2)
         }
         document.querySelector(prev).onclick = () => {
             transition = (transition - 1)
             if (transition <= 0) {
                 transition = 0
             }
-            transformSlide(img_slideRow,img_slideColumn,type,type2,length,length2)
+            transformSlide(img_slideRow, img_slideColumn, type, type2, length, length2)
         }
 
-        img_slideColumn.map(img =>{
-            img.onclick = () =>{
+        img_slideColumn.map(img => {
+            transformSlide(img_slideRow, img_slideColumn, type, type2, length, length2)
+            img.onclick = () => {
                 transition = Number(img.children[0].alt)
-                transformSlide(img_slideRow,img_slideColumn,type,type2,length,length2)
-            } 
+                transformSlide(img_slideRow, img_slideColumn, type, type2, length, length2)
+            }
         })
-        
+
     }
 
-    function transformSlide(list_imgRow, list_imgColumn,type,type2,length,length2) {
+    function transformSlide(list_imgRow, list_imgColumn, type, type2, length, length2) {
         list_imgRow.map(img => {
             img.style.transform = `translate${type}(-${transition * length}px)`
         })
@@ -83,6 +92,67 @@
         })
     }
 
-    controlSlide('.oi.oi-chevron-right', '.oi.oi-chevron-left', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
-    controlSlide('.oi.oi-chevron-bottom', '.oi.oi-chevron-top', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
+    controlSlide('.control_slide .oi-chevron-right', '.control_slide .oi-chevron-left', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
+    controlSlide('.slide_column .oi-chevron-bottom', '.slide_column .oi-chevron-top', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
+
+    function chooseType(element) {
+        const listType = [...document.querySelectorAll(element)]
+        listType.map((type, index) => {
+            index == 0 ? type.classList.add('active') : ''
+            type.onclick = () => {
+                let active = document.querySelector(`${element}.active`)
+                active ? active.classList.remove('active') : ''
+                type.classList.add('active')
+            }
+        })
+    }
+
+    chooseType('.colorProducts')
+    chooseType('.sizeProducts')
+
+    const btn_addCart = document.querySelector('.addCartProducts')
+    btn_addCart.onclick = () => {
+        const nameProducts = document.querySelector('.nameProdcuts').innerText
+        const priceProducts = document.querySelector('.priceProducts').innerText
+        const colorProducts = document.querySelector('.colorProducts.active').innerText
+        const sizeProducts = document.querySelector('.sizeProducts.active').innerText
+        if (!localStorage.cart) {
+            const cart = JSON.stringify([{
+                name: nameProducts,
+                price: priceProducts,
+                color: colorProducts,
+                size: sizeProducts,
+                count: 1
+            }])
+            localStorage.cart = cart
+        }
+        else {
+            const cart = JSON.parse(localStorage.cart)
+            const checkCart = cart.filter((Cart, index) => {
+                if (Cart.name == nameProducts && Cart.size == sizeProducts && Cart.color == colorProducts) {
+                    return true
+                }
+            })
+
+            if (checkCart.length != 0) {
+                localStorage.cart = JSON.stringify(cart.map(Cart => {
+                    if (Cart.name == nameProducts && Cart.size == sizeProducts && Cart.color == colorProducts) {
+                        Cart.count ++
+                    }
+                    return Cart
+                }))
+            }
+            else {
+                cart.push({
+                    name: nameProducts,
+                    price: priceProducts,
+                    color: colorProducts,
+                    size: sizeProducts,
+                    count: 1
+                })
+                localStorage.cart = JSON.stringify(cart)
+            }
+        }
+    }
+
 </script>

@@ -18,7 +18,9 @@ class ProductController {
         .then(Products => {
             const products = mongoosetoObject(Products)
             const color = products.color.split(',')
+            const size = products.size.split(',')
             products.color = color
+            products.size = size.map(size=> size.toUpperCase())
             res.render('products/showProducts',{
                 products: products
             })
