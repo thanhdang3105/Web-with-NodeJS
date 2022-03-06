@@ -8,7 +8,7 @@ const {
 class ProductController {
 
     index(req, res, next) {
-        res.json(req.body);
+        res.json(req.params);
     }
 
     showProducts(req, res, next) {

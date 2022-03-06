@@ -18,7 +18,7 @@
             <div class="slide_row">
                 {{#each products.imageProducts}}
                 <div class="imgBox">
-                    <img src="/img/products/{{this}}" alt="{{@index}}" class="slide_img">
+                    <img src="/img/products/{{this}}" name="img" alt="{{@index}}" class="slide_img">
                 </div>
                 {{/each}}
                 <div class="control_slide">
@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="info_products">
-            <h1 class="nameProdcuts">{{products.name}}</h1>
+            <h1 class="nameProdcuts" data-id="{{products.slug}}">{{products.name}}</h1>
             <span class="stroke"></span>
             <p class="priceProducts">{{products.price}} đ</p>
             <span class="stroke"></span>
@@ -112,46 +112,79 @@
 
     const btn_addCart = document.querySelector('.addCartProducts')
     btn_addCart.onclick = () => {
-        const nameProducts = document.querySelector('.nameProdcuts').innerText
-        const priceProducts = document.querySelector('.priceProducts').innerText
+        let count = 0
+        count++
         const colorProducts = document.querySelector('.colorProducts.active').innerText
+        const priceProducts = document.querySelector('.priceProducts').innerText
         const sizeProducts = document.querySelector('.sizeProducts.active').innerText
-        if (!localStorage.cart) {
-            const cart = JSON.stringify([{
-                name: nameProducts,
-                price: priceProducts,
-                color: colorProducts,
-                size: sizeProducts,
-                count: 1
-            }])
-            localStorage.cart = cart
-        }
-        else {
-            const cart = JSON.parse(localStorage.cart)
-            const checkCart = cart.filter((Cart, index) => {
-                if (Cart.name == nameProducts && Cart.size == sizeProducts && Cart.color == colorProducts) {
+        const slugProducts = document.querySelector('.nameProdcuts').getAttribute('data-id')
+        const nameProducts = document.querySelector('.nameProdcuts').innerText
+        const img = document.querySelectorAll('.slide_img')[transition].src.split('/')[5]
+        const cartList = document.querySelector('.cart_list')
+        const li = document.createElement('li')
+        li.classList.add('cart_item')
+        li.innerHTML = `<div class="cart_item-img">
+                                <img src="/img/products/${img}" alt="img" class="item_img">
+                            </div>
+                            <div class="cart_item-info">
+                                <a href="/products/${slugProducts}" class="item_name">${nameProducts}</a>
+                                <span class="item_type">${colorProducts} / ${sizeProducts}</span>
+                                <span class="item_price">${priceProducts}</span>
+                                <p class="item_count"><span>-</span> <strong contenteditable="true">${count}</strong>
+                                    <span>+</span></pcl>
+                            </div>
+                            <a href="" style="color:black" class="oi oi-trash mr-3"></a>`
+        const list_item = [...document.querySelectorAll('.cart_item')]
+        if (list_item.length != 0) {
+            const check = list_item.filter(item => {
+                if (item.querySelector('.item_name').innerText == nameProducts &&
+                    item.querySelector('.item_type').innerText == colorProducts + ' / ' + sizeProducts) {
                     return true
                 }
             })
-
-            if (checkCart.length != 0) {
-                localStorage.cart = JSON.stringify(cart.map(Cart => {
-                    if (Cart.name == nameProducts && Cart.size == sizeProducts && Cart.color == colorProducts) {
-                        Cart.count ++
+            if(check.length != 0){
+                if(Number(check[0].querySelector('.item_count strong').innerText) == 10){
+                    alert('Số lượng 1 lần mua đã đạt giới hạn vui lòng liên hệ hotline để được giúp đỡ !')
+                }
+                else{
+                    check[0].querySelector('.item_count strong').innerText = Number(check[0].querySelector('.item_count strong').innerText) + 1
+                }
+            }
+            else{
+                cartList.appendChild(li)
+                document.querySelector('.cartBox').classList.add('show')
+            }
+        }
+        else {
+            cartList.appendChild(li)
+                document.querySelector('.cartBox').classList.add('show')
+        }
+        const control = [...document.querySelectorAll('.item_count span')]
+        if (control.length > 0) {
+            control.map((btn, index) => {
+                if (index == 0) {
+                    btn.onclick = () => {
+                        const count = Number(btn.parentElement.children[1].innerText)
+                        if (count == 1) {
+                            cartList.removeChild(btn.parentElement.parentElement.parentElement)
+                        }
+                        else {
+                            btn.parentElement.children[1].innerText = count - 1
+                        }
                     }
-                    return Cart
-                }))
-            }
-            else {
-                cart.push({
-                    name: nameProducts,
-                    price: priceProducts,
-                    color: colorProducts,
-                    size: sizeProducts,
-                    count: 1
-                })
-                localStorage.cart = JSON.stringify(cart)
-            }
+                }
+                else {
+                    btn.onclick = () => {
+                        const count = Number(btn.parentElement.children[1].innerText)
+                        if (count == 10) {
+                            alert('Số lượng 1 lần mua đã đạt giới hạn vui lòng liên hệ hotline để được giúp đỡ !')
+                        }
+                        else {
+                            btn.parentElement.children[1].innerText = count + 1
+                        }
+                    }
+                }
+            })
         }
     }
 
