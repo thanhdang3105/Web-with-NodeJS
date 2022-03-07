@@ -47,7 +47,23 @@
                 <div class="cartBox">
                     <h3>Giỏ hàng</h3>
                     <form class="cart_list">
-
+                        {{#each itemsCart}}
+                        <li class="cart_item">
+                            <div class="cart_item-img">
+                                <img src="/img/products/{{this.img}}" alt="img" class="item_img">
+                            </div>
+                            <div class="cart_item-info">
+                                <a href="/products/{{this.slug}}" class="item_name">{{this.name}}</a>
+                                <span class="item_type">{{this.color}} / {{this.size}}</span>
+                                <span class="item_price">{{this.price}} đ</span>
+                                <p class="item_count"><span>-</span> <strong contenteditable="true">{{this.count}}</strong>
+                                    <span>+</span></pcl>
+                            </div>
+                            <a href="" style="color:black" class="oi oi-trash mr-3"></a>
+                        </li>
+                        {{else}}
+                        <h5>Chưa có sản phẩm nào</h5>
+                        {{/each}}
                     </form>
                     <button class="btn btn-dark">Thanh toán</button>
                 </div>

@@ -1,7 +1,7 @@
 <div class="paginationHeader">
     <a href="/">Trang chủ</a>/<a href="/products">Sản phẩm</a>/<p style="color:#555">{{products.name}}</p>
 </div>
-<div class="container mt-5">
+<form method="post" action="/products/{{products.slug}}" class="container mt-5">
     <div class="productsBody">
         <div class="slide_imgProducts">
             <div class="slide_column">
@@ -35,7 +35,7 @@
             <ul class="list_color">
                 <h5 class="listHeading">Màu sắc:</h5>
                 {{#each products.color}}
-                <li class="colorProducts" value="{{this}}">{{this}}</li>
+                <li class="colorProducts">{{this}}</li>
                 {{/each}}
             </ul>
             <ul class="list_size">
@@ -44,10 +44,10 @@
                 <li class="sizeProducts">{{this}}</li>
                 {{/each}}
             </ul>
-            <button type="button" class="btn btn-dark addCartProducts">Thêm vào giỏ hàng</button>
+            <button type="submit" class="btn btn-dark addCartProducts">Thêm vào giỏ hàng</button>
         </div>
     </div>
-</div>
+</form>
 
 <script>
     var transition = 0
@@ -95,97 +95,32 @@
     controlSlide('.control_slide .oi-chevron-right', '.control_slide .oi-chevron-left', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
     controlSlide('.slide_column .oi-chevron-bottom', '.slide_column .oi-chevron-top', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
 
-    function chooseType(element) {
+    function chooseType(element,name) {
         const listType = [...document.querySelectorAll(element)]
         listType.map((type, index) => {
             index == 0 ? type.classList.add('active') : ''
             type.onclick = () => {
                 let active = document.querySelector(`${element}.active`)
-                active ? active.classList.remove('active') : ''
+                if(active) {
+                    active.classList.remove('active')
+                    active.removeChild(document.querySelector(`${element} input.hide`))
+                }
                 type.classList.add('active')
+                addvalue(element,name)
             }
         })
+        addvalue(element,name)
     }
 
-    chooseType('.colorProducts')
-    chooseType('.sizeProducts')
-
-    const btn_addCart = document.querySelector('.addCartProducts')
-    btn_addCart.onclick = () => {
-        let count = 0
-        count++
-        const colorProducts = document.querySelector('.colorProducts.active').innerText
-        const priceProducts = document.querySelector('.priceProducts').innerText
-        const sizeProducts = document.querySelector('.sizeProducts.active').innerText
-        const slugProducts = document.querySelector('.nameProdcuts').getAttribute('data-id')
-        const nameProducts = document.querySelector('.nameProdcuts').innerText
-        const img = document.querySelectorAll('.slide_img')[transition].src.split('/')[5]
-        const cartList = document.querySelector('.cart_list')
-        const li = document.createElement('li')
-        li.classList.add('cart_item')
-        li.innerHTML = `<div class="cart_item-img">
-                                <img src="/img/products/${img}" alt="img" class="item_img">
-                            </div>
-                            <div class="cart_item-info">
-                                <a href="/products/${slugProducts}" class="item_name">${nameProducts}</a>
-                                <span class="item_type">${colorProducts} / ${sizeProducts}</span>
-                                <span class="item_price">${priceProducts}</span>
-                                <p class="item_count"><span>-</span> <strong contenteditable="true">${count}</strong>
-                                    <span>+</span></pcl>
-                            </div>
-                            <a href="" style="color:black" class="oi oi-trash mr-3"></a>`
-        const list_item = [...document.querySelectorAll('.cart_item')]
-        if (list_item.length != 0) {
-            const check = list_item.filter(item => {
-                if (item.querySelector('.item_name').innerText == nameProducts &&
-                    item.querySelector('.item_type').innerText == colorProducts + ' / ' + sizeProducts) {
-                    return true
-                }
-            })
-            if(check.length != 0){
-                if(Number(check[0].querySelector('.item_count strong').innerText) == 10){
-                    alert('Số lượng 1 lần mua đã đạt giới hạn vui lòng liên hệ hotline để được giúp đỡ !')
-                }
-                else{
-                    check[0].querySelector('.item_count strong').innerText = Number(check[0].querySelector('.item_count strong').innerText) + 1
-                }
-            }
-            else{
-                cartList.appendChild(li)
-                document.querySelector('.cartBox').classList.add('show')
-            }
-        }
-        else {
-            cartList.appendChild(li)
-                document.querySelector('.cartBox').classList.add('show')
-        }
-        const control = [...document.querySelectorAll('.item_count span')]
-        if (control.length > 0) {
-            control.map((btn, index) => {
-                if (index == 0) {
-                    btn.onclick = () => {
-                        const count = Number(btn.parentElement.children[1].innerText)
-                        if (count == 1) {
-                            cartList.removeChild(btn.parentElement.parentElement.parentElement)
-                        }
-                        else {
-                            btn.parentElement.children[1].innerText = count - 1
-                        }
-                    }
-                }
-                else {
-                    btn.onclick = () => {
-                        const count = Number(btn.parentElement.children[1].innerText)
-                        if (count == 10) {
-                            alert('Số lượng 1 lần mua đã đạt giới hạn vui lòng liên hệ hotline để được giúp đỡ !')
-                        }
-                        else {
-                            btn.parentElement.children[1].innerText = count + 1
-                        }
-                    }
-                }
-            })
-        }
+    function addvalue(element, name) {
+        const input = document.createElement('input')
+        input.classList.add('hide')
+        input.setAttribute('name',name)
+        input.setAttribute('value',document.querySelector(`${element}.active`).innerText)
+        document.querySelector(`${element}.active`).appendChild(input)
     }
+
+    chooseType('.colorProducts','color')
+    chooseType('.sizeProducts','size')
 
 </script>
