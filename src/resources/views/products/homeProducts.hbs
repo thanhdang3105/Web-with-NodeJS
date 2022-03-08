@@ -1,0 +1,25 @@
+<div class="paginationHeader mb-2">
+    <a href="/">Trang chủ</a>/<a href="/products">Sản phẩm</a>
+</div>
+<div class="container mt-1 newArrival_products">
+    <div class="card-group listProducts_newArrival">
+            {{#each products}}
+            <div class="card">
+                <a href="/products/{{this.slug}}">
+                    <img class="card-img-top" src="/img/products/{{this.img}}" alt="Card image cap">
+                </a>
+                <div class="card-body">
+                    <a href="/products/{{this.slug}}" class="card-title">{{this.name}}</a>
+                    <p class="card-text">{{this.price}}</p>
+                </div>
+                <div class="card-footer">
+                    {{#each imageProducts}}
+                    <img src="/img/products/{{this}}" data-img="{{this}}" alt="" class="card-img-footer">
+                    {{/each}}
+                </div>
+            </div>
+            {{else}}
+            <h1>Không có sản phẩm</h1>
+            {{/each}}
+        </div>
+</div>

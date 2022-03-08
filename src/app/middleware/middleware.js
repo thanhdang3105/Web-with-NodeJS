@@ -22,7 +22,11 @@ module.exports = function middleware(req, res, next) {
                             if (cart.slug == product.slug) {
                                 cart.name = product.name
                                 cart.price = (Number(product.price.split(',').join('')) * Number(cart.count)).toLocaleString('en-gb') 
-                                cart.img = product.imageProducts[0]
+                                product.color.split(',').map((color,index) => {
+                                    if(color == cart.color){
+                                        cart.img = product.imageProducts[index]
+                                    }
+                                })
                             }
                         })
                     })

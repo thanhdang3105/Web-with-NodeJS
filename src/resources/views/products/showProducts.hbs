@@ -1,8 +1,8 @@
 <div class="paginationHeader">
     <a href="/">Trang chủ</a>/<a href="/products">Sản phẩm</a>/<p style="color:#555">{{products.name}}</p>
 </div>
-<form method="post" action="/products/{{products.slug}}" class="container mt-5">
-    <div class="productsBody">
+<div class="container mt-5">
+    <form method="post" action="/products/{{products.slug}}" class="productsBody">
         <div class="slide_imgProducts">
             <div class="slide_column">
                 <a class="oi oi-chevron-top"></a>
@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="info_products">
-            <h1 class="nameProdcuts" data-id="{{products.slug}}">{{products.name}}</h1>
+            <h1 class="nameProdcuts" data-slug="{{products.slug}}">{{products.name}}</h1>
             <span class="stroke"></span>
             <p class="priceProducts">{{products.price}} đ</p>
             <span class="stroke"></span>
@@ -46,8 +46,57 @@
             </ul>
             <button type="submit" class="btn btn-dark addCartProducts">Thêm vào giỏ hàng</button>
         </div>
+    </form>
+    <div class="store-policy">
+        <ul class="info">
+            <h3>THÔNG TIN SẢN PHẨM</h3>
+            <li class="ideas">
+                - Chất Liệu: Cotton Pha Spandex
+            </li>
+            <li class="li_text">- Độ Dày: Vừa</li>
+            <li class="li_text">- Độ Co Giãn: Ít</li>
+            <li class="li_text">- Phong Cách: Casual, Street Style</li>
+            <li class="li_text">- Chi Tiết: Phối Túi</li>
+        </ul>
+        <ul class="endow_vip">
+            <h3>ƯU ĐÃI MEMBER VIP</h3>
+            <li class="li_text">Vui lòng đăng kí tài khoản mua hàng để được tích điểm làm Member Vip</li>
+            <li class="li_text">- Tài khoản Vip 1 được giảm 5% khi tích đủ 5tr</li>
+            <li class="li_text">- Tài khoản Vip 2 được giảm 10% khi tích đủ 10tr</li>
+            <li class="li_text">- Tài khoản Vip 3 được giảm 15% khi tích đủ 20tr</li>
+        </ul>
+        <ul class="policy">
+            <h3>CHÍNH SÁCH ĐỔI TRẢ HÀNG</h3>
+            <li class="li_text">- Được kiểm tra hàng trước khi nhận hàng</li>
+            <li class="li_text">- Đổi/ Trả trong vòng 7 ngày kể từ khi nhận hàng</li>
+            <li class="li_text">- Miễn phí đổi trả nếu lỗi sai sót từ phía Store</li>
+            <li class="li_text">- Vui lòng gửi hàng Đổi/Trả lại tại địa chỉ:...</li>
+        </ul>
     </div>
-</form>
+    <div class="banner-footer">
+        <div class="box-footer">
+            <i class="shipping fast icon"></i>
+            <div class="text">
+                <h4>MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC</h4>
+                <p>Với Đơn Hàng Trên 500.000đ</p>
+            </div>
+        </div>
+        <div class="box-footer">
+            <i class="fax icon"></i>
+            <div class="text">
+                <h4>HỖ TRỢ (09:00-21:00)</h4>
+                <p>0852 407 686</p>
+            </div>
+        </div>
+        <div class="box-footer">
+            <i class="shield alternate icon"></i>
+            <div class="text">
+                <h4>ĐỔI TRẢ DỄ DÀNG</h4>
+                <p>Trong Vòng 07 ngày</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     var transition = 0
@@ -95,32 +144,34 @@
     controlSlide('.control_slide .oi-chevron-right', '.control_slide .oi-chevron-left', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
     controlSlide('.slide_column .oi-chevron-bottom', '.slide_column .oi-chevron-top', 635, '.slide_row', 'X', 110, '.slide_column', 'Y')
 
-    function chooseType(element,name) {
+    function chooseType(element, name) {
         const listType = [...document.querySelectorAll(element)]
         listType.map((type, index) => {
             index == 0 ? type.classList.add('active') : ''
             type.onclick = () => {
                 let active = document.querySelector(`${element}.active`)
-                if(active) {
+                if (active) {
                     active.classList.remove('active')
                     active.removeChild(document.querySelector(`${element} input.hide`))
                 }
                 type.classList.add('active')
-                addvalue(element,name)
+                addvalue(element, name)
             }
         })
-        addvalue(element,name)
+        addvalue(element, name)
     }
 
-    function addvalue(element, name) {
+    function addvalue(element, name, value) {
         const input = document.createElement('input')
         input.classList.add('hide')
-        input.setAttribute('name',name)
-        input.setAttribute('value',document.querySelector(`${element}.active`).innerText)
+        input.setAttribute('name', name)
+        input.setAttribute('value',value ? value : document.querySelector(`${element}.active`).innerText)
         document.querySelector(`${element}.active`).appendChild(input)
     }
+    
 
-    chooseType('.colorProducts','color')
-    chooseType('.sizeProducts','size')
+    chooseType('.colorProducts', 'color')
+    chooseType('.sizeProducts', 'size')
 
+    addvalue('.colorProducts', 'slug',document.querySelector('.nameProdcuts').getAttribute('data-slug'))
 </script>

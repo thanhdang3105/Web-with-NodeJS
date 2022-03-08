@@ -25,6 +25,8 @@ class SiteController {
     acount(req, res, next) {
         res.send('trang quản lý tài khoản')
     }
+
+    
 }
 
 module.exports = new SiteController;

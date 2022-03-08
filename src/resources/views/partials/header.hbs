@@ -44,29 +44,35 @@
             </form>
             <div class="menu_cart">
                 <button class="btn my-2 my-sm-0 btn_cart"><a class="oi oi-cart"></a></button>
-                <div class="cartBox">
+                <form method="post" action="/products/cart" class="cartBox">
                     <h3>Giỏ hàng</h3>
-                    <form class="cart_list">
+                    <ul class="cart_list">
                         {{#each itemsCart}}
                         <li class="cart_item">
-                            <div class="cart_item-img">
+                            <a href="/products/{{this.slug}}" class="cart_item-img">
                                 <img src="/img/products/{{this.img}}" alt="img" class="item_img">
-                            </div>
+                            </a>
                             <div class="cart_item-info">
                                 <a href="/products/{{this.slug}}" class="item_name">{{this.name}}</a>
                                 <span class="item_type">{{this.color}} / {{this.size}}</span>
                                 <span class="item_price">{{this.price}} đ</span>
-                                <p class="item_count"><span>-</span> <strong contenteditable="true">{{this.count}}</strong>
+                                <p class="item_count"><span>-</span> <strong>{{this.count}}</strong>
                                     <span>+</span></pcl>
                             </div>
-                            <a href="" style="color:black" class="oi oi-trash mr-3"></a>
+                            <div class="d-none">
+                                <input type="text" name="slug" value="{{this.slug}}" class="hide">
+                                <input type="text" name="color" value="{{this.color}}" class="hide">
+                                <input type="text" name="size" value="{{this.size}}" class="hide">
+                                <input type="text" name="count" value="{{this.count}}" class="hide">
+                            </div>
+                            <a onclick="removeCart('{{this._id}}')" style="color:black" class="oi oi-trash mr-3"></a>
                         </li>
                         {{else}}
                         <h5>Chưa có sản phẩm nào</h5>
                         {{/each}}
-                    </form>
-                    <button class="btn btn-dark">Thanh toán</button>
-                </div>
+                    </ul>
+                    <button type="submit" class="btn btn-dark">Thanh toán</button>
+                </form>
             </div>
             <div class="menu_setting-dropdown">
                 <button class="btn my-2 my-sm-0 dropdown-toggle" id="menuSettingDropdown" role="button"
@@ -99,4 +105,44 @@
     document.querySelector('.menu_cart button.btn_cart').onclick = () => {
         document.querySelector('.cartBox').classList.toggle('show')
     }
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.cartBox')
+        const listCart = [...document.querySelectorAll('.cart_item')]
+        listCart.map(item => {
+            const equal = item.querySelectorAll('p span')
+            let count = item.querySelector('p strong')
+            let inputValue = item.querySelector('input[name="count"]')
+            //Giảm số lượng
+            equal[0].onclick = () => {
+                count.innerText = Number(count.innerText) - 1
+                inputValue.setAttribute("value", count.innerText)
+                if (Number(count.innerText) <= 0) {
+                    count.innerText = 0
+                    item.querySelector('a.oi-trash').click()
+                    return
+                }
+                form.submit()
+            }
+
+            equal[1].onclick = () => {
+                count.innerText = Number(count.innerText) + 1
+                inputValue.setAttribute("value", count.innerText)
+                if (Number(count.innerText) >= 11) {
+                    count.innerText = 10
+                    alert('Đã đạt số lượng giới hạn nếu bạn muốn mua nhiều hơn vui lòng liên hệ hotline để được giúp đỡ !')
+                    return
+                }
+                form.submit()
+            }
+        })
+
+    })
+
+    function removeCart(id) {
+            document.querySelector('.cartBox').action = `/products/removeCart?_method=delete&_id=${id}`
+            document.querySelector('.cartBox').submit()
+    }
+
+
+
 </script>

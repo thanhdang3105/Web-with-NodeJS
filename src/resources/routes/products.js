@@ -3,11 +3,13 @@ const router = express.Router();
 
 const productController = require('../../app/controllers/productController')
 
+router.delete('/removeCart', productController.removeItemCart)
+
+router.post('/cart', productController.updateCart)
+
 router.get('/:slug',productController.showProducts)
 
 router.post('/:slug',productController.Cart)
-
-router.post('/',productController.index)
 
 router.get('/',productController.index)
 
