@@ -29,6 +29,37 @@ app.engine('hbs', hbs.engine({
     helpers:{
         checkActive: (index) => {
             return Number(index) == 0 ? 'active' : ''
+        },
+        setDSBbtn: (current,pages) => {
+            return Number(current) == Number(pages) ? 'disabled' : ''
+        },
+        pagination: (current,action) => {
+            return Number(current) + Number(action)
+        },
+        renderPage: (pages ,current) =>{
+            var arr = []
+            for(var i = 1;i <= pages; i++){
+                if(i == current){
+                    arr.push({
+                        page: i,
+                        active: 'active'
+                    })
+                }
+                else if (i == Number(current) + 3 && i < pages) {
+                    arr.push({
+                        page: '...',
+                        active: 'disabled'
+                    })
+                    return arr
+                }
+                else{
+                    arr.push({
+                        page: i,
+                        active: ''
+                    })
+                }
+            }
+            return arr
         }
     }
 }))

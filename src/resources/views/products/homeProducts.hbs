@@ -1,25 +1,62 @@
-<div class="paginationHeader mb-2">
+<div class="paginationHeader">
     <a href="/">Trang chủ</a>/<a href="/products">Sản phẩm</a>
 </div>
-<div class="container mt-1 newArrival_products">
-    <div class="card-group listProducts_newArrival">
-            {{#each products}}
-            <div class="card">
-                <a href="/products/{{this.slug}}">
-                    <img class="card-img-top" src="/img/products/{{this.img}}" alt="Card image cap">
-                </a>
-                <div class="card-body">
-                    <a href="/products/{{this.slug}}" class="card-title">{{this.name}}</a>
-                    <p class="card-text">{{this.price}}</p>
-                </div>
-                <div class="card-footer">
-                    {{#each imageProducts}}
-                    <img src="/img/products/{{this}}" data-img="{{this}}" alt="" class="card-img-footer">
-                    {{/each}}
-                </div>
+<div class="container All_products">
+    <h1>Tất cả sản phẩm</h1>
+    <div class="card-group listProducts_All">
+        {{#each products}}
+        <div class="card">
+            <a href="/products/{{this.slug}}">
+                <img class="card-img-top" src="/img/products/{{this.img}}" alt="Card image cap">
+            </a>
+            <div class="card-body">
+                <a href="/products/{{this.slug}}" class="card-title">{{this.name}}</a>
+                <p class="card-text">{{this.price}}</p>
             </div>
-            {{else}}
-            <h1>Không có sản phẩm</h1>
-            {{/each}}
+            <div class="card-footer">
+                {{#each imageProducts}}
+                <img src="/img/products/{{this}}" data-img="{{this}}" alt="" class="card-img-footer">
+                {{/each}}
+            </div>
         </div>
+        {{else}}
+        <h1>Không có sản phẩm</h1>
+        {{/each}}
+    </div>
+    {{#if pages}}
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item {{setDSBbtn currentPage 1}}">
+                <a class="page-link" href="?page={{pagination currentPage -1}}">Previous</a>
+            </li>
+            {{#each (renderPage pages currentPage)}}
+            <li class="page-item {{this.active}}">
+                <a href="?page={{this.page}}" class="page-link">{{this.page}}</a>
+            </li>
+            {{/each}}
+            <li class="page-item {{setDSBbtn currentPage pages}}">
+                <a class="page-link" href="?page={{pagination currentPage 1}}">Next</a>
+            </li>
+        </ul>
+    </nav>
+    {{/if}}
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const imgFooter = [...document.querySelectorAll('.card-img-footer')]
+        imgFooter.map(img => {
+            img.onmouseenter = (e) => {
+                const card = e.target.offsetParent
+                card.querySelector('.card-img-top').src = e.target.src
+            }
+        })
+
+        const prices = [...document.querySelectorAll('.card-text')]
+        prices.map(price => {
+            price.innerText = price.innerText + ' đ'
+        })
+
+
+    })
+</script>

@@ -60,6 +60,7 @@
                                     <span>+</span></pcl>
                             </div>
                             <div class="d-none">
+                                {{!-- <input type="text" name="_id" value="{{this._id}}" class="hide"> --}}
                                 <input type="text" name="slug" value="{{this.slug}}" class="hide">
                                 <input type="text" name="color" value="{{this.color}}" class="hide">
                                 <input type="text" name="size" value="{{this.size}}" class="hide">
@@ -71,7 +72,7 @@
                         <h5>Chưa có sản phẩm nào</h5>
                         {{/each}}
                     </ul>
-                    <button type="submit" class="btn btn-dark">Thanh toán</button>
+                    <a href="/me/products/cart-list" class="btn btn-dark">Thanh toán</a>
                 </form>
             </div>
             <div class="menu_setting-dropdown">

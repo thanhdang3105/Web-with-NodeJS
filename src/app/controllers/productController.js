@@ -11,18 +11,36 @@ const {
 class ProductController {
 
     index(req, res, next) {
-        Products.find({})
-            .then(products => {
-                const img = mutipleMongoosetoObject(products).map(Products => {
-                    return Products.imageProducts[0]
-                })
-                res.render('products/homeProducts', {
-                    products: mutipleMongoosetoObject(products).map((product,index) => {
-                        product.img = img[index]
-                        return product
-                    }),
-                }) 
-            })
+        let perPage = 24 // số lượng sản phẩm xuất hiện trên 1 page
+        let page = req.query.page || 1
+
+        Products
+            .find({}) // find tất cả các data
+            .skip((perPage * page) - perPage) // Trong page đầu tiên sẽ bỏ qua giá trị là 0
+            .limit(perPage)
+            .exec((err, products) => {
+                Products.countDocuments((err, count) => { // đếm để tính có bao nhiêu trang
+                    if (err) return next(err);
+
+                    let pages = Math.ceil(count / perPage)
+
+                    const img = mutipleMongoosetoObject(products).map(Products => {
+                        return Products.imageProducts[0]
+                    })
+
+                    res.render('products/homeProducts', {
+                        products: mutipleMongoosetoObject(products).map((product, index) => {
+                            if (product.imageProducts.length > 3) {
+                                product.imageProducts.length = 3
+                            }
+                            product.img = img[index]
+                            return product
+                        }),
+                        currentPage: page, // page hiện tại
+                        pages, // tổng số các page
+                    }) // Trả về dữ liệu các sản phẩm theo định dạng như JSON, XML,...
+                });
+            });
     }
 
     showProducts(req, res, next) {
@@ -68,12 +86,11 @@ class ProductController {
                         data.save(err => {
                             if (err) {
                                 res.json(err)
-                            }
-                            else {
+                            } else {
                                 res.redirect('back')
                             }
                         })
-                        
+
                     } else {
                         check[0].count += 1
                         Cart.updateOne({
@@ -92,32 +109,35 @@ class ProductController {
         Cart.find({})
             .then(cart => {
                 const newCart = mutipleMongoosetoObject(cart)
-                let data 
-                newCart.map((item,index) =>{
-                    if(item.count != req.body.count[index]){
+                let data
+
+                newCart.map((item, index) => {
+                    if (item.count != req.body.count[index]) {
                         item.count = req.body.count[index]
                         data = item
                     }
                 })
                 Cart.updateOne({
-                    _id: data._id
-                },data)
-                .then(() => {
-                    res.redirect('back')
-                })
-                .catch(err => {console.log(err)})
+                        _id: data._id
+                    }, data)
+                    .then(() => {
+                        res.redirect('back')
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
             })
     }
 
 
     removeItemCart(req, res, next) {
         Cart.deleteOne({
-            _id: req.query._id,
-        })
-        .then(() => {
-            res.redirect('back')
-        })
-        .catch(next)
+                _id: req.query._id,
+            })
+            .then(() => {
+                res.redirect('back')
+            })
+            .catch(next)
     }
 
 }

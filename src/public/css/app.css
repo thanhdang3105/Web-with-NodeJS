@@ -233,6 +233,44 @@ nav.navbar_header {
         color: black;
         font-weight: bold; }
 
+.All_products {
+  width: 100%;
+  text-align: center;
+  margin: 2.5rem auto 2rem; }
+  .All_products .listProducts_All {
+    flex-wrap: wrap;
+    gap: 2rem;
+    text-align: left;
+    margin-bottom: 2rem; }
+    .All_products .listProducts_All .card {
+      flex: calc(25% - 1.5rem) 0 0;
+      border: none; }
+      .All_products .listProducts_All .card .card-img-top {
+        width: 255px;
+        height: 280px;
+        object-fit: contain;
+        object-position: center; }
+      .All_products .listProducts_All .card .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: black; }
+      .All_products .listProducts_All .card .card-text {
+        font-size: 1rem;
+        color: #ff5050;
+        font-weight: 600; }
+      .All_products .listProducts_All .card .card-title:hover {
+        color: #888; }
+      .All_products .listProducts_All .card .card-footer {
+        display: flex;
+        gap: 5px;
+        flex-wrap: nowrap;
+        overflow: hidden; }
+        .All_products .listProducts_All .card .card-footer .card-img-footer {
+          width: 60px;
+          height: 60px;
+          object-fit: contain;
+          object-position: center; }
+
 .newArrival_products {
   width: 100%;
   text-align: center;
@@ -267,7 +305,7 @@ nav.navbar_header {
         color: #888; }
       .newArrival_products .listProducts_newArrival .card .card-footer {
         display: flex;
-        gap: 25px;
+        gap: 5px;
         flex-wrap: nowrap;
         overflow: hidden; }
         .newArrival_products .listProducts_newArrival .card .card-footer .card-img-footer {

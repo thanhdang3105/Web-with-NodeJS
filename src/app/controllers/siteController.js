@@ -9,13 +9,18 @@ class SiteController {
         Products.find({})
             .then(products => {
                 const img = mutipleMongoosetoObject(products).map(Products => {
-                    return Products.imageProducts[0]
+                         return Products.imageProducts[0]
                 })
+                const newArrival = mutipleMongoosetoObject(products).map((product,index) => {
+                    if(product.imageProducts.length > 3) {
+                        product.imageProducts.length = 3
+                    }
+                    product.img = img[index]
+                    return product
+                })
+                newArrival.length = 8
                 res.render('home', {
-                    products: mutipleMongoosetoObject(products).map((product,index) => {
-                        product.img = img[index]
-                        return product
-                    }),
+                    products: newArrival,
                 }) 
             })
             .catch(next)

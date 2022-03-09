@@ -9,7 +9,7 @@ router.post('/cart', productController.updateCart)
 
 router.get('/:slug',productController.showProducts)
 
-router.post('/:slug',productController.Cart)
+router.post('/addCart/:slug',productController.Cart)
 
 router.get('/',productController.index)
 

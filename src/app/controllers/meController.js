@@ -15,6 +15,10 @@ class MeController {
 
     }
 
+    cartList(req, res, next) {
+        res.render('me/cartList')
+    }
+
     listProducts(req, res, next) {
         Products.find({})
             .then(products => {

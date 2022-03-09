@@ -2,7 +2,7 @@
     <a href="/">Trang chủ</a>/<a href="/products">Sản phẩm</a>/<p style="color:#555">{{products.name}}</p>
 </div>
 <div class="container mt-5">
-    <form method="post" action="/products/{{products.slug}}" class="productsBody">
+    <form method="post" action="/products/addCart/{{products.slug}}" class="productsBody">
         <div class="slide_imgProducts">
             <div class="slide_column">
                 <a class="oi oi-chevron-top"></a>
@@ -45,6 +45,8 @@
                 {{/each}}
             </ul>
             <button type="submit" class="btn btn-dark addCartProducts">Thêm vào giỏ hàng</button>
+            <h4>Mô tả sản phẩm:</h4>
+            <p>{{products.description}}</p>
         </div>
     </form>
     <div class="store-policy">
