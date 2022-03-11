@@ -9,6 +9,8 @@ router.get('/products/list-products', meController.listProducts)
 
 router.get('/products/cart-list', meController.cartList)
 
+router.post('/products/cart-list', meController.payment)
+
 router.get('/products/:id/edit', meController.edit)
 
 router.put('/products/:id', meController.update)

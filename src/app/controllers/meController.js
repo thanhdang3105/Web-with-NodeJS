@@ -1,4 +1,5 @@
 const Products = require('../models/Products')
+const Carts = require('../models/Cart')
 const TypeProducts = require('../models/TypeProducts')
 const formidable = require('formidable')
 const path = require('path')
@@ -16,7 +17,15 @@ class MeController {
     }
 
     cartList(req, res, next) {
-        res.render('me/cartList')
+        Carts.find({})
+            .then(() => {
+                res.render('me/cartList')
+            })
+            .catch(next)
+    }
+
+    payment(req, res, next) {
+        res.json(req.body)
     }
 
     listProducts(req, res, next) {

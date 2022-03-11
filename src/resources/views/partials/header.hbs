@@ -57,7 +57,7 @@
                                 <span class="item_type">{{this.color}} / {{this.size}}</span>
                                 <span class="item_price">{{this.price}} đ</span>
                                 <p class="item_count"><span>-</span> <strong>{{this.count}}</strong>
-                                    <span>+</span></pcl>
+                                    <span>+</span></p>
                             </div>
                             <div class="d-none">
                                 {{!-- <input type="text" name="_id" value="{{this._id}}" class="hide"> --}}
@@ -108,7 +108,7 @@
     }
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('.cartBox')
-        const listCart = [...document.querySelectorAll('.cart_item')]
+        const listCart = [...document.querySelectorAll('.cartBox .cart_item')]
         listCart.map(item => {
             const equal = item.querySelectorAll('p span')
             let count = item.querySelector('p strong')

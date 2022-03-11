@@ -1,48 +1,93 @@
-<div class="form_getInformation">
-    <form>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="inputEmail4">Email</label>
-      <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+<form method="post" action="" class="container Cart_list">
+  <div class="infomation_form">
+    <h1>Thông tin giao hàng</h1>
+    <p>Bạn đã có tài khoản? <a href="/me/user">Đăng nhập</a></p>
+    <div class="form-group">
+      <input type="text" class="form-control" name="Name" placeholder="Họ và tên">
     </div>
-    <div class="form-group col-md-6">
-      <label for="inputPassword4">Password</label>
-      <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+    <div class="form-group">
+      <input type="tel" class="form-control" name="Phone" placeholder="Điện thoại">
     </div>
+    <div class="form-group">
+      <input type="text" class="form-control" name="Address" placeholder="Địa chỉ">
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <select id="inputState" class="form-control">
+          <option selected>Chọn tỉnh / thành</option>
+          <option>...</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <select id="inputState" class="form-control">
+          <option selected>Chọn quận / huyện</option>
+          <option>...</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <select id="inputState" class="form-control">
+          <option selected>Chọn phường / xã </option>
+          <option>...</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-group shipper">
+      <div class="input-group-prepend">
+        <div class="input-group-text">
+           <input type="radio" aria-label="Radio button for following text input" name="CheckShip" value="COD" checked>
+           </div>
+      <input type="text" class="form-control" aria-label="Text input with radio button" value="Thanh toán nhận hàng (COD)" disabled>
+      </div>
+      <div class="input-group-prepend">
+        <div class="input-group-text">
+           <input type="radio" aria-label="Radio button for following text input" name="CheckShip" value="MOMO">
+           </div>
+      <input type="text" class="form-control" aria-label="Text input with radio button" value="Ví điện tử Momo" disabled>
+      </div>
+      <div class="input-group-prepend">
+        <div class="input-group-text">
+           <input type="radio" aria-label="Radio button for following text input" name="CheckShip" value="BANKING">
+           </div>
+      <input type="text" class="form-control" aria-label="Text input with radio button" value="Chuyển khoản ngân hàng" disabled>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Hoàn tất đơn hàng</button>
   </div>
-  <div class="form-group">
-    <label for="inputAddress">Address</label>
-    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+  <div class="form_carlist">
+    <h3>Giỏ hàng</h3>
+    <ul class="cart_list">
+      {{#each itemsCart}}
+      <li class="cart_item">
+        <a href="/products/{{this.slug}}" class="cart_item-img">
+          <img src="/img/products/{{this.img}}" alt="img" class="item_img">
+        </a>
+        <div class="cart_item-info">
+          <a href="/products/{{this.slug}}" class="item_name">{{this.name}}</a>
+          <span class="item_type">{{this.color}} / {{this.size}}</span>
+          <span class="item_price"><strong>{{this.price}}</strong> đ</span>
+          <p class="item_count"><strong>{{this.count}}</strong>
+            </p>
+        </div>
+        <div class="d-none">
+          <input type="text" name="id" value="{{this._id}}" class="hide">
+        </div>
+        <a onclick="removeCart('{{this._id}}')" style="color:black" class="oi oi-trash mr-3"></a>
+      </li>
+      {{else}}
+      <h5>Chưa có sản phẩm nào</h5>
+      {{/each}}
+    </ul>
+    <p class="total_price">Thành tiền: <strong>1231456</strong></p>
   </div>
-  <div class="form-group">
-    <label for="inputAddress2">Address 2</label>
-    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="inputCity">City</label>
-      <input type="text" class="form-control" id="inputCity">
-    </div>
-    <div class="form-group col-md-4">
-      <label for="inputState">State</label>
-      <select id="inputState" class="form-control">
-        <option selected>Choose...</option>
-        <option>...</option>
-      </select>
-    </div>
-    <div class="form-group col-md-2">
-      <label for="inputZip">Zip</label>
-      <input type="text" class="form-control" id="inputZip">
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="gridCheck">
-      <label class="form-check-label" for="gridCheck">
-        Check me out
-      </label>
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary">Sign in</button>
 </form>
-</div>
+
+<script>
+    const priceItem = [...document.querySelectorAll('.form_carlist .item_price strong')]
+    const totalPrice = document.querySelector('.form_carlist .total_price strong')
+        var total = 0
+    priceItem.map(price => {
+        total = total + Number(price.innerText.split(',').join(''))
+    })
+    totalPrice.innerText = total.toLocaleString('en-gb') +' đ'
+
+</script>

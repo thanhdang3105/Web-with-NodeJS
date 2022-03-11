@@ -110,13 +110,15 @@ class ProductController {
             .then(cart => {
                 const newCart = mutipleMongoosetoObject(cart)
                 let data
-
                 newCart.map((item, index) => {
+                    console.log(req.body.count[index])
                     if (item.count != req.body.count[index]) {
                         item.count = req.body.count[index]
                         data = item
                     }
                 })
+
+
                 Cart.updateOne({
                         _id: data._id
                     }, data)

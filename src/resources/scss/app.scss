@@ -704,3 +704,67 @@ nav.navbar_header {
         }
     }
 }
+
+
+// Cart List 
+.Cart_list{
+    display: flex;
+    gap: 25px;
+    margin: 1.5rem auto;
+    .infomation_form{
+        width:50%;
+        .shipper{
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+    }
+    .form_carlist{
+        width: 50%;
+        .cart_list{
+            list-style: none;
+            height: 70vh;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 0 1rem;
+            .cart_item{
+                display: flex;
+                height: 20%;
+                gap: 20px;
+                border-bottom: 1px solid rgb(214, 214, 214);
+                margin-bottom: 1rem;
+                padding-bottom:0.5rem;
+                .cart_item-img{
+                    width: 25%;
+                    height: 100%;
+                    .item_img{
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        object-position: center;
+                    }
+                }
+                .cart_item-info{
+                    display: flex;
+                    align-items: right;
+                    justify-content: space-around;
+                    flex-direction:column;
+                    flex:1;
+                    .item_name{
+                        color: #000000;
+                        font-size: 1.6rem;
+                    }
+                    .item_price{
+                        font-size: 1.2rem
+                    }
+                }
+            }
+        }
+        .total_price{
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.6rem;
+
+        }
+    }
+}
