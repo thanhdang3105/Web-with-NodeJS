@@ -1,7 +1,7 @@
 <div class="body_accountForm">
     <div class="container form_account">
-        <div class="form_box disabled">
-            <form action="" method="post" class="form_login">
+        <div class="form_box">
+            <form action="/me/account" method="post" class="form_login">
                 <div class="heading_box">
                     <h2 class="header">Đăng nhập</h2>
                     <button type="button" class="btn btn-primary btn_changeRegister">Đăng ký</button>
@@ -12,14 +12,14 @@
                 </div>
                 <div class="form-group">
                     <label for="accountPwd">Mật khẩu</label>
-                    <input type="password" class="form-control" name="accountPwd" placeholder="Mật khẩu" required>
-                <span class="errorPwd"></span>
+                    <input type="password" class="form-control"  oninput="removeIvalid(this)" id="accountPwd" placeholder="Mật khẩu" required>
+                    <span class="errorText"></span>
                 </div>
                 <button type="submit" class="btn btn-primary">Đăng nhập</button>
             </form>
         </div>
-        <div class="form_box">
-            <form action="" method="post" class="form_register">
+        <div class="form_box disabled">
+            <form action="/me/account" method="post" name="register" class="form_register">
                 <div class="heading_box">
                     <h2 class="header">Đăng ký</h2>
                     <button type="button" class="btn btn-primary btn_changeLogin">Đăng nhập</button>
@@ -45,17 +45,19 @@
                 </div>
                 <div class="form-group">
                     <label for="accountName">Tên tài khoản</label>
-                    <input type="text" class="form-control" name="accountName" placeholder="Tên tài khoản" required>
+                    <input type="text" class="form-control" oninput="removeIvalid(this)" name="accountName"
+                        placeholder="Tên tài khoản" required>
+                    <span class="errorText"></span>
                 </div>
                 <div class="form-group">
                     <label for="accountPwd">Mật khẩu</label>
-                    <input type="password" class="form-control" name="accountPwd" placeholder="Mật khẩu" required>
+                    <input type="password" class="form-control" name="password" placeholder="Mật khẩu" required>
                 </div>
                 <div class="form-group">
                     <label for="accountPwd2">Nhập lại mật khẩu</label>
-                    <input type="password" class="form-control" id="accountPwd2" placeholder="Nhập lại mật khẩu"
-                        required>
-                    <span class="errorPwd"></span>
+                    <input type="password" oninput="removeIvalid(this)" class="form-control" id="accountPwd2"
+                        placeholder="Nhập lại mật khẩu" required>
+                    <span class="errorText"></span>
                 </div>
                 <button type="submit" class="btn btn-primary">Đăng ký</button>
             </form>
@@ -64,10 +66,19 @@
 </div>
 
 <script>
+
+    function removeIvalid(element) {
+        const ivalid = element.parentElement.querySelector('span').innerText
+        if (ivalid !== '') {
+            element.parentElement.querySelector('span').innerText = ''
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
+
         const formLogin = document.querySelector('.form_login')
-        const formRegister = document.querySelector('.form_register')
-        const pwd = formRegister.querySelector('input[name="accountPwd"]')
+        const formRegister = document.forms['register']
+        const pwd = formRegister.querySelector('input[name="password"]')
         const pwd2 = formRegister.querySelector('input[id="accountPwd2"]')
         document.addEventListener("click", function (e) {
             if (e.target.classList.contains('btn_changeLogin')) {
@@ -79,22 +90,31 @@
                 formLogin.parentElement.classList.add('disabled')
             }
         })
+
         formRegister.onsubmit = function (e) {
-            e.preventDefault()
-            if (pwd.value === pwd2.value) {
-                this.submit()
+            e.preventDefault();
+            const data = {
+                accountName: this.querySelector('input[name="accountName"]').value,
+                password: pwd.value,
+                firstName: this.querySelector('input[name="firstName"]').value,
+                lastName: this.querySelector('input[name="lastName"]').value,
+                address: this.querySelector('input[name="address"]').value,
+                phoneNumber: this.querySelector('input[name="phoneNumber"]').value
             }
-            else {
-                this.querySelector('.errorPwd').innerText = 'Mật khẩu không khớp vui lòng nhập lại!'
-            }
-        }
-        pwd2.oninput = function () {
-            formRegister.querySelector('.errorPwd').innerText = ''
+            fetchData('register', data, this)
         }
 
         formLogin.onsubmit = function (e) {
             e.preventDefault()
-            fetch('http://localhost:3000/me/user', {
+            const data = {
+                accountName: this.querySelector('input[name="accountName"]').value,
+                password: this.querySelector('input[id="accountPwd"]').value
+            }
+            fetchData('login', data, this)
+        }
+
+        function fetchData(auth, data,form) {
+            fetch(`http://localhost:3000/me/checkAccount?auth=${auth}`, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, *cors, same-origin
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -105,17 +125,28 @@
                 },
                 redirect: 'follow', // manual, *follow, error
                 referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({
-                    name: this.querySelector('input[name="accountName"]').value,
-                    pwd: this.querySelector('input[name="accountPwd"]').value
-                })
+                body: JSON.stringify(data)
             })
                 .then(res => res.json())
                 .then(res => {
                     if(!res){
-                        this.querySelector('.errorPwd').innerText = 'Tài khoản không tồn tại!'
+                        if(auth === 'login'){
+                            form.querySelector('span').innerText = 'Sai tên tài khoản hoặc mật khẩu !'
+                        }
+                        else{
+                            form.submit()
+                        }
+                    }
+                    else{
+                        if(auth === 'login'){
+                            form.submit()
+                        }
+                        else{
+                            form.querySelector('input[name="accountName"]').parentElement.querySelector('span').innerText = 'Tài khoản đã tồn tại !'
+                        }
                     }
                 })
+                .catch(() => alert('loi'))
         }
     })
 </script>

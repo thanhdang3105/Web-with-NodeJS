@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 
 const User = new Schema({
-    name: {
+    accountName: {
         type: String,
         required: true,
         unique: true,
@@ -13,6 +13,19 @@ const User = new Schema({
         type: String,
         required: true,
     },
+    firstName:{
+        type: String,
+        required: true,
+    },
+    lastName:{
+        type: String,
+    },
+    phoneNumber: {
+        type: Number,
+    },
+    address: {
+        type: String,
+    }
 })
 
 module.exports = mongoose.model('User', User)

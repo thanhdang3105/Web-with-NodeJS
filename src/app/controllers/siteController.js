@@ -26,11 +26,6 @@ class SiteController {
             .catch(next)
     }
 
-    // [Get] /acount
-    acount(req, res, next) {
-        res.send('trang quản lý tài khoản')
-    }
-
     
 }
 

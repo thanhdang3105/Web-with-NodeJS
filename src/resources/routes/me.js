@@ -23,7 +23,11 @@ router.post('/products', meController.stored)
 
 router.get('/user', meController.login)
 
-router.post('/user', meController.checkLogin)
+router.post('/user', meController.register)
+
+router.post('/checkAccount', meController.checkAccount)
+
+router.post('/account', meController.acount)
 
 router.get('/', meController.index)
 

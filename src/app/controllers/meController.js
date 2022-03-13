@@ -76,7 +76,7 @@ class MeController {
         });
         //Tiến hành parse form
         form.parse(req, function (err, fields, files) {
-            var imageProducts 
+            var imageProducts
             if (setImageProducts(files)) {
                 if (Array.isArray(setImageProducts(files))) {
                     imageProducts = [...fields.imageProducts.split(','), ...setImageProducts(files)]
@@ -87,63 +87,63 @@ class MeController {
                 imageProducts = [...fields.imageProducts.split(',')]
             }
             TypeProducts.find({
-                type: fields.type
-            })
-            .then(type => {
-                fields.imageProducts = imageProducts
-                if (type.length == 0) {
-                    const typeProducts = new TypeProducts({
-                        type: fields.type,
-                        miniType: [fields.miniType]
-                    })
-                    typeProducts.save(err => {
-                        if (err) {
-                            res.json(err)
-                        } else {
-                            next()
-                        }
-                    })
-                    Products.updateOne({
-                        _id: req.params.id
-                    }, fields)
-                    .then(() => {
-                        res.redirect('/me/products/list-products')
-                    })
-                    .catch(next)
-                } else if (type[0].miniType.includes(fields.miniType)) {
-                    Products.updateOne({
-                        _id: req.params.id
-                    }, fields)
-                    .then(() => {
-                        res.redirect('/me/products/list-products')
-                    })
-                    .catch(next)
-                } else {
-                    Products.updateOne({
-                        _id: req.params.id
-                    }, fields)
-                    .then(() => {
-                        res.redirect('/me/products/list-products')
-                    })
-                    .catch(next)
-                    const newMiniType = [...type[0].miniType, fields.miniType]
-                    TypeProducts.updateOne({
-                        type: fields.type
-                    }, {
-                        type: fields.type,
-                        miniType: newMiniType
-                    })
-                    .then(() => {
-                        res.redirect('/me/products/list-products')
-                    })
-                    .catch(err => {
-                        res.json(err)
-                    })
-                }
-            })
-            .catch(()=>{
-                console.log('loi rồi')
-            })
+                    type: fields.type
+                })
+                .then(type => {
+                    fields.imageProducts = imageProducts
+                    if (type.length == 0) {
+                        const typeProducts = new TypeProducts({
+                            type: fields.type,
+                            miniType: [fields.miniType]
+                        })
+                        typeProducts.save(err => {
+                            if (err) {
+                                res.json(err)
+                            } else {
+                                next()
+                            }
+                        })
+                        Products.updateOne({
+                                _id: req.params.id
+                            }, fields)
+                            .then(() => {
+                                res.redirect('/me/products/list-products')
+                            })
+                            .catch(next)
+                    } else if (type[0].miniType.includes(fields.miniType)) {
+                        Products.updateOne({
+                                _id: req.params.id
+                            }, fields)
+                            .then(() => {
+                                res.redirect('/me/products/list-products')
+                            })
+                            .catch(next)
+                    } else {
+                        Products.updateOne({
+                                _id: req.params.id
+                            }, fields)
+                            .then(() => {
+                                res.redirect('/me/products/list-products')
+                            })
+                            .catch(next)
+                        const newMiniType = [...type[0].miniType, fields.miniType]
+                        TypeProducts.updateOne({
+                                type: fields.type
+                            }, {
+                                type: fields.type,
+                                miniType: newMiniType
+                            })
+                            .then(() => {
+                                res.redirect('/me/products/list-products')
+                            })
+                            .catch(err => {
+                                res.json(err)
+                            })
+                    }
+                })
+                .catch(() => {
+                    console.log('loi rồi')
+                })
         })
 
         form.on('fileBegin', function (name, file) {
@@ -251,18 +251,56 @@ class MeController {
         })
     }
 
-    login(req, res, next){
+    login(req, res, next) {
         Products.find({})
-            .then(products =>{
-                res.render('me/login',
-                {products: mutipleMongoosetoObject(products)})
+            .then(products => {
+                res.render('me/login')
             })
     }
 
-    checkLogin(req, res, next) {
-        User.findOne({name: req.body.name})
+    register(req, res, next) {
+        res.json(req.body)
+    }
+
+    checkAccount(req, res, next) {
+        switch (req.query.auth) {
+            case 'register':
+                User.findOne({
+                        accountName: req.body.accountName
+                    })
+                    .then(user => {
+                        if(!user){
+                            const data = new User(req.body)
+                            data.save(err =>{
+                                if(!err) return next()
+                                console.log(err)
+                            })
+                        }
+                        res.json(user)
+                    })
+                    .catch(next)
+                    break
+            case 'login':
+                User.findOne({
+                    accountName: req.body.accountName,
+                    password: req.body.password
+                })
+                .then(user => {
+                    res.json(user)
+                })
+                .catch(next)
+                break
+        }
+    }
+
+    // [post] /acount
+    acount(req, res, next) {
+        User.findOne({
+                accountName: req.body.accountName
+            })
             .then(user => {
-                res.json(user)
+                res.locals.user = user._id
+                res.render('me/accountManage')
             })
             .catch(next)
     }

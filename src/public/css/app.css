@@ -550,6 +550,6 @@ nav.navbar_header {
       .body_accountForm .form_account .form_box .heading_box {
         display: flex;
         justify-content: space-between; }
-      .body_accountForm .form_account .form_box .errorPwd {
+      .body_accountForm .form_account .form_box .errorText {
         color: red;
         line-height: 2rem; }
