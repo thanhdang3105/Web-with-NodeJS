@@ -768,3 +768,22 @@ nav.navbar_header {
         }
     }
 }
+
+// form login   
+.form_account{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px auto;
+    .form_box.disabled{
+        display: none;
+    }
+
+    .form_box{
+        width: 50%;
+        .heading_box{
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}

@@ -527,3 +527,16 @@ nav.navbar_header {
       display: flex;
       justify-content: space-between;
       font-size: 1.6rem; }
+
+.form_account {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px auto; }
+  .form_account .form_box.disabled {
+    display: none; }
+  .form_account .form_box {
+    width: 50%; }
+    .form_account .form_box .heading_box {
+      display: flex;
+      justify-content: space-between; }

@@ -249,6 +249,14 @@ class MeController {
             file.filepath = path.join(localpath, 'products', file.originalFilename)
         })
     }
+
+    login(req, res, next){
+        res.render('me/login')
+    }
+
+    checkLogin(req, res, next) {
+        res.json(req.body)
+    }
 }
 
 module.exports = new MeController;

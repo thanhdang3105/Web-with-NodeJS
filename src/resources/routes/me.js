@@ -21,6 +21,10 @@ router.post('/products/removeMany', meController.removeMany)
 
 router.post('/products', meController.stored)
 
+router.get('/user', meController.login)
+
+router.post('/user', meController.checkLogin)
+
 router.get('/', meController.index)
 
 module.exports = router;
