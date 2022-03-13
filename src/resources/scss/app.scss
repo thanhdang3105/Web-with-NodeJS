@@ -770,20 +770,35 @@ nav.navbar_header {
 }
 
 // form login   
-.form_account{
+.body_accountForm{
+    background-image: url('/img/banners/banner_sale1.1.jpg');
+    background-repeat: no-repeat;
+    background-size:100%;
+    height: 100%;
+    padding: 2rem 0;
+    .form_account{ 
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px auto;
+    min-height: 50vh;
     .form_box.disabled{
         display: none;
     }
 
     .form_box{
-        width: 50%;
+        width: 70%;
+        border:1px solid rgb(184, 184, 184);
+        border-radius: 15px;
+        padding: 2rem;
+        background-color: rgba(255, 255, 255, 0.959);
         .heading_box{
             display: flex;
             justify-content: space-between;
         }
+        .errorPwd{
+            color: red;
+            line-height: 2rem;
+        }
     }
+}
 }

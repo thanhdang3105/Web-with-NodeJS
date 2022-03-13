@@ -1,59 +1,121 @@
-<div class="container form_account">
-    <div class="form_box disabled">
-        <form action="" method="post" class="form_login">
-            <div class="heading_box">
-                <h2 class="header">Đăng nhập</h2>
-                    <button type="button" class="btn btn-primary">Đăng ký</button>
-            </div>
-            <div class="form-group">
-                <label for="accountName">Tên tài khoản</label>
-                <input type="text" class="form-control" name="accountName" placeholder="Tên tài khoản" required>
-            </div>
-            <div class="form-group">
-                <label for="accountPwd">Mật khẩu</label>
-                <input type="password" class="form-control" name="accountPwd" placeholder="Mật khẩu" required>
-            </div>
-            <div class="form-check mb-2">
-                <input type="checkbox" class="form-check-input" name="saveAccount">
-                <label class="form-check-label" for="saveAccount">Check me out</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Đăng nhập</button>
-        </form>
-    </div>
-    <div class="form_box">
-        <form action="" method="post" class="form_register">
-            <h2 class="header">Đăng ký</h2>
-            <div class="row">
-                <div class="col">
-                    <label for="firstName">Họ và tên</label>
-                    <input type="text" name="firstName" class="form-control" placeholder="First name">
+<div class="body_accountForm">
+    <div class="container form_account">
+        <div class="form_box disabled">
+            <form action="" method="post" class="form_login">
+                <div class="heading_box">
+                    <h2 class="header">Đăng nhập</h2>
+                    <button type="button" class="btn btn-primary btn_changeRegister">Đăng ký</button>
                 </div>
-                <div class="col">
-                    <label style="opacity: 0;">Họ và tên</label>
-                    <input type="text" class="form-control" placeholder="Last name">
+                <div class="form-group">
+                    <label for="accountName">Tên tài khoản</label>
+                    <input type="text" class="form-control" name="accountName" placeholder="Tên tài khoản" required>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="address">Địa chỉ</label>
-                <input type="text" class="form-control" name="address" placeholder="Địa chỉ" required>
-            </div>
-            <div class="form-group">
-                <label for="phoneNumber">Số điện thoại</label>
-                <input type="text" class="form-control" name="phoneNumber" placeholder="Số điện thoại" required>
-            </div>
-            <div class="form-group">
-                <label for="accountName">Tên tài khoản</label>
-                <input type="text" class="form-control" name="accountName" placeholder="Tên tài khoản" required>
-            </div>
-            <div class="form-group">
-                <label for="accountPwd">Mật khẩu</label>
-                <input type="password" class="form-control" name="accountPwd" placeholder="Mật khẩu" required>
-            </div>
-            <div class="form-group">
-                <label for="accountPwd2">Nhập lại mật khẩu</label>
-                <input type="password" class="form-control" placeholder="Nhập lại mật khẩu" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+                <div class="form-group">
+                    <label for="accountPwd">Mật khẩu</label>
+                    <input type="password" class="form-control" name="accountPwd" placeholder="Mật khẩu" required>
+                <span class="errorPwd"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            </form>
+        </div>
+        <div class="form_box">
+            <form action="" method="post" class="form_register">
+                <div class="heading_box">
+                    <h2 class="header">Đăng ký</h2>
+                    <button type="button" class="btn btn-primary btn_changeLogin">Đăng nhập</button>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="firstName">Họ và tên</label>
+                        <input type="text" name="firstName" class="form-control" placeholder="First name">
+                    </div>
+                    <div class="col">
+                        <label style="opacity: 0;">Họ và tên</label>
+                        <input type="text" name="lastName" class="form-control" placeholder="Last name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Địa chỉ</label>
+                    <input type="text" class="form-control" name="address" placeholder="Địa chỉ" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Số điện thoại</label>
+                    <input type="text" pattern="[0-9]{10}" class="form-control" name="phoneNumber"
+                        placeholder="Số điện thoại" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountName">Tên tài khoản</label>
+                    <input type="text" class="form-control" name="accountName" placeholder="Tên tài khoản" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountPwd">Mật khẩu</label>
+                    <input type="password" class="form-control" name="accountPwd" placeholder="Mật khẩu" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountPwd2">Nhập lại mật khẩu</label>
+                    <input type="password" class="form-control" id="accountPwd2" placeholder="Nhập lại mật khẩu"
+                        required>
+                    <span class="errorPwd"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng ký</button>
+            </form>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const formLogin = document.querySelector('.form_login')
+        const formRegister = document.querySelector('.form_register')
+        const pwd = formRegister.querySelector('input[name="accountPwd"]')
+        const pwd2 = formRegister.querySelector('input[id="accountPwd2"]')
+        document.addEventListener("click", function (e) {
+            if (e.target.classList.contains('btn_changeLogin')) {
+                formLogin.parentElement.classList.remove('disabled')
+                formRegister.parentElement.classList.add('disabled')
+            }
+            if (e.target.classList.contains('btn_changeRegister')) {
+                formRegister.parentElement.classList.remove('disabled')
+                formLogin.parentElement.classList.add('disabled')
+            }
+        })
+        formRegister.onsubmit = function (e) {
+            e.preventDefault()
+            if (pwd.value === pwd2.value) {
+                this.submit()
+            }
+            else {
+                this.querySelector('.errorPwd').innerText = 'Mật khẩu không khớp vui lòng nhập lại!'
+            }
+        }
+        pwd2.oninput = function () {
+            formRegister.querySelector('.errorPwd').innerText = ''
+        }
+
+        formLogin.onsubmit = function (e) {
+            e.preventDefault()
+            fetch('http://localhost:3000/me/user', {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({
+                    name: this.querySelector('input[name="accountName"]').value,
+                    pwd: this.querySelector('input[name="accountPwd"]').value
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if(!res){
+                        this.querySelector('.errorPwd').innerText = 'Tài khoản không tồn tại!'
+                    }
+                })
+        }
+    })
+</script>

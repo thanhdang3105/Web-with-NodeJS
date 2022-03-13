@@ -1,6 +1,7 @@
 const Products = require('../models/Products')
 const Carts = require('../models/Cart')
 const TypeProducts = require('../models/TypeProducts')
+const User = require('../models/User')
 const formidable = require('formidable')
 const path = require('path')
 
@@ -251,11 +252,19 @@ class MeController {
     }
 
     login(req, res, next){
-        res.render('me/login')
+        Products.find({})
+            .then(products =>{
+                res.render('me/login',
+                {products: mutipleMongoosetoObject(products)})
+            })
     }
 
     checkLogin(req, res, next) {
-        res.json(req.body)
+        User.findOne({name: req.body.name})
+            .then(user => {
+                res.json(user)
+            })
+            .catch(next)
     }
 }
 

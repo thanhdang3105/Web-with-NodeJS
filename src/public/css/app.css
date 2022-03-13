@@ -528,15 +528,28 @@ nav.navbar_header {
       justify-content: space-between;
       font-size: 1.6rem; }
 
-.form_account {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 5px auto; }
-  .form_account .form_box.disabled {
-    display: none; }
-  .form_account .form_box {
-    width: 50%; }
-    .form_account .form_box .heading_box {
-      display: flex;
-      justify-content: space-between; }
+.body_accountForm {
+  background-image: url("/img/banners/banner_sale1.1.jpg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height: 100%;
+  padding: 2rem 0; }
+  .body_accountForm .form_account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh; }
+    .body_accountForm .form_account .form_box.disabled {
+      display: none; }
+    .body_accountForm .form_account .form_box {
+      width: 70%;
+      border: 1px solid #b8b8b8;
+      border-radius: 15px;
+      padding: 2rem;
+      background-color: rgba(255, 255, 255, 0.959); }
+      .body_accountForm .form_account .form_box .heading_box {
+        display: flex;
+        justify-content: space-between; }
+      .body_accountForm .form_account .form_box .errorPwd {
+        color: red;
+        line-height: 2rem; }
