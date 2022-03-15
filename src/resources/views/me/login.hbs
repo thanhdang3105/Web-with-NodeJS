@@ -1,6 +1,6 @@
 <div class="body_accountForm">
     <div class="container form_account">
-        <div class="form_box">
+        <div class="form_box {{form.form_login}}">
             <form action="/me/account" method="post" class="form_login">
                 <div class="heading_box">
                     <h2 class="header">Đăng nhập</h2>
@@ -18,7 +18,7 @@
                 <button type="submit" class="btn btn-primary">Đăng nhập</button>
             </form>
         </div>
-        <div class="form_box disabled">
+        <div class="form_box {{form.form_register}}">
             <form action="/me/account" method="post" name="register" class="form_register">
                 <div class="heading_box">
                     <h2 class="header">Đăng ký</h2>

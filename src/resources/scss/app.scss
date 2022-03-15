@@ -802,3 +802,46 @@ nav.navbar_header {
     }
 }
 }
+
+// Acount Manage
+.accountManage{
+    display: flex;
+    gap:40px;
+    .list_manage{
+        width: 20%;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        .item_list{
+            cursor: pointer;
+            color:#999;
+        }
+        .item_list.active{
+            color:#000;
+            font-weight: bold;
+        }
+        button{
+            width: 40%;
+        }
+    }
+    .info_account{
+        flex: 1;
+        .unlogged{
+        width: 30%;
+        height:50.2vh;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        a{
+            width: 30%;
+            // margin: 0 auto;
+        }
+    }
+    }
+    
+}
+

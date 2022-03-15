@@ -13,7 +13,6 @@ class ProductController {
     index(req, res, next) {
         let perPage = 24 // số lượng sản phẩm xuất hiện trên 1 page
         let page = req.query.page || 1
-
         Products
             .find({}) // find tất cả các data
             .skip((perPage * page) - perPage) // Trong page đầu tiên sẽ bỏ qua giá trị là 0

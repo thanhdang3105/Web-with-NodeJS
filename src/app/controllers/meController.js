@@ -254,12 +254,18 @@ class MeController {
     login(req, res, next) {
         Products.find({})
             .then(products => {
-                res.render('me/login')
+                var form = {
+                    form_register: 'disabled',
+                }
+                if (req.query.register === '') {
+                    form = {
+                        form_login: 'disabled',
+                    }
+                }
+                res.render('me/login', {
+                    form: form
+                })
             })
-    }
-
-    register(req, res, next) {
-        res.json(req.body)
     }
 
     checkAccount(req, res, next) {
@@ -269,41 +275,62 @@ class MeController {
                         accountName: req.body.accountName
                     })
                     .then(user => {
-                        if(!user){
+                        if (!user) {
                             const data = new User(req.body)
-                            data.save(err =>{
-                                if(!err) return next()
+                            data.save(err => {
+                                if (!err) return next()
                                 console.log(err)
                             })
                         }
                         res.json(user)
                     })
                     .catch(next)
-                    break
+                break
             case 'login':
                 User.findOne({
-                    accountName: req.body.accountName,
-                    password: req.body.password
-                })
-                .then(user => {
-                    res.json(user)
-                })
-                .catch(next)
+                        accountName: req.body.accountName,
+                        password: req.body.password
+                    })
+                    .then(user => {
+                        res.json(user)
+                    })
+                    .catch(next)
                 break
         }
     }
 
-    // [post] /acount
+    // [post] /me/acount
     acount(req, res, next) {
         User.findOne({
                 accountName: req.body.accountName
             })
             .then(user => {
-                res.locals.user = user._id
-                res.render('me/accountManage')
+                var session = req.session; //initialize session variable
+                session.accountID = user._id;
+                res.render('me/accountManage', {
+                    user: mongoosetoObject(user)
+                })
             })
             .catch(next)
     }
+
+    // [get] /me/account
+    accountManage(req, res, next) {
+        User.findOne({
+                _id: req.session.accountID
+            })
+            .then(user => {
+                res.render('me/accountManage', {
+                    user: mongoosetoObject(user)
+                })
+            })
+    }
+
+    // [put] /me/user
+    updateAccount(req, res, next) {
+        res.json(req.body)
+    }
+
 }
 
 module.exports = new MeController;

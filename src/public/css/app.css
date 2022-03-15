@@ -553,3 +553,34 @@ nav.navbar_header {
       .body_accountForm .form_account .form_box .errorText {
         color: red;
         line-height: 2rem; }
+
+.accountManage {
+  display: flex;
+  gap: 40px; }
+  .accountManage .list_manage {
+    width: 20%;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; }
+    .accountManage .list_manage .item_list {
+      cursor: pointer;
+      color: #999; }
+    .accountManage .list_manage .item_list.active {
+      color: #000;
+      font-weight: bold; }
+    .accountManage .list_manage button {
+      width: 40%; }
+  .accountManage .info_account {
+    flex: 1; }
+    .accountManage .info_account .unlogged {
+      width: 30%;
+      height: 50.2vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px; }
+      .accountManage .info_account .unlogged a {
+        width: 30%; }

@@ -20,6 +20,14 @@ const User = new Schema({
     lastName:{
         type: String,
     },
+    birthday: {
+        type: Date,
+        default: ''
+    },
+    sex: {
+        type: String,
+        default: ''
+    },
     phoneNumber: {
         type: Number,
     },

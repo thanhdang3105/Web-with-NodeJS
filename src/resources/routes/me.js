@@ -3,6 +3,7 @@ const router = express.Router();
 
 const meController = require('../../app/controllers/meController');
 
+
 router.get('/products/create', meController.create)
 
 router.get('/products/list-products', meController.listProducts)
@@ -23,11 +24,13 @@ router.post('/products', meController.stored)
 
 router.get('/user', meController.login)
 
-router.post('/user', meController.register)
+router.put('/user', meController.updateAccount)
 
 router.post('/checkAccount', meController.checkAccount)
 
 router.post('/account', meController.acount)
+
+router.get('/account', meController.accountManage)
 
 router.get('/', meController.index)
 

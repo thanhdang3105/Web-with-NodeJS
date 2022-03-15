@@ -1,6 +1,10 @@
-<div class="paginationHeader">
-    <a href="/">Trang chủ</a>/<a href="/products">Sản phẩm</a>/<p style="color:#555">{{products.name}}</p>
-</div>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb d-flex justify-content-center">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="/products">Sản phẩm</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{products.name}}</li>
+    </ol>
+</nav>
 <div class="container mt-5">
     <form method="post" action="/products/addCart/{{products.slug}}" class="productsBody">
         <div class="slide_imgProducts">
@@ -167,13 +171,13 @@
         const input = document.createElement('input')
         input.classList.add('hide')
         input.setAttribute('name', name)
-        input.setAttribute('value',value ? value : document.querySelector(`${element}.active`).innerText)
+        input.setAttribute('value', value ? value : document.querySelector(`${element}.active`).innerText)
         document.querySelector(`${element}.active`).appendChild(input)
     }
-    
+
 
     chooseType('.colorProducts', 'color')
     chooseType('.sizeProducts', 'size')
 
-    addvalue('.colorProducts', 'slug',document.querySelector('.nameProdcuts').getAttribute('data-slug'))
+    addvalue('.colorProducts', 'slug', document.querySelector('.nameProdcuts').getAttribute('data-slug'))
 </script>

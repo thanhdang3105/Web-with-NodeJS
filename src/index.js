@@ -22,7 +22,6 @@ app.use(express.json())
 app.use(methodOverride('_method'))
 
 app.use(middleware)
-
 //set template engine
 app.engine('hbs', hbs.engine({
     extname: 'hbs',
