@@ -22,6 +22,8 @@ router.post('/products/removeMany', meController.removeMany)
 
 router.post('/products', meController.stored)
 
+router.get('/user/logout', meController.logout)
+
 router.get('/user', meController.login)
 
 router.put('/user', meController.updateAccount)

@@ -4,11 +4,13 @@
         <li class="item_list active">Thông tin tài khoản</li>
         <li class="item_list">Địa chỉ</li>
         <li class="item_list">Đơn hàng</li>
-        <button class="btn btn-secondary">Đăng xuất</butt>
+        {{#if user}}
+        <a href="/me/user/logout" class="btn btn-danger">Đăng xuất</a>
+        {{/if}}
     </ul>
     <div class="info_account">
         {{#if user}}
-        <div class="logged">
+        <div class="logged information">
             <h1>Thông tin tài khoản</h1>
             <form method="POST" action="/me/user?_method=put">
                 <div class="form-group">
@@ -30,13 +32,13 @@
                 <p class="mb-0">Giới tính</p>
                 <div class="form-group d-flex" style="gap:10px">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sex" value="Nam" checked>
+                        <input class="form-check-input" type="radio" name="sex" value="Nam" {{{checkSex user.sex 'Nam'}}}>
                         <label class="form-check-label">
                             Nam
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sex" value="Nữ">
+                        <input class="form-check-input" type="radio" name="sex" value="Nữ" {{{checkSex user.sex 'Nữ'}}}>
                         <label class="form-check-label">
                             Nữ
                         </label>
@@ -44,11 +46,91 @@
                 </div>
                 <div class="form-group">
                     <label for="birthday">Ngày sinh</label>
-                    <input type="date" class="form-control" name="birthday" value="{{user.birthday}}"
-                        placeholder="dd/mm/yyyy">
+                    <input type="date" class="form-control" name="birthday" value="{{user.birthday}}">
                 </div>
                 <a href="" class="d-block">Đổi mật khẩu</a>
                 <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </form>
+        </div>
+        <div class="logged address disabled">
+            <div class="list_address">
+                {{#each (setViewaddress user.address user.phoneNumber)}}
+                <form action="/me/user?_method=put&id={{@index}}" method="post" name="form_address"
+                    class="form_address">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Địa chỉ</th>
+                                <th class="controlAddress">
+                                    <span class="oi oi-pencil edit"></span>
+                                    <span class="oi oi-trash del"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="view_address">
+                            <tr>
+                                <th scope="row">{{user.firstName}} {{user.lastName}}</th>
+                            </tr>
+                            <tr>
+                                <th scope="row">Địa chỉ:</th>
+                                <td>{{this.address}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Số điện thoại:</th>
+                                <td>{{this.phoneNumber}}</td>
+                            </tr>
+                        </tbody>
+                        <tbody class="edit_address disabled">
+                            <tr>
+                                <th scope="row">{{user.firstName}} {{user.lastName}}</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <label for="address">Địa chỉ</label>
+                                        <input type="text" class="form-control" name="address" placeholder="Địa chỉ"
+                                            value="{{this.address}}" required>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <label for="phoneNumber">Số điện thoại</label>
+                                        <input type="text" pattern="[0-9]{10}" class="form-control" name="phoneNumber"
+                                            placeholder="Số điện thoại" value="{{this.phoneNumber}}" required>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button class="btn btn-primary update_address">Cập nhật</button>
+                                    <button type="button" class="btn btn-secondary close_edit">Huỷ</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+                {{/each}}
+            </div>
+            <form action="/me/user?_method=put" method="post" name="form_addAddress" class="form_addAddress">
+                <div class="add_address disabled">
+                    <div class="control_heading-add d-flex justify-content-between">
+                        <h3>Thêm địa chỉ</h3>
+                        <i class="times icon" style="cursor: pointer;"></i>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ</label>
+                        <textarea type="text" class="form-control" name="newAddress" placeholder="Địa chỉ"
+                            required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Số điện thoại</label>
+                        <input type="text" pattern="[0-9]{10}" class="form-control" name="newPhoneNumber"
+                            placeholder="Số điện thoại" required>
+                    </div>
+                </div>
+                <button class="btn btn-primary add_address">Thêm địa chỉ</button>
             </form>
         </div>
         {{else}}
@@ -61,3 +143,58 @@
         {{/if}}
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const listManage = [...document.querySelectorAll('.accountManage .list_manage .item_list')]
+        const infoBody = document.querySelector('.info_account')
+        listManage.map((item,index) => {
+            item.onclick = function() {
+                document.querySelector('.accountManage .list_manage .item_list.active').classList.remove('active');
+                item.classList.add('active')
+                switch(index) {
+                    case 0:
+                        infoBody.querySelector('.logged.information').classList.remove('disabled')
+                        infoBody.querySelector('.logged.address').classList.add('disabled')
+                        break
+                    case 1:
+                        infoBody.querySelector('.logged.information').classList.add('disabled')
+                        infoBody.querySelector('.logged.address').classList.remove('disabled')
+                        break
+                }
+            }
+        })
+        if (!document.querySelector('.info_account div').classList.contains('unlogged')) {
+            const btn_edit = [...document.querySelectorAll('.form_address span.edit')]
+            const btn_closeEdit = [...document.querySelectorAll('.form_address button.close_edit')]
+            const viewAddress = document.querySelectorAll('.view_address')
+            const editAddress = document.querySelectorAll('.edit_address')
+            const form_addAddress = document.forms['form_addAddress']
+            btn_edit.map((edit, index) => {
+                edit.onclick = (e) => {
+                    viewAddress[index].classList.toggle('disabled')
+                    editAddress[index].classList.toggle('disabled')
+                }
+            })
+
+            btn_closeEdit.map((btn, index) => {
+                btn.onclick = (e) => {
+                    viewAddress[index].classList.remove('disabled')
+                    editAddress[index].classList.add('disabled')
+                }
+            })
+
+            form_addAddress.querySelector('button.add_address').onclick = (e) => {
+                if (form_addAddress.querySelector('.add_address').classList.contains('disabled')) {
+                    e.preventDefault()
+                    form_addAddress.querySelector('.add_address').classList.remove('disabled')
+                }
+            }
+            form_addAddress.querySelector('.add_address .times.icon').onclick = () => {
+                form_addAddress.querySelector('.add_address').classList.add('disabled')
+            }
+
+
+        }
+    })
+</script>

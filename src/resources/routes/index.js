@@ -5,7 +5,7 @@ const session = require('express-session')
 
 function routes(app) {
     app.use(session({
-        secret: 'abcdefg',
+        secret: 'userId',
         resave: true,
         saveUninitialized: true,
       }))

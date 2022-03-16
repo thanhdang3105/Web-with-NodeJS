@@ -59,6 +59,32 @@ app.engine('hbs', hbs.engine({
                 }
             }
             return arr
+        },
+        setViewaddress: (address,phone) => {
+            var arr = []
+            if(address.length > 0){
+                address.map((Address, index) =>{
+                    arr.push({
+                        address: Address,
+                        phoneNumber: phone[index]
+                    })
+                })
+            }
+            else{
+                arr = {
+                    address: address,
+                    phoneNumber: phone
+                }
+            }
+            return arr
+        },
+        checkSex: (data,value) =>{
+            if(data === value){
+                return 'checked'
+            }
+            if(data === '' && value === 'Nam'){
+                return 'checked'
+            }
         }
     }
 }))

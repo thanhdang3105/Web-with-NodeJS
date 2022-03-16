@@ -251,6 +251,7 @@ class MeController {
         })
     }
 
+    //[get] /me/user
     login(req, res, next) {
         Products.find({})
             .then(products => {
@@ -266,6 +267,14 @@ class MeController {
                     form: form
                 })
             })
+    }
+
+    //[get] /me/user/logout
+    logout(req, res, next) {
+        req.session.destroy(function(err) {
+            if(err) return console.error(err)    
+            res.redirect('/me/user')
+        })
     }
 
     checkAccount(req, res, next) {
@@ -328,7 +337,32 @@ class MeController {
 
     // [put] /me/user
     updateAccount(req, res, next) {
-        res.json(req.body)
+        
+            var data = {}
+            User.findOne({_id: req.session.accountID})
+            .then(user => {
+                if(req.body.newAddress){
+                    data = {
+                        address: [...user.address,req.body.newAddress],
+                        phoneNumber: [...user.phoneNumber,req.body.newPhoneNumber]
+                    }
+                }
+                else if(req.query.id){
+                    user.address[req.query.id] = req.body.address
+                    user.phoneNumber[req.query.id] = req.body.phoneNumber
+                    data = mongoosetoObject(user)
+                }
+                else{
+                    data = req.body
+                }
+                User.updateOne({_id: user._id}, data)
+                .then(() =>{
+                    res.redirect('back')
+                })
+                .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))    
+        
     }
 
 }

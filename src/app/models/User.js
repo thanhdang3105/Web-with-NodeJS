@@ -21,7 +21,7 @@ const User = new Schema({
         type: String,
     },
     birthday: {
-        type: Date,
+        type: String,
         default: ''
     },
     sex: {
@@ -29,10 +29,10 @@ const User = new Schema({
         default: ''
     },
     phoneNumber: {
-        type: Number,
+        type: Array,
     },
     address: {
-        type: String,
+        type: Array,
     }
 })
 

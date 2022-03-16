@@ -707,60 +707,71 @@ nav.navbar_header {
 
 
 // Cart List 
-.Cart_list{
+.Cart_list {
     display: flex;
     gap: 25px;
     margin: 1.5rem auto;
-    .infomation_form{
-        width:50%;
-        .shipper{
+
+    .infomation_form {
+        width: 50%;
+
+        .shipper {
             display: flex;
             flex-direction: column;
             margin-bottom: 10px;
         }
     }
-    .form_carlist{
+
+    .form_carlist {
         width: 50%;
-        .cart_list{
+
+        .cart_list {
             list-style: none;
             height: 70vh;
             max-height: 70vh;
             overflow-y: auto;
             padding: 0 1rem;
-            .cart_item{
+
+            .cart_item {
                 display: flex;
                 height: 20%;
                 gap: 20px;
                 border-bottom: 1px solid rgb(214, 214, 214);
                 margin-bottom: 1rem;
-                padding-bottom:0.5rem;
-                .cart_item-img{
+                padding-bottom: 0.5rem;
+
+                .cart_item-img {
                     width: 25%;
                     height: 100%;
-                    .item_img{
+
+                    .item_img {
                         width: 100%;
                         height: 100%;
                         object-fit: contain;
                         object-position: center;
                     }
                 }
-                .cart_item-info{
+
+                .cart_item-info {
                     display: flex;
                     align-items: right;
                     justify-content: space-around;
-                    flex-direction:column;
-                    flex:1;
-                    .item_name{
+                    flex-direction: column;
+                    flex: 1;
+
+                    .item_name {
                         color: #000000;
                         font-size: 1.6rem;
                     }
-                    .item_price{
+
+                    .item_price {
                         font-size: 1.2rem
                     }
                 }
             }
         }
-        .total_price{
+
+        .total_price {
             display: flex;
             justify-content: space-between;
             font-size: 1.6rem;
@@ -770,78 +781,140 @@ nav.navbar_header {
 }
 
 // form login   
-.body_accountForm{
+.body_accountForm {
     background-image: url('/img/banners/banner_sale1.1.jpg');
     background-repeat: no-repeat;
-    background-size:100%;
+    background-size: 100%;
     height: 100%;
     padding: 2rem 0;
-    .form_account{ 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 50vh;
-    .form_box.disabled{
-        display: none;
-    }
 
-    .form_box{
-        width: 70%;
-        border:1px solid rgb(184, 184, 184);
-        border-radius: 15px;
-        padding: 2rem;
-        background-color: rgba(255, 255, 255, 0.959);
-        .heading_box{
-            display: flex;
-            justify-content: space-between;
+    .form_account {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 50vh;
+
+        .form_box.disabled {
+            display: none;
         }
-        .errorText{
-            color: red;
-            line-height: 2rem;
+
+        .form_box {
+            width: 70%;
+            border: 1px solid rgb(184, 184, 184);
+            border-radius: 15px;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.959);
+
+            .heading_box {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .errorText {
+                color: red;
+                line-height: 2rem;
+            }
         }
     }
-}
 }
 
 // Acount Manage
-.accountManage{
+.accountManage {
     display: flex;
-    gap:40px;
-    .list_manage{
+    gap: 40px;
+    margin: 2rem auto;
+    height: 70vh;
+
+    .list_manage {
         width: 20%;
         list-style: none;
         display: flex;
         flex-direction: column;
         gap: 15px;
-        .item_list{
+
+        .item_list {
             cursor: pointer;
-            color:#999;
+            color: #999;
+            user-select: none;
         }
-        .item_list.active{
-            color:#000;
+
+        .item_list.active {
+            color: #000;
             font-weight: bold;
         }
-        button{
+
+        a {
             width: 40%;
         }
     }
-    .info_account{
+
+    .info_account {
+        border-left: 1px solid black;
         flex: 1;
-        .unlogged{
-        width: 30%;
-        height:50.2vh;
-        margin: 0 auto;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        a{
+        align-items:center;
+        .logged.information{
+            margin: auto;
+            width: 80%;
+        }
+
+        .logged.address {
+            display: flex;
+            gap: 15px;
+            margin-left: 15px;
+            flex:1;
+            .list_address{
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+                gap: 20px;
+                flex: 1;
+                .form_address {
+                .table {
+                    .controlAddress {
+                        text-align: right;
+                        span.oi {
+                            margin: 0 0.5rem;
+                            cursor: pointer;
+                        }
+                    }
+                    .view_address{
+                        td{
+                            width:75%;
+                        }
+                    }
+                    
+                }
+            }
+            }
+            
+            .form_addAddress{
+                width: 30%;
+            }
+            .disabled {
+                display: none !important;
+            }
+        }
+
+        .logged.disabled {
+            display: none;
+        }
+
+        .unlogged {
             width: 30%;
-            // margin: 0 auto;
+            height: 50.2vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            a {
+                width: 40%;
+                // margin: 0 auto;
+            }
         }
     }
-    }
-    
-}
 
+}

@@ -101,7 +101,12 @@
                 address: this.querySelector('input[name="address"]').value,
                 phoneNumber: this.querySelector('input[name="phoneNumber"]').value
             }
-            fetchData('register', data, this)
+            if(pwd.value !== pwd2.value) {
+                pwd2.parentElement.querySelector('span').innerText = 'Mật khẩu không khớp vui lòng nhập lại!'
+            }
+            else{
+                fetchData('register', data, this)
+            }
         }
 
         formLogin.onsubmit = function (e) {

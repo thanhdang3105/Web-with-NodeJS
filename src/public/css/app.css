@@ -556,7 +556,9 @@ nav.navbar_header {
 
 .accountManage {
   display: flex;
-  gap: 40px; }
+  gap: 40px;
+  margin: 2rem auto;
+  height: 70vh; }
   .accountManage .list_manage {
     width: 20%;
     list-style: none;
@@ -565,14 +567,45 @@ nav.navbar_header {
     gap: 15px; }
     .accountManage .list_manage .item_list {
       cursor: pointer;
-      color: #999; }
+      color: #999;
+      user-select: none; }
     .accountManage .list_manage .item_list.active {
       color: #000;
       font-weight: bold; }
-    .accountManage .list_manage button {
+    .accountManage .list_manage a {
       width: 40%; }
   .accountManage .info_account {
-    flex: 1; }
+    border-left: 1px solid black;
+    flex: 1;
+    display: flex;
+    align-items: center; }
+    .accountManage .info_account .logged.information {
+      margin: auto;
+      width: 80%; }
+    .accountManage .info_account .logged.address {
+      display: flex;
+      gap: 15px;
+      margin-left: 15px;
+      flex: 1; }
+      .accountManage .info_account .logged.address .list_address {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        gap: 20px;
+        flex: 1; }
+        .accountManage .info_account .logged.address .list_address .form_address .table .controlAddress {
+          text-align: right; }
+          .accountManage .info_account .logged.address .list_address .form_address .table .controlAddress span.oi {
+            margin: 0 0.5rem;
+            cursor: pointer; }
+        .accountManage .info_account .logged.address .list_address .form_address .table .view_address td {
+          width: 75%; }
+      .accountManage .info_account .logged.address .form_addAddress {
+        width: 30%; }
+      .accountManage .info_account .logged.address .disabled {
+        display: none !important; }
+    .accountManage .info_account .logged.disabled {
+      display: none; }
     .accountManage .info_account .unlogged {
       width: 30%;
       height: 50.2vh;
@@ -583,4 +616,4 @@ nav.navbar_header {
       justify-content: center;
       gap: 10px; }
       .accountManage .info_account .unlogged a {
-        width: 30%; }
+        width: 40%; }
