@@ -28,6 +28,8 @@ router.get('/user', meController.login)
 
 router.put('/user', meController.updateAccount)
 
+router.delete('/user', meController.deleteAddress)
+
 router.post('/checkAccount', meController.checkAccount)
 
 router.post('/account', meController.acount)

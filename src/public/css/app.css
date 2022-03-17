@@ -550,9 +550,10 @@ nav.navbar_header {
       .body_accountForm .form_account .form_box .heading_box {
         display: flex;
         justify-content: space-between; }
-      .body_accountForm .form_account .form_box .errorText {
-        color: red;
-        line-height: 2rem; }
+
+.errorText {
+  color: red;
+  line-height: 2rem; }
 
 .accountManage {
   display: flex;
@@ -579,6 +580,8 @@ nav.navbar_header {
     flex: 1;
     display: flex;
     align-items: center; }
+    .accountManage .info_account .disabled {
+      display: none !important; }
     .accountManage .info_account .logged.information {
       margin: auto;
       width: 80%; }
@@ -591,6 +594,7 @@ nav.navbar_header {
         display: flex;
         flex-direction: column;
         overflow-y: auto;
+        height: 70vh;
         gap: 20px;
         flex: 1; }
         .accountManage .info_account .logged.address .list_address .form_address .table .controlAddress {
@@ -602,8 +606,6 @@ nav.navbar_header {
           width: 75%; }
       .accountManage .info_account .logged.address .form_addAddress {
         width: 30%; }
-      .accountManage .info_account .logged.address .disabled {
-        display: none !important; }
     .accountManage .info_account .logged.disabled {
       display: none; }
     .accountManage .info_account .unlogged {

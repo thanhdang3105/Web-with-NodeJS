@@ -271,12 +271,13 @@ class MeController {
 
     //[get] /me/user/logout
     logout(req, res, next) {
-        req.session.destroy(function(err) {
-            if(err) return console.error(err)    
+        req.session.destroy(function (err) {
+            if (err) return console.error(err)
             res.redirect('/me/user')
         })
     }
 
+    //[post] /me/checkAccount
     checkAccount(req, res, next) {
         switch (req.query.auth) {
             case 'register':
@@ -305,6 +306,14 @@ class MeController {
                     })
                     .catch(next)
                 break
+            case 'password':
+                User.findOne({
+                        _id: req.session.accountID,
+                        password: req.body.password
+                    })
+                    .then(user => {
+                        res.json(user)
+                    })
         }
     }
 
@@ -325,7 +334,8 @@ class MeController {
 
     // [get] /me/account
     accountManage(req, res, next) {
-        User.findOne({
+        
+            User.findOne({
                 _id: req.session.accountID
             })
             .then(user => {
@@ -337,32 +347,54 @@ class MeController {
 
     // [put] /me/user
     updateAccount(req, res, next) {
-        
-            var data = {}
-            User.findOne({_id: req.session.accountID})
+
+        var data = {}
+        User.findOne({
+                _id: req.session.accountID
+            })
             .then(user => {
-                if(req.body.newAddress){
+                if (req.body.newAddress) {
                     data = {
-                        address: [...user.address,req.body.newAddress],
-                        phoneNumber: [...user.phoneNumber,req.body.newPhoneNumber]
+                        address: [...user.address, req.body.newAddress],
+                        phoneNumber: [...user.phoneNumber, req.body.newPhoneNumber]
                     }
-                }
-                else if(req.query.id){
+                } else if (req.query.id) {
                     user.address[req.query.id] = req.body.address
                     user.phoneNumber[req.query.id] = req.body.phoneNumber
                     data = mongoosetoObject(user)
-                }
-                else{
+                } else {
                     data = req.body
                 }
-                User.updateOne({_id: user._id}, data)
-                .then(() =>{
-                    res.redirect('back')
-                })
-                .catch(err => console.log(err))
+                User.updateOne({
+                        _id: user._id
+                    }, data)
+                    .then(() => {
+                        res.redirect('back')
+                    })
+                    .catch(err => console.log(err))
             })
-            .catch(err => console.log(err))    
-        
+            .catch(err => console.log(err))
+
+    }
+
+    // [delete] /me/user
+    deleteAddress(req, res, next) {
+        User.findOne({
+                _id: req.session.accountID
+            })
+            .then(user => {
+                user.phoneNumber = user.phoneNumber.filter((phone, index) => index !== Number(req.query.id))
+                user.address = user.address.filter((address, index) => index !== Number(req.query.id))
+                const data = mongoosetoObject(user)
+                User.updateOne({
+                        _id: user._id
+                    }, data)
+                    .then(() => {
+                        res.redirect('back')
+                    })
+                    .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))
     }
 
 }

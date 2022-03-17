@@ -58,10 +58,13 @@ class ProductController {
             })
     }
 
+    //[post] /products/addCart/:slug
     Cart(req, res, next) {
-        Cart.find({})
+        if(req.session.accountID){
+            Cart.find({})
             .then(cart => {
                 if (cart.length === 0) {
+                    req.body.userId = req.session.accountID
                     req.body.slug = req.params.slug
                     req.body.count = 1
                     const data = new Cart(req.body)
@@ -71,12 +74,12 @@ class ProductController {
                     })
                 } else {
                     const check = cart.filter(item => {
-                        return item.color === req.body.color && item.size === req.body.size && item.slug === req.body.slug
+                        return item.color === req.body.color && item.size === req.body.size 
+                        && item.slug === req.body.slug && item.userId === req.session.accountID
                     })
                     if (check.length == 0) {
-                        req.body.slug = req.params.slug
-                        req.body.count = 1
                         const data = new Cart({
+                            userId: req.session.accountID,
                             slug: req.params.slug,
                             count: 1,
                             color: req.body.color,
@@ -102,6 +105,11 @@ class ProductController {
                     }
                 }
             })
+        }
+        else{
+            res.redirect('/me/user')
+        }
+        
     }
 
     updateCart(req, res, next) {

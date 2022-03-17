@@ -809,13 +809,12 @@ nav.navbar_header {
                 display: flex;
                 justify-content: space-between;
             }
-
-            .errorText {
-                color: red;
-                line-height: 2rem;
-            }
         }
     }
+}
+.errorText {
+    color: red;
+    line-height: 2rem;
 }
 
 // Acount Manage
@@ -853,6 +852,9 @@ nav.navbar_header {
         flex: 1;
         display: flex;
         align-items:center;
+        .disabled {
+            display: none !important;
+        }
         .logged.information{
             margin: auto;
             width: 80%;
@@ -867,6 +869,7 @@ nav.navbar_header {
                 display: flex;
                 flex-direction: column;
                 overflow-y: auto;
+                height: 70vh;
                 gap: 20px;
                 flex: 1;
                 .form_address {
@@ -890,9 +893,6 @@ nav.navbar_header {
             
             .form_addAddress{
                 width: 30%;
-            }
-            .disabled {
-                display: none !important;
             }
         }
 
