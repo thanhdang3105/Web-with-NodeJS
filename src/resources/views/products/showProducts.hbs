@@ -180,4 +180,72 @@
     chooseType('.sizeProducts', 'size')
 
     addvalue('.colorProducts', 'slug', document.querySelector('.nameProdcuts').getAttribute('data-slug'))
+
+    document.querySelector('form.productsBody').onsubmit = function (e) {
+        const ListCart = document.querySelector('.menu_cart button.btn_cart')
+        if (ListCart) {
+            e.preventDefault();
+            const data = new FormData(document.querySelector('form.productsBody'))
+        document.querySelector('.cartBox').classList.add('show')
+            fetch(this.action, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({
+                    slug: data.get('slug'),
+                    size: data.get('size'),
+                    color: data.get('color'),
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.name) {
+                        const li = document.createElement('li')
+                        li.classList.add('cart_item')
+                        li.innerHTML = `
+                            <a href="/products/${res.slug}" class="cart_item-img">
+                                <img src="/img/products/${res.img}" alt="img" class="item_img">
+                            </a>
+                            <div class="cart_item-info">
+                                <a href="/products/${res.slug}" class="item_name">${res.name}</a>
+                                <span class="item_type">${res.color} / ${res.size}</span>
+                                <span class="item_price"><strong>${res.price.toLocaleString('en-gb')}</strong> đ</span>
+                                <p class="item_count"><span>-</span> <strong>${res.count}</strong>
+                                    <span>+</span>
+                                </p>
+                            </div>
+                            <div class="d-none">
+                                <input type="text" name="slug" value="${res.slug}" class="hide">
+                                <input type="text" name="color" value="${res.color}" class="hide">
+                                <input type="text" name="size" value="${res.size}" class="hide">
+                                <input type="text" name="count" value="${res.count}" class="hide">
+                            </div>
+                            <a onclick="removeCart('${res._id}')" style="color:black" class="oi oi-trash mr-3"></a>`
+                        document.querySelector('form.cartBox .cart_list').appendChild(li)
+                    }
+                    else{
+                        if(res.err){
+                            return alert(res.err)
+                        }
+                        const listCart = [...document.querySelectorAll('.cart_item')]
+                        listCart.map(cart => {
+                            const slug = cart.querySelector('input[name="slug"]').value
+                            const price = Number(cart.querySelector('.item_price strong').innerText.split(',').join('')) / Number(cart.querySelector('.item_count strong').innerText)
+                            const color = cart.querySelector('input[name="color"]').value
+                            const size = cart.querySelector('input[name="size"]').value
+                            if(slug === res.slug && color === res.color && size === res.size){
+                                cart.querySelector('.item_count strong').innerText = res.count
+                                cart.querySelector('.item_price strong').innerText = (price * Number(res.count)).toLocaleString('en-gb')
+                            }
+                        })
+                    }
+                })
+                .catch(() => alert('loi'))
+        }
+    }
+
 </script>

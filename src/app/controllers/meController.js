@@ -253,7 +253,10 @@ class MeController {
 
     //[get] /me/user
     login(req, res, next) {
-        Products.find({})
+        if(req.query.page){
+            req.session.page = req.query.page
+        }
+            Products.find({})
             .then(products => {
                 var form = {
                     form_register: 'disabled',
@@ -273,7 +276,7 @@ class MeController {
     logout(req, res, next) {
         req.session.destroy(function (err) {
             if (err) return console.error(err)
-            res.redirect('/me/user')
+            res.redirect('back')
         })
     }
 
@@ -323,18 +326,24 @@ class MeController {
                 accountName: req.body.accountName
             })
             .then(user => {
-                var session = req.session; //initialize session variable
-                session.accountID = user._id;
-                res.render('me/accountManage', {
-                    user: mongoosetoObject(user)
-                })
+                if(req.session.page){
+                    const page = req.session.page
+                    req.session.accountID = user._id;
+                    res.redirect(`/products/${page}`)
+                }
+                else{
+                    var session = req.session; //initialize session variable
+                    session.accountID = user._id;
+                    res.render('me/accountManage', {
+                        user: mongoosetoObject(user)
+                    })
+                }
             })
             .catch(next)
     }
 
     // [get] /me/account
     accountManage(req, res, next) {
-        
             User.findOne({
                 _id: req.session.accountID
             })
@@ -343,6 +352,7 @@ class MeController {
                     user: mongoosetoObject(user)
                 })
             })
+            .catch(err => console.log(err))
     }
 
     // [put] /me/user

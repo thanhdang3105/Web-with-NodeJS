@@ -135,6 +135,8 @@ nav.navbar_header {
         max-height: 65vh;
         overflow-y: auto;
         margin: 0.5rem 0; }
+        nav.navbar_header .menu_cart .cartBox .cart_list .cart_item.disabled {
+          display: none; }
         nav.navbar_header .menu_cart .cartBox .cart_list .cart_item {
           width: 100%;
           height: 25%;

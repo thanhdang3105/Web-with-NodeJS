@@ -42,6 +42,7 @@
                         class="oi oi-magnifying-glass"></a></button>
                 <input class="form-control mr-sm-2 input_search" type="search" placeholder="Search" aria-label="Search">
             </form>
+            {{#if user}}
             <div class="menu_cart">
                 <button class="btn my-2 my-sm-0 btn_cart"><a class="oi oi-cart"></a></button>
                 <form method="post" action="/products/cart" class="cartBox">
@@ -55,18 +56,18 @@
                             <div class="cart_item-info">
                                 <a href="/products/{{this.slug}}" class="item_name">{{this.name}}</a>
                                 <span class="item_type">{{this.color}} / {{this.size}}</span>
-                                <span class="item_price">{{this.price}} đ</span>
+                                <span class="item_price"><strong>{{this.price}}</strong> đ</span>
                                 <p class="item_count"><span>-</span> <strong>{{this.count}}</strong>
-                                    <span>+</span></p>
+                                    <span>+</span>
+                                </p>
                             </div>
                             <div class="d-none">
-                                {{!-- <input type="text" name="_id" value="{{this._id}}" class="hide"> --}}
                                 <input type="text" name="slug" value="{{this.slug}}" class="hide">
                                 <input type="text" name="color" value="{{this.color}}" class="hide">
                                 <input type="text" name="size" value="{{this.size}}" class="hide">
                                 <input type="text" name="count" value="{{this.count}}" class="hide">
                             </div>
-                            <a onclick="removeCart('{{this._id}}')" style="color:black" class="oi oi-trash mr-3"></a>
+                            <a onclick="removeCart('{{this._id}}',this)" style="color:black;cursor:pointer" class="oi oi-trash mr-3"></a>
                         </li>
                         {{else}}
                         <h5>Chưa có sản phẩm nào</h5>
@@ -75,6 +76,7 @@
                     <a href="/me/products/cart-list" class="btn btn-dark">Thanh toán</a>
                 </form>
             </div>
+            {{/if}}
             <div class="menu_setting-dropdown">
                 <button class="btn my-2 my-sm-0 dropdown-toggle" id="menuSettingDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button"></button>
@@ -82,8 +84,10 @@
                     <a class="dropdown-item" href="/me/account">Tài khoản</a>
                     <a class="dropdown-item" href="/setting">Cài đặt</a>
                     <a class="dropdown-item" href="/help">Hỗ trợ</a>
+                    {{#if user}}
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/acount/logOut">Đăng xuất</a>
+                    <a class="dropdown-item" href="/me/user/logout">Đăng xuất</a>
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -103,8 +107,11 @@
             navbarHeader.style.animation = 'unset'
         }
     }
-    document.querySelector('.menu_cart button.btn_cart').onclick = () => {
-        document.querySelector('.cartBox').classList.toggle('show')
+    const ListBTNCart = document.querySelector('.menu_cart button.btn_cart')
+    if (ListBTNCart) {
+        ListBTNCart.onclick = () => {
+            document.querySelector('.cartBox').classList.toggle('show')
+        }
     }
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('.cartBox')
@@ -112,36 +119,75 @@
         listCart.map(item => {
             const equal = item.querySelectorAll('p span')
             let count = item.querySelector('p strong')
-            let inputValue = item.querySelector('input[name="count"]')
+            let price = item.querySelector('.item_price strong')
+            let inputCount = item.querySelector('input[name="count"]')
+            let inputSlug = item.querySelector('input[name="slug"]')
+            let inputColor = item.querySelector('input[name="color"]')
+            let inputSize = item.querySelector('input[name="size"]')
+            let Price = Number(price.innerText.split(',').join('')) / Number(count.innerText)
             //Giảm số lượng
-            equal[0].onclick = () => {
+            equal[0].onclick = (e) => {
                 count.innerText = Number(count.innerText) - 1
-                inputValue.setAttribute("value", count.innerText)
+                inputCount.setAttribute("value", count.innerText)
+                price.innerText = (Price * Number(count.innerText)).toLocaleString('en-gb')
                 if (Number(count.innerText) <= 0) {
                     count.innerText = 0
+                    item.classList.add('disabled')
                     item.querySelector('a.oi-trash').click()
                     return
                 }
-                form.submit()
+                const data = {
+                    count: Number(count.innerText),
+                    slug: inputSlug.value,
+                    color: inputColor.value,
+                    size: inputSize.value,
+                }
+                fetchData(data)
             }
 
             equal[1].onclick = () => {
                 count.innerText = Number(count.innerText) + 1
-                inputValue.setAttribute("value", count.innerText)
+                inputCount.setAttribute("value", count.innerText)
                 if (Number(count.innerText) >= 11) {
                     count.innerText = 10
                     alert('Đã đạt số lượng giới hạn nếu bạn muốn mua nhiều hơn vui lòng liên hệ hotline để được giúp đỡ !')
                     return
                 }
-                form.submit()
+                price.innerText = (Price * Number(count.innerText)).toLocaleString('en-gb')
+                const data = {
+                    count: Number(count.innerText),
+                    slug: inputSlug.value,
+                    color: inputColor.value,
+                    size: inputSize.value,
+                }
+                fetchData(data)
             }
         })
 
     })
 
-    function removeCart(id) {
-            document.querySelector('.cartBox').action = `/products/removeCart?_method=delete&_id=${id}`
-            document.querySelector('.cartBox').submit()
+    function fetchData(data, url) {
+        fetch(url ? url : `http://localhost:3000/products/cart`, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .catch(() => alert('loi'))
+    }
+
+    function removeCart(id,element) {
+        element.parentElement.classList.add('disabled')
+        const data = { id }
+        fetchData(data, `/products/removeCart?_method=delete&_id=${id}`)
     }
 
 

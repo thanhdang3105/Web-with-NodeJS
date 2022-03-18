@@ -196,7 +196,9 @@ nav.navbar_header {
                 max-height: 65vh;
                 overflow-y: auto;
                 margin: 0.5rem 0;
-
+                .cart_item.disabled{
+                    display: none;
+                }
                 .cart_item {
                     width: 100%;
                     height: 25%;

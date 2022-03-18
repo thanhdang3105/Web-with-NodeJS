@@ -42,6 +42,7 @@ class ProductController {
             });
     }
 
+    //[get] /products/:slug
     showProducts(req, res, next) {
         Products.findOne({
                 slug: req.params.slug
@@ -60,81 +61,107 @@ class ProductController {
 
     //[post] /products/addCart/:slug
     Cart(req, res, next) {
-        if(req.session.accountID){
-            Cart.find({})
-            .then(cart => {
-                if (cart.length === 0) {
-                    req.body.userId = req.session.accountID
-                    req.body.slug = req.params.slug
-                    req.body.count = 1
-                    const data = new Cart(req.body)
-                    data.save(err => {
-                        if (err) return res.json(err)
-                        res.redirect('back')
-                    })
-                } else {
-                    const check = cart.filter(item => {
-                        return item.color === req.body.color && item.size === req.body.size 
-                        && item.slug === req.body.slug && item.userId === req.session.accountID
-                    })
-                    if (check.length == 0) {
-                        const data = new Cart({
-                            userId: req.session.accountID,
-                            slug: req.params.slug,
-                            count: 1,
-                            color: req.body.color,
-                            size: req.body.size
-                        })
+        if (req.session.accountID) {
+            Cart.find({
+                    userId: req.session.accountID
+                })
+                .then(cart => {
+                    if (cart.length === 0) {
+                        req.body.userId = req.session.accountID
+                        req.body.slug = req.params.slug
+                        req.body.count = 1
+                        let data = new Cart(req.body)
                         data.save(err => {
-                            if (err) {
-                                res.json(err)
-                            } else {
-                                res.redirect('back')
-                            }
+                            if (err) return res.json(err)
+                            Products.findOne({
+                                    slug: req.body.slug
+                                })
+                                .then(products => {
+                                    products.color.split(',').map((color, index) => {
+                                        if (color == req.body.color) {
+                                            req.body.img = products.imageProducts[index]
+                                        }
+                                    })
+                                    req.body.name = products.name
+                                    req.body.price = Number(products.price.split(',').join('')) * Number(req.body.count)
+                                    req.body._id = products._id
+                                    res.json(req.body)
+                                })
+                                .catch(err => console.error(err))
                         })
-
                     } else {
-                        check[0].count += 1
-                        Cart.updateOne({
-                                _id: check[0]._id
-                            }, check[0])
-                            .then(() => {
-                                res.redirect('back')
+                        const check = cart.filter(item => {
+                            return item.color === req.body.color && item.size === req.body.size &&
+                                item.slug === req.body.slug && item.userId === req.session.accountID
+                        })
+                        if (check.length == 0) {
+                            const data = new Cart({
+                                userId: req.session.accountID,
+                                slug: req.params.slug,
+                                count: 1,
+                                color: req.body.color,
+                                size: req.body.size
                             })
-                            .catch(next)
-                    }
-                }
-            })
-        }
-        else{
-            res.redirect('/me/user')
-        }
-        
-    }
+                            data.save(err => {
+                                if (err) {
+                                    res.json(err)
+                                } else {
+                                    Products.findOne({
+                                            slug: req.body.slug
+                                        })
+                                        .then(products => {
+                                            products.color.split(',').map((color, index) => {
+                                                if (color == req.body.color) {
+                                                    req.body.img = products.imageProducts[index]
+                                                }
+                                            })
+                                            req.body.count = data.count
+                                            req.body.name = products.name
+                                            req.body._id = products._id
+                                            req.body.price = Number(products.price.split(',').join('')) * Number(req.body.count)
+                                            res.json(req.body)
+                                        })
+                                        .catch(err => console.error(err))
+                                }
+                            })
 
-    updateCart(req, res, next) {
-        Cart.find({})
-            .then(cart => {
-                const newCart = mutipleMongoosetoObject(cart)
-                let data
-                newCart.map((item, index) => {
-                    console.log(req.body.count[index])
-                    if (item.count != req.body.count[index]) {
-                        item.count = req.body.count[index]
-                        data = item
+                        } else {
+                            check[0].count += 1
+                            if(check[0].count >= 10){
+                                res.json({
+                                    err:'Số lượng tối đa là 10/sản phẩm nếu bạn muốn mua sỉ vui lòng liên hệ hotline'
+                                })
+                            }
+                            Cart.updateOne({
+                                    _id: check[0]._id
+                                }, check[0])
+                                .then(() => {
+                                    res.json(check[0])
+                                })
+                                .catch(next)
+                        }
                     }
                 })
+        } else {
+            res.redirect(`/me/user?page=${req.params.slug}`)
+        }
 
+    }
 
-                Cart.updateOne({
-                        _id: data._id
-                    }, data)
-                    .then(() => {
-                        res.redirect('back')
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+    //[post] /products/cart
+    updateCart(req, res, next) {
+        req.body.userId = req.session.accountID
+        Cart.updateOne({
+                userId: req.session.accountID,
+                slug: req.body.slug,
+                color: req.body.color,
+                size: req.body.size
+            }, req.body)
+            .then((cart) => {
+                res.json(cart)
+            })
+            .catch(err => {
+                console.log(err)
             })
     }
 
@@ -144,7 +171,9 @@ class ProductController {
                 _id: req.query._id,
             })
             .then(() => {
-                res.redirect('back')
+                res.json({
+                    message: 'thành công'
+                })
             })
             .catch(next)
     }
