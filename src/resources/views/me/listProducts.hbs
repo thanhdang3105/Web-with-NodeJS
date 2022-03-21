@@ -1,54 +1,58 @@
-<form method="post" action="/me/products/removeMany" name="container" class="container mt-5 mb-5">
+<form method="post" action="/me/products/removeMany" name="container" class="container mt-5 mb-5 formListProducts">
     <div class="header d-flex align-items-center" style="gap:10px">
-        <h1 class="mb-1">Danh sách sản phẩm {{user}}</h1>
+        <h1 class="mb-1">Danh sách sản phẩm</h1>
         <a href="/me/products/create" class="oi oi-plus"></a>
     </div>
     <button type="button" data-toggle="modal" data-target="#removeProducts" class="btn btn-primary removeMany"
         disabled>Xoá nhiều</button>
-    <table class="table table-striped mt-1">
-        <thead style="background-color: #569BDB;color:white">
-            <tr>
-                <th scope="col">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="checkAllProducts">
-                    </div>
-                </th>
-                <th scope="col">Tên sản phẩm</th>
-                <th scope="col">Màu sắc</th>
-                <th scope="col">Kích cỡ</th>
-                <th scope="col">Loại hàng</th>
-                <th scope="col">Loại hàng</th>
-                <th scope="col" colspan="2">Giá</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each products}}
-            <tr>
-                <th>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="productsID[]" id="checkProducts"
-                            value="{{this._id}}">
-                    </div>
-                </th>
-                <td>{{this.name}}</td>
-                <td>{{this.color}}</td>
-                <td>{{this.size}}</td>
-                <td>{{this.type}}</td>
-                <td>{{this.miniType}}</td>
-                <td>{{this.price}}đ</td>
-                <td style="text-align:center">
-                    <a href="/me/products/{{this._id}}/edit" class="btn btn-primary">Cập nhật</a>
-                    <button type="button" class="btn btn-danger" id="remove" data-toggle="modal"
-                        data-target="#removeProducts" data-id="{{this._id}}">Xoá</button>
-                </td>
-            </tr>
-            {{else}}
-            <tr>
-                <th colspan="7"><h1>Không có sản phẩm</h1></th>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+    <div class="list_products">
+        <table class="table table-striped mt-1 list_products">
+            <thead style="background-color: #569BDB;color:white">
+                <tr>
+                    <th scope="col">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="checkAllProducts">
+                        </div>
+                    </th>
+                    <th scope="col">Tên sản phẩm</th>
+                    <th scope="col">Màu sắc</th>
+                    <th scope="col">Kích cỡ</th>
+                    <th scope="col">Loại hàng</th>
+                    <th scope="col">Loại hàng</th>
+                    <th scope="col" colspan="2">Giá</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                <tr>
+                    <th>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" onclick="clickCheckProduct(this)" type="checkbox"
+                                name="productsID[]" id="checkProducts" value="{{this._id}}">
+                        </div>
+                    </th>
+                    <td>{{this.name}}</td>
+                    <td>{{this.color}}</td>
+                    <td>{{this.size}}</td>
+                    <td>{{this.type}}</td>
+                    <td>{{this.miniType}}</td>
+                    <td>{{this.price}}đ</td>
+                    <td style="text-align:center">
+                        <a href="/me/products/{{this._id}}/edit" class="btn btn-primary">Cập nhật</a>
+                        <button type="button" class="btn btn-danger" id="remove" data-toggle="modal"
+                            data-target="#removeProducts" data-id="{{this._id}}">Xoá</button>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <th colspan="7">
+                        <h1>Không có sản phẩm</h1>
+                    </th>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
 </form>
 
 <div class="modal fade" id="removeProducts" tabindex="-1" role="dialog" aria-labelledby="removeProductsLabel"
@@ -62,7 +66,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
@@ -75,10 +79,32 @@
 <form name="removeProducts" method="post"></form>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var productsID
-        const btn_remove = document.querySelector('.accept-remove')
-        const btn_removeMany = document.querySelector('.removeMany')
+    var productsID
+    const btn_remove = document.querySelector('.accept-remove')
+    const btn_removeMany = document.querySelector('.removeMany')
+    const checkProducts = [...document.querySelectorAll('#checkProducts')]
+    const checkAllProducts = document.querySelector('#checkAllProducts')
+    function clickCheckProduct(element) {
+        const checkedProducts = document.querySelectorAll('input[name="productsID[]"]:checked')
+        let removeDisabled = true
+        if (checkedProducts.length > 1) {
+            removeDisabled = !removeDisabled
+            if (checkedProducts.length == checkProducts.length) {
+                checkAllProducts.checked = true
+            }
+            else {
+                checkAllProducts.checked = false
+            }
+            btn_removeMany.toggleAttribute('disabled', removeDisabled)
+        }
+    }
+    checkAllProducts.onchange = () => {
+        checkProducts.map(check => {
+            check.checked = checkAllProducts.checked
+        })
+        btn_removeMany.toggleAttribute('disabled', !checkAllProducts.checked)
+    }
+    document.addEventListener('DOMContentLoaded', function () {
         $('#removeProducts').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             productsID = button.data('id')
@@ -96,27 +122,5 @@
                 }
             }
         })
-        const checkProducts = [...document.querySelectorAll('#checkProducts')]
-        const checkAllProducts = document.querySelector('#checkAllProducts')
-        checkAllProducts.onchange = () => {
-            checkProducts.map(check => {
-                check.checked = checkAllProducts.checked
-                check.onclick = () => {
-                    const checkedProducts = document.querySelectorAll('input[name="productsID[]"]:checked')
-                    let removeDisabled = true
-                    if (checkedProducts.length > 1) {
-                        removeDisabled = !removeDisabled
-                        if (checkedProducts.length == checkProducts.length) {
-                            checkAllProducts.checked = true
-                        }
-                        else{
-                            checkAllProducts.checked = false
-                        }
-                    }
-                    btn_removeMany.toggleAttribute('disabled', removeDisabled)
-                }
-            })
-            btn_removeMany.toggleAttribute('disabled', !checkAllProducts.checked)
-        }
     })
 </script>

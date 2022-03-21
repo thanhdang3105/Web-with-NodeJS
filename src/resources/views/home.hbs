@@ -98,8 +98,9 @@
                     <img class="card-img-top" src="/img/products/{{this.img}}" alt="Card image cap">
                 </a>
                 <div class="card-body">
-                    <a href="/products/{{this.slug}}" class="card-title">{{this.name}}</a>
+                    <a href="/products/{{this.slug}}" class="card-title" style="height:2rem">{{this.name}}</a>
                     <p class="card-text">{{this.price}}</p>
+                    <span class="align-seft-bottom">{{this.datedAt}} day left</span>
                 </div>
                 <div class="card-footer">
                     {{#each imageProducts}}

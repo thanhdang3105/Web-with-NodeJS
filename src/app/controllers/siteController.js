@@ -18,11 +18,13 @@ class SiteController {
                         product.imageProducts.length = 3
                     }
                     product.img = img[index]
+                    product.datedAt = new Date(Date.now() - product.datedAt).getDate()
                     return product
                 })
-                newArrival.length = 8
+                const data = newArrival.sort((a,b) => a.datedAt - b.datedAt)
+                data.length = 8
                 res.render('home', {
-                    products: newArrival,
+                    products: data,
                 })
             })
             .catch(next)

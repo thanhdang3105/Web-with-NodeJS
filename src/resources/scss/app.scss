@@ -430,6 +430,14 @@ nav.navbar_header {
             }
 
             // width: calc();
+            .card-body{
+                display: flex;
+                justify-content:space-between;
+                flex-direction: column;
+                span{
+                    color:#999;
+                }
+            }
             .card-title {
                 font-size: 1.2rem;
                 font-weight: bold;
@@ -440,6 +448,7 @@ nav.navbar_header {
                 font-size: 1rem;
                 color: rgb(255, 80, 80);
                 font-weight: 600;
+                margin-bottom: 0;
             }
 
             .card-title:hover {
@@ -526,6 +535,15 @@ nav.navbar_header {
     border: 1px solid rgb(212, 212, 212);
     border-radius: 5px;
     padding: 1rem;
+}
+
+// formListProducts
+
+.formListProducts{
+    .list_products{
+        max-height: 70vh;
+        overflow-y: auto;
+    }
 }
 
 //showProducts

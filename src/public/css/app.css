@@ -295,6 +295,12 @@ nav.navbar_header {
         height: 280px;
         object-fit: contain;
         object-position: center; }
+      .newArrival_products .listProducts_newArrival .card .card-body {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column; }
+        .newArrival_products .listProducts_newArrival .card .card-body span {
+          color: #999; }
       .newArrival_products .listProducts_newArrival .card .card-title {
         font-size: 1.2rem;
         font-weight: bold;
@@ -302,7 +308,8 @@ nav.navbar_header {
       .newArrival_products .listProducts_newArrival .card .card-text {
         font-size: 1rem;
         color: #ff5050;
-        font-weight: 600; }
+        font-weight: 600;
+        margin-bottom: 0; }
       .newArrival_products .listProducts_newArrival .card .card-title:hover {
         color: #888; }
       .newArrival_products .listProducts_newArrival .card .card-footer {
@@ -356,6 +363,10 @@ nav.navbar_header {
   border: 1px solid #d4d4d4;
   border-radius: 5px;
   padding: 1rem; }
+
+.formListProducts .list_products {
+  max-height: 70vh;
+  overflow-y: auto; }
 
 .paginationHeader {
   display: flex;

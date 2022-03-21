@@ -26,7 +26,7 @@ class ProductController {
                     const img = mutipleMongoosetoObject(products).map(Products => {
                         return Products.imageProducts[0]
                     })
-
+                    
                     res.render('products/homeProducts', {
                         products: mutipleMongoosetoObject(products).map((product, index) => {
                             if (product.imageProducts.length > 3) {
