@@ -92,6 +92,6 @@ app.set('views', path.join(__dirname, 'resources', 'views'))
 //Khởi tạo router
 routes(app)
 //Lắng nghe sever
-app.listen(process.env.PORT, () =>{
+app.listen('https://webwithnodejs.herokuapp.com/', () =>{
     console.log(`App listening at http://localhost:${port}/`)
 })
