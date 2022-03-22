@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto control_heading">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/me/products/create">Trang chủ <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="">Trang chủ <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/products?sale=sale">Sale</a>
@@ -84,6 +84,13 @@
                     <a class="dropdown-item" href="/me/account">Tài khoản</a>
                     <a class="dropdown-item" href="/setting">Cài đặt</a>
                     <a class="dropdown-item" href="/help">Hỗ trợ</a>
+                    {{#if user.admin}}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/me/user?register">Tạo tài khoản admin</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/me/products/create">Thêm sản phẩm</a>
+                    <a class="dropdown-item" href="/me/products/list-products">Danh sách sản phẩm</a>
+                    {{/if}}
                     {{#if user}}
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/me/user/logout">Đăng xuất</a>

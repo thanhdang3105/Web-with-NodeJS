@@ -1,14 +1,14 @@
 <div class="body_accountForm">
     <div class="container form_account">
         <div class="form_box {{form.form_login}}">
-            <form action="/me/account" method="post" class="form_login">
+            <form action="/me/account" method="get" class="form_login">
                 <div class="heading_box">
                     <h2 class="header">Đăng nhập</h2>
                     <button type="button" class="btn btn-primary btn_changeRegister">Đăng ký</button>
                 </div>
                 <div class="form-group">
                     <label for="accountName">Tên tài khoản</label>
-                    <input type="text" class="form-control" name="accountName" placeholder="Tên tài khoản" required>
+                    <input type="text" class="form-control" id="accountName" placeholder="Tên tài khoản" required>
                 </div>
                 <div class="form-group">
                     <label for="accountPwd">Mật khẩu</label>
@@ -19,7 +19,7 @@
             </form>
         </div>
         <div class="form_box {{form.form_register}}">
-            <form action="/me/account" method="post" name="register" class="form_register">
+            <form action="/me/account" method="get" name="register" class="form_register">
                 <div class="heading_box">
                     <h2 class="header">Đăng ký</h2>
                     <button type="button" class="btn btn-primary btn_changeLogin">Đăng nhập</button>
@@ -27,31 +27,31 @@
                 <div class="row">
                     <div class="col">
                         <label for="firstName">Họ và tên</label>
-                        <input type="text" name="firstName" class="form-control" placeholder="First name">
+                        <input type="text" id="firstName" class="form-control" placeholder="First name">
                     </div>
                     <div class="col">
                         <label style="opacity: 0;">Họ và tên</label>
-                        <input type="text" name="lastName" class="form-control" placeholder="Last name">
+                        <input type="text" id="lastName" class="form-control" placeholder="Last name">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="address">Địa chỉ</label>
-                    <input type="text" class="form-control" name="address" placeholder="Địa chỉ" required>
+                    <input type="text" class="form-control" id="address" placeholder="Địa chỉ" required>
                 </div>
                 <div class="form-group">
                     <label for="phoneNumber">Số điện thoại</label>
-                    <input type="text" pattern="[0-9]{10}" class="form-control" name="phoneNumber"
+                    <input type="text" pattern="[0-9]{10}" class="form-control" id="phoneNumber"
                         placeholder="Số điện thoại" required>
                 </div>
                 <div class="form-group">
                     <label for="accountName">Tên tài khoản</label>
-                    <input type="text" class="form-control" oninput="removeIvalid(this)" name="accountName"
+                    <input type="text" class="form-control" oninput="removeIvalid(this)" id="accountName"
                         placeholder="Tên tài khoản" required>
                     <span class="errorText"></span>
                 </div>
                 <div class="form-group">
                     <label for="accountPwd">Mật khẩu</label>
-                    <input type="password" class="form-control" name="password" placeholder="Mật khẩu" required>
+                    <input type="password" class="form-control" id="password" placeholder="Mật khẩu" required>
                 </div>
                 <div class="form-group">
                     <label for="accountPwd2">Nhập lại mật khẩu</label>
@@ -78,7 +78,7 @@
 
         const formLogin = document.querySelector('.form_login')
         const formRegister = document.forms['register']
-        const pwd = formRegister.querySelector('input[name="password"]')
+        const pwd = formRegister.querySelector('input[id="password"]')
         const pwd2 = formRegister.querySelector('input[id="accountPwd2"]')
         document.addEventListener("click", function (e) {
             if (e.target.classList.contains('btn_changeLogin')) {
@@ -94,12 +94,12 @@
         formRegister.onsubmit = function (e) {
             e.preventDefault();
             const data = {
-                accountName: this.querySelector('input[name="accountName"]').value,
+                accountName: this.querySelector('input[id="accountName"]').value,
                 password: pwd.value,
-                firstName: this.querySelector('input[name="firstName"]').value,
-                lastName: this.querySelector('input[name="lastName"]').value,
-                address: this.querySelector('input[name="address"]').value,
-                phoneNumber: this.querySelector('input[name="phoneNumber"]').value
+                firstName: this.querySelector('input[id="firstName"]').value,
+                lastName: this.querySelector('input[id="lastName"]').value,
+                address: this.querySelector('input[id="address"]').value,
+                phoneNumber: this.querySelector('input[id="phoneNumber"]').value
             }
             if(pwd.value !== pwd2.value) {
                 pwd2.parentElement.querySelector('span').innerText = 'Mật khẩu không khớp vui lòng nhập lại!'
@@ -112,7 +112,7 @@
         formLogin.onsubmit = function (e) {
             e.preventDefault()
             const data = {
-                accountName: this.querySelector('input[name="accountName"]').value,
+                accountName: this.querySelector('input[id="accountName"]').value,
                 password: this.querySelector('input[id="accountPwd"]').value
             }
             fetchData('login', data, this)

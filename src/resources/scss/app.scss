@@ -541,8 +541,9 @@ nav.navbar_header {
 
 .formListProducts{
     .list_products{
-        max-height: 70vh;
-        overflow-y: auto;
+            max-height: 70vh;
+            overflow-y: auto;
+            margin-top: 0.5rem;
     }
 }
 
@@ -845,7 +846,7 @@ nav.navbar_header {
     height: 70vh;
 
     .list_manage {
-        width: 20%;
+        width: 15%;
         list-style: none;
         display: flex;
         flex-direction: column;
@@ -863,7 +864,7 @@ nav.navbar_header {
         }
 
         a {
-            width: 40%;
+            width: 60%;
         }
     }
 
@@ -878,6 +879,15 @@ nav.navbar_header {
         .logged.information{
             margin: auto;
             width: 80%;
+        }
+
+        .logged.list_account{
+            align-self: flex-start;
+            table.table-listAccount{
+                max-height: 60vh;
+                overflow-y: auto;
+                display: block;
+            }
         }
 
         .logged.address {

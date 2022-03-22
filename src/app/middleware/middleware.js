@@ -6,8 +6,15 @@ const {
 } = require('../../resources/util/mongoose')
 
 module.exports = async function middleware(req, res, next) {
-    if (req.session.accountID) {
-        res.locals.user = req.session.accountID
+    if (req.session.account) {
+        await User.findOne({accountName : req.session.account })
+        .then(user => {
+            res.locals.user = {
+                id: user._id,
+                admin: user.admin,
+            }
+        })
+        .catch(next)
         await Cart.find({
                 userId: req.session.accountID
             })

@@ -32,7 +32,7 @@ router.delete('/user', meController.deleteAddress)
 
 router.post('/checkAccount', meController.checkAccount)
 
-router.post('/account', meController.acount)
+router.delete('/account', meController.deleteAccount)
 
 router.get('/account', meController.accountManage)
 

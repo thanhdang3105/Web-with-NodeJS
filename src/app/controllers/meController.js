@@ -10,7 +10,6 @@ const {
     mutipleMongoosetoObject,
     setImageProducts
 } = require('../../resources/util/mongoose')
-
 class MeController {
 
     index(req, res, next) {
@@ -253,10 +252,10 @@ class MeController {
 
     //[get] /me/user
     login(req, res, next) {
-        if(req.query.page){
+        if (req.query.page) {
             req.session.page = req.query.page
         }
-            Products.find({})
+        Products.find({})
             .then(products => {
                 var form = {
                     form_register: 'disabled',
@@ -282,18 +281,20 @@ class MeController {
 
     //[post] /me/checkAccount
     checkAccount(req, res, next) {
+        var session = req.session; //initialize session variable
         switch (req.query.auth) {
             case 'register':
-                User.findOne({
+                if (res.locals.user) {
+                    req.body.admin = res.locals.user.admin
+                }
+                 User.findOne({
                         accountName: req.body.accountName
                     })
                     .then(user => {
                         if (!user) {
                             const data = new User(req.body)
-                            data.save(err => {
-                                if (!err) return next()
-                                console.log(err)
-                            })
+                            data.save()
+                            session.account = req.body.accountName
                         }
                         res.json(user)
                     })
@@ -305,13 +306,16 @@ class MeController {
                         password: req.body.password
                     })
                     .then(user => {
+                        if (user) {
+                            session.account = user.accountName
+                        }
                         res.json(user)
                     })
                     .catch(next)
                 break
             case 'password':
                 User.findOne({
-                        _id: req.session.accountID,
+                        accountName: req.session.account,
                         password: req.body.password
                     })
                     .then(user => {
@@ -320,39 +324,36 @@ class MeController {
         }
     }
 
-    // [post] /me/acount
-    acount(req, res, next) {
+    // [get] /me/account
+    accountManage(req, res, next) {
         User.findOne({
-                accountName: req.body.accountName
+                accountName: req.session.account
             })
             .then(user => {
-                if(req.session.page){
+                if (req.session.page) {
                     const page = req.session.page
-                    req.session.accountID = user._id;
+                    req.session.account = user.accountName;
                     res.redirect(`/products/${page}`)
-                }
-                else{
-                    var session = req.session; //initialize session variable
-                    session.accountID = user._id;
-                    res.render('me/accountManage', {
-                        user: mongoosetoObject(user)
-                    })
+                } else {
+                    if(user.admin){
+                        User.find({})
+                        .then(listUsers => {
+                            res.render('me/accountManage', {
+                                user: mongoosetoObject(user),
+                                listUsers: mutipleMongoosetoObject(listUsers)
+                            })
+                        })
+                        .catch(err => console.log(err))
+                    }
+                    else{
+                        res.render('me/accountManage', {
+                            user: mongoosetoObject(user)
+                        })
+                    }
+                    
                 }
             })
             .catch(next)
-    }
-
-    // [get] /me/account
-    accountManage(req, res, next) {
-            User.findOne({
-                _id: req.session.accountID
-            })
-            .then(user => {
-                res.render('me/accountManage', {
-                    user: mongoosetoObject(user)
-                })
-            })
-            .catch(err => console.log(err))
     }
 
     // [put] /me/user
@@ -360,7 +361,7 @@ class MeController {
 
         var data = {}
         User.findOne({
-                _id: req.session.accountID
+                accountName: req.session.account
             })
             .then(user => {
                 if (req.body.newAddress) {
@@ -390,7 +391,7 @@ class MeController {
     // [delete] /me/user
     deleteAddress(req, res, next) {
         User.findOne({
-                _id: req.session.accountID
+                accountName: req.session.account
             })
             .then(user => {
                 user.phoneNumber = user.phoneNumber.filter((phone, index) => index !== Number(req.query.id))
@@ -407,6 +408,18 @@ class MeController {
             .catch(err => console.log(err))
     }
 
+    //[delete] /me/account
+    deleteAccount(req, res, next) {
+        User.deleteMany({
+            accountName : {
+                $in: req.body.accountName
+            }
+        })
+        .then(() => {
+            res.redirect('back')
+        })
+        .catch(next)
+    }
 }
 
 module.exports = new MeController;

@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 
 const User = new Schema({
+    admin:{
+        type: Boolean,
+        default: false,
+    },
     accountName: {
         type: String,
         required: true,

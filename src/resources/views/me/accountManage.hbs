@@ -1,9 +1,12 @@
 <div class="container accountManage">
     <ul class="list_manage">
         <h1>Tài khoản</h1>
-        <li class="item_list active">Thông tin tài khoản</li>
-        <li class="item_list">Địa chỉ</li>
-        <li class="item_list">Đơn hàng</li>
+        <li onclick="changeView(0,this)" class="item_list active">Thông tin tài khoản</li>
+        {{#if user.admin}}
+        <li onclick="changeView(1,this)" class="item_list">Danh sách tài khoản</li>
+        {{/if}}
+        <li onclick="changeView(2,this)" class="item_list">Địa chỉ</li>
+        <li onclick="changeView(3,this)" class="item_list">Đơn hàng</li>
         {{#if user}}
         <a href="/me/user/logout" class="btn btn-danger">Đăng xuất</a>
         {{/if}}
@@ -81,220 +84,344 @@
             </form>
             <a class="changePwd" style="color: #569BDB;">Đổi mật khẩu</a>
         </div>
-            <div class="logged address disabled">
-                <div class="list_address">
-                    {{#each (setViewaddress user.address user.phoneNumber)}}
-                    <form action="/me/user?_method=put&id={{@index}}" method="post" name="form_address"
-                        class="form_address">
-                        <table class="table">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">Địa chỉ</th>
-                                    <th class="controlAddress">
-                                        <span class="oi oi-pencil edit"></span>
-                                        <span class="oi oi-trash del"></span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="view_address">
-                                <tr>
-                                    <th scope="row">{{user.firstName}} {{user.lastName}}</th>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Địa chỉ:</th>
-                                    <td>{{this.address}}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Số điện thoại:</th>
-                                    <td>{{this.phoneNumber}}</td>
-                                </tr>
-                            </tbody>
-                            <tbody class="edit_address disabled">
-                                <tr>
-                                    <th scope="row">{{user.firstName}} {{user.lastName}}</th>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="form-group">
-                                            <label for="address">Địa chỉ</label>
-                                            <input type="text" class="form-control" name="address" placeholder="Địa chỉ"
-                                                value="{{this.address}}" required>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="form-group">
-                                            <label for="phoneNumber">Số điện thoại</label>
-                                            <input type="text" pattern="[0-9]{10}" class="form-control"
-                                                name="phoneNumber" placeholder="Số điện thoại"
-                                                value="{{this.phoneNumber}}" required>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <button class="btn btn-primary update_address">Cập nhật</button>
-                                        <button type="button" class="btn btn-secondary close_edit">Huỷ</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </form>
+        <form action="/me/account?_method=delete" method="post" class="logged list_account disabled">
+            <h1 class="mb-1 ml-1">Danh sách tài khoản</h1>
+            <button type="button" data-toggle="modal" data-target="#removeAccount" class="btn btn-primary remove ml-2"
+                disabled>Xoá</button>
+            <table class="table table-striped mt-1 table-listAccount">
+                <thead style="background-color: #569BDB;color:white">
+                    <tr>
+                        <th scope="col">
+                            <div class="form-check form-check-inline">
+                                <input  onchange="checkAllAccount(this)" class="form-check-input" type="checkbox" id="checkAll">
+                            </div>
+                        </th>
+                        <th scope="col">Admin</th>
+                        <th scope="col">Tên tài khoản</th>
+                        <th scope="col">Họ</th>
+                        <th scope="col">Ngày sinh</th>
+                        <th scope="col">Giới tính</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col">Địa chỉ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each listUsers}}
+                    <tr>
+                        <th>
+                            <div class="form-check form-check-inline">
+                                <input onclick="accountCheckbox(this)" class="form-check-input checkAccount" type="checkbox" name="accountName[]"
+                                    value="{{this.accountName}}">
+                            </div>
+                        </th>
+                        <td>{{#if this.admin}}
+                            Admin
+                            {{else}}
+                            Khách
+                            {{/if}}
+                        </td>
+                        <td>{{this.accountName}}</td>
+                        <td>{{this.firstName}} {{this.lastName}}</td>
+                        <td>{{this.birthday}}</td>
+                        <td>{{this.sex}}</td>
+                        <td>{{this.phoneNumber}}</td>
+                        <td>{{this.address}}</td>
+                    </tr>
                     {{/each}}
-                </div>
-                <form action="/me/user?_method=put" method="post" name="form_addAddress" class="form_addAddress">
-                    <div class="add_address disabled">
-                        <div class="control_heading-add d-flex justify-content-between">
-                            <h3>Thêm địa chỉ</h3>
-                            <i class="times icon" style="cursor: pointer;"></i>
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Địa chỉ</label>
-                            <textarea type="text" class="form-control" name="newAddress" placeholder="Địa chỉ"
-                                required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="phoneNumber">Số điện thoại</label>
-                            <input type="text" pattern="[0-9]{10}" class="form-control" name="newPhoneNumber"
-                                placeholder="Số điện thoại" required>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary add_address">Thêm địa chỉ</button>
+                </tbody>
+            </table>
+        </form>
+        <div class="logged address disabled">
+            <div class="list_address">
+                {{#each (setViewaddress user.address user.phoneNumber)}}
+                <form action="/me/user?_method=put&id={{@index}}" method="post" name="form_address"
+                    class="form_address">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Địa chỉ</th>
+                                <th class="controlAddress">
+                                    <span class="oi oi-pencil edit"></span>
+                                    <span class="oi oi-trash del"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="view_address">
+                            <tr>
+                                <th scope="row">{{user.firstName}} {{user.lastName}}</th>
+                            </tr>
+                            <tr>
+                                <th scope="row">Địa chỉ:</th>
+                                <td>{{this.address}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Số điện thoại:</th>
+                                <td>{{this.phoneNumber}}</td>
+                            </tr>
+                        </tbody>
+                        <tbody class="edit_address disabled">
+                            <tr>
+                                <th scope="row">{{user.firstName}} {{user.lastName}}</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <label for="address">Địa chỉ</label>
+                                        <input type="text" class="form-control" name="address" placeholder="Địa chỉ"
+                                            value="{{this.address}}" required>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <label for="phoneNumber">Số điện thoại</label>
+                                        <input type="text" pattern="[0-9]{10}" class="form-control" name="phoneNumber"
+                                            placeholder="Số điện thoại" value="{{this.phoneNumber}}" required>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button class="btn btn-primary update_address">Cập nhật</button>
+                                    <button type="button" class="btn btn-secondary close_edit">Huỷ</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </form>
+                {{/each}}
             </div>
-            {{else}}
-            <div class="unlogged">
-                Bạn chưa đăng nhập tài khoản
-                <a class="btn btn-primary login" href="/me/user">Đăng nhập</a>
-                Tạo tài khoản:
-                <a class="btn btn-primary register" href="/me/user?register">Đăng ký</a>
+            <form action="/me/user?_method=put" method="post" name="form_addAddress" class="form_addAddress">
+                <div class="add_address disabled">
+                    <div class="control_heading-add d-flex justify-content-between">
+                        <h3>Thêm địa chỉ</h3>
+                        <i class="times icon" style="cursor: pointer;"></i>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ</label>
+                        <textarea type="text" class="form-control" name="newAddress" placeholder="Địa chỉ"
+                            required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Số điện thoại</label>
+                        <input type="text" pattern="[0-9]{10}" class="form-control" name="newPhoneNumber"
+                            placeholder="Số điện thoại" required>
+                    </div>
+                </div>
+                <button class="btn btn-primary add_address">Thêm địa chỉ</button>
+            </form>
+        </div>
+        {{else}}
+        <div class="unlogged">
+            Bạn chưa đăng nhập tài khoản
+            <a class="btn btn-primary login" href="/me/user">Đăng nhập</a>
+            Tạo tài khoản:
+            <a class="btn btn-primary register" href="/me/user?register">Đăng ký</a>
+        </div>
+        {{/if}}
+    </div>
+</div>
+<div class="modal fade" id="removeAccount" tabindex="-1" role="dialog" aria-labelledby="removeAccountLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeAccountLabel">Xoá tài khoản</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            {{/if}}
+            <div class="modal-body" style="max-height:50vh;overflow-y:auto;">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn btn-primary accept-remove">Xoá</button>
+            </div>
         </div>
     </div>
+</div>
 
-    <script>
-        function removeIvalid(element) {
-            const ivalid = element.parentElement.querySelector('span').innerText
-            if (ivalid !== '') {
-                element.parentElement.querySelector('span').innerText = ''
-            }
+<script>
+    const btnRemove = document.querySelector('button.remove')
+    function checkAllAccount(checkbox) {
+        const listAccount = [...document.querySelectorAll('input.checkAccount')]
+        listAccount.map(account => {
+            account.checked = checkbox.checked
+        })
+        const checkedAccounts = [...document.querySelectorAll('input[name="accountName[]"]:checked')]
+        document.querySelector('.modal .modal-body').innerText = 'Bạn chắc chắn muốn xoá tài khoản:\n' + checkedAccounts.map((checkbox,index) => {
+             return `${index +1}.${checkbox.value}\n`
+        }).join('')
+        btnRemove.toggleAttribute('disabled',!checkbox.checked)
+    }
+    
+    function removeIvalid(element) {
+        const ivalid = element.parentElement.querySelector('span').innerText
+        if (ivalid !== '') {
+            element.parentElement.querySelector('span').innerText = ''
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            const listManage = [...document.querySelectorAll('.accountManage .list_manage .item_list')]
-            const infoBody = document.querySelector('.info_account')
-            if (!document.querySelector('.info_account div').classList.contains('unlogged')) {
-                const btn_edit = [...document.querySelectorAll('.form_address span.edit')]
-                const btn_delAddress = [...document.querySelectorAll('.form_address span.del')]
-                const btn_closeEdit = [...document.querySelectorAll('.form_address button.close_edit')]
-                const viewAddress = document.querySelectorAll('.view_address')
-                const editAddress = document.querySelectorAll('.edit_address')
-                const form_addAddress = document.forms['form_addAddress']
-                const informationBox = infoBody.querySelector('.logged.information')
-                const btn_inforSubmit = informationBox.querySelector('.form_info button[type="submit"]')
-                const btn_updateSubmit = informationBox.querySelector('.update_password button[type="submit"]')
-                listManage.map((item, index) => {
-                item.onclick = function () {
-                    document.querySelector('.accountManage .list_manage .item_list.active').classList.remove('active');
-                    item.classList.add('active')
-                    switch (index) {
-                        case 0:
-                            infoBody.querySelector('.logged.information').classList.remove('disabled')
-                            infoBody.querySelector('.logged.address').classList.add('disabled')
-                            break
-                        case 1:
-                            infoBody.querySelector('.logged.information').classList.add('disabled')
-                            infoBody.querySelector('.logged.address').classList.remove('disabled')
-                            break
-                    }
+    }
+
+    function accountCheckbox(check) {
+        const checkboxAccounts = document.querySelectorAll('input[name="accountName[]"]')
+        const checkedAccounts = [...document.querySelectorAll('input[name="accountName[]"]:checked')]
+        document.querySelector('.modal .modal-body').innerText = 'Bạn chắc chắn muốn xoá tài khoản:\n' + checkedAccounts.map((checkbox,index) => {
+             return `${index +1}.${checkbox.value}\n`
+        }).join('')
+        if(checkedAccounts.length >= 1) {
+            btnRemove.removeAttribute('disabled')
+        }
+        else if(checkedAccounts.length === checkboxAccounts.length) {
+            document.getElementById('checkAll').checked = true
+            btnRemove.removeAttribute('disabled')
+        }
+        else{
+            document.getElementById('checkAll').checked = false
+            btnRemove.setAttribute('disabled',true)
+        }
+    }
+
+    const infoBody = document.querySelector('.info_account')
+    const form_listAccount = document.querySelector('form.list_account')
+    function changeView(index, item) {
+        document.querySelector('.accountManage .list_manage .item_list.active').classList.remove('active');
+        item.classList.add('active')
+        switch (index) {
+            case 0:
+                infoBody.querySelector('.logged.information').classList.remove('disabled')
+                infoBody.querySelector('.logged.address').classList.add('disabled')
+                form_listAccount.classList.add('disabled')
+                break
+            case 1:
+                infoBody.querySelector('.logged.information').classList.add('disabled')
+                infoBody.querySelector('.logged.address').classList.add('disabled')
+                form_listAccount.classList.remove('disabled')
+                break
+            case 2:
+                infoBody.querySelector('.logged.information').classList.add('disabled')
+                infoBody.querySelector('.logged.address').classList.remove('disabled')
+                form_listAccount.classList.add('disabled')
+                break
+            case 3:
+                infoBody.querySelector('.logged.information').classList.add('disabled')
+                infoBody.querySelector('.logged.address').classList.add('disabled')
+                form_listAccount.classList.add('disabled')
+                break
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        if (!document.querySelector('.info_account div').classList.contains('unlogged')) {
+            const btn_edit = [...document.querySelectorAll('.form_address span.edit')]
+            const btn_delAddress = [...document.querySelectorAll('.form_address span.del')]
+            const btn_closeEdit = [...document.querySelectorAll('.form_address button.close_edit')]
+            const viewAddress = document.querySelectorAll('.view_address')
+            const editAddress = document.querySelectorAll('.edit_address')
+            const form_addAddress = document.forms['form_addAddress']
+            const informationBox = infoBody.querySelector('.logged.information')
+            const btn_inforSubmit = informationBox.querySelector('.form_info button[type="submit"]')
+            const btn_updateSubmit = informationBox.querySelector('.update_password button[type="submit"]')
+            const btn_removeAccount = document.querySelector('.modal button.accept-remove')
+
+            // click submit form xoá tài khoảng
+            btn_removeAccount.onclick = () => {
+                form_listAccount.submit()
+            }
+
+            // ẩn hiện form sửa địa chỉ
+            btn_edit.map((edit, index) => {
+                edit.onclick = (e) => {
+                    viewAddress[index].classList.toggle('disabled')
+                    editAddress[index].classList.toggle('disabled')
                 }
             })
-                btn_edit.map((edit, index) => {
-                    edit.onclick = (e) => {
-                        viewAddress[index].classList.toggle('disabled')
-                        editAddress[index].classList.toggle('disabled')
-                    }
-                })
 
-                btn_delAddress.map((edit, index) => {
-                    edit.onclick = (e) => {
-                        document.forms['form_address'].action = `/me/user?_method=delete&id=${index}`
-                        document.forms['form_address'].submit()
-                    }
-                })
-
-                btn_closeEdit.map((btn, index) => {
-                    btn.onclick = (e) => {
-                        viewAddress[index].classList.remove('disabled')
-                        editAddress[index].classList.add('disabled')
-                    }
-                })
-
-                form_addAddress.querySelector('button.add_address').onclick = (e) => {
-                    if (form_addAddress.querySelector('.add_address').classList.contains('disabled')) {
-                        e.preventDefault()
-                        form_addAddress.querySelector('.add_address').classList.remove('disabled')
-                    }
+            // xoá địa chỉ
+            btn_delAddress.map((edit, index) => {
+                edit.onclick = (e) => {
+                    document.forms['form_address'].action = `/me/user?_method=delete&id=${index}`
+                    document.forms['form_address'].submit()
                 }
-                form_addAddress.querySelector('.add_address .times.icon').onclick = () => {
-                    form_addAddress.querySelector('.add_address').classList.add('disabled')
-                }
+            })
 
-                informationBox.querySelector('.changePwd').onclick = function () {
-                    informationBox.querySelector('.form_info').classList.toggle('disabled')
-                    informationBox.querySelector('.update_password').classList.toggle('disabled')
-                    if (this.innerText === 'Quay lại') {
-                        this.innerText = 'Đổi mật khẩu'
+            // ẩn form sửa đỉa chỉ
+            btn_closeEdit.map((btn, index) => {
+                btn.onclick = (e) => {
+                    viewAddress[index].classList.remove('disabled')
+                    editAddress[index].classList.add('disabled')
+                }
+            })
+
+            // click để hiện form thêm đỉa chỉ
+            form_addAddress.querySelector('button.add_address').onclick = (e) => {
+                if (form_addAddress.querySelector('.add_address').classList.contains('disabled')) {
+                    e.preventDefault()
+                    form_addAddress.querySelector('.add_address').classList.remove('disabled')
+                }
+            }
+
+            // click để ẩn form thêm địa chỉ
+            form_addAddress.querySelector('.add_address .times.icon').onclick = () => {
+                form_addAddress.querySelector('.add_address').classList.add('disabled')
+            }
+
+
+            informationBox.querySelector('.changePwd').onclick = function () {
+                informationBox.querySelector('.form_info').classList.toggle('disabled')
+                informationBox.querySelector('.update_password').classList.toggle('disabled')
+                if (this.innerText === 'Quay lại') {
+                    this.innerText = 'Đổi mật khẩu'
+                }
+                else {
+                    this.innerText = 'Quay lại'
+                }
+            }
+
+            // submit form đổi mật khẩu
+            btn_updateSubmit.onclick = function () {
+                const formUpdate = this.parentElement.parentElement
+                const oldPwd = formUpdate.querySelector('input.oldPassword')
+                const pwd = formUpdate.querySelector('input[name="password"]')
+                const pwd2 = formUpdate.querySelector('#accountPwd2')
+                formUpdate.onsubmit = function (e) {
+                    e.preventDefault();
+                    if (pwd.value !== pwd2.value) {
+                        pwd2.parentElement.querySelector('span').innerText = 'Mật khẩu không khớp vui lòng nhập lại!'
+                    }
+                    else if (oldPwd.value === pwd.value) {
+                        pwd.parentElement.querySelector('span').innerText = 'Vui lòng không nhập trùng với mật khẩu cũ!'
                     }
                     else {
-                        this.innerText = 'Quay lại'
-                    }
-                }
-
-                btn_updateSubmit.onclick = function () {
-                    const formUpdate = this.parentElement.parentElement
-                    const oldPwd = formUpdate.querySelector('input.oldPassword')
-                    const pwd = formUpdate.querySelector('input[name="password"]')
-                    const pwd2 = formUpdate.querySelector('#accountPwd2')
-                    formUpdate.onsubmit = function (e) {
-                        e.preventDefault();
-                        if (pwd.value !== pwd2.value) {
-                            pwd2.parentElement.querySelector('span').innerText = 'Mật khẩu không khớp vui lòng nhập lại!'
-                        }
-                        else if (oldPwd.value === pwd.value) {
-                            pwd.parentElement.querySelector('span').innerText = 'Vui lòng không nhập trùng với mật khẩu cũ!'
-                        }
-                        else {
-                            fetch(`http://localhost:3000/me/checkAccount?auth=password`, {
-                                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                                mode: 'cors', // no-cors, *cors, same-origin
-                                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                                credentials: 'same-origin', // include, *same-origin, omit
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                                },
-                                redirect: 'follow', // manual, *follow, error
-                                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                                body: JSON.stringify({
-                                    password: oldPwd.value,
-                                })
+                        fetch(`http://localhost:3000/me/checkAccount?auth=password`, {
+                            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                            mode: 'cors', // no-cors, *cors, same-origin
+                            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                            credentials: 'same-origin', // include, *same-origin, omit
+                            headers: {
+                                'Content-Type': 'application/json'
+                                // 'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            redirect: 'follow', // manual, *follow, error
+                            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                            body: JSON.stringify({
+                                password: oldPwd.value,
                             })
-                                .then(res => res.json())
-                                .then(res => {
-                                    if (!res) {
-                                        oldPwd.parentElement.querySelector('span').innerText = 'Mật khẩu không đúng vui lòng kiểm tra lại!'
-                                    }
-                                    else {
-                                        alert('Cập nhật thành công')
-                                        formUpdate.submit()
-                                    }
-                                })
-                                .catch(() => alert('loi'))
-                        }
+                        })
+                            .then(res => res.json())
+                            .then(res => {
+                                if (!res) {
+                                    oldPwd.parentElement.querySelector('span').innerText = 'Mật khẩu không đúng vui lòng kiểm tra lại!'
+                                }
+                                else {
+                                    alert('Cập nhật thành công')
+                                    formUpdate.submit()
+                                }
+                            })
+                            .catch(() => alert('loi'))
                     }
                 }
             }
-        })
-    </script>
+        }
+    })
+</script>

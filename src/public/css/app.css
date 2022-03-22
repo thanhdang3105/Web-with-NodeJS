@@ -366,7 +366,8 @@ nav.navbar_header {
 
 .formListProducts .list_products {
   max-height: 70vh;
-  overflow-y: auto; }
+  overflow-y: auto;
+  margin-top: 0.5rem; }
 
 .paginationHeader {
   display: flex;
@@ -574,7 +575,7 @@ nav.navbar_header {
   margin: 2rem auto;
   height: 70vh; }
   .accountManage .list_manage {
-    width: 20%;
+    width: 15%;
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -587,7 +588,7 @@ nav.navbar_header {
       color: #000;
       font-weight: bold; }
     .accountManage .list_manage a {
-      width: 40%; }
+      width: 60%; }
   .accountManage .info_account {
     border-left: 1px solid black;
     flex: 1;
@@ -598,6 +599,12 @@ nav.navbar_header {
     .accountManage .info_account .logged.information {
       margin: auto;
       width: 80%; }
+    .accountManage .info_account .logged.list_account {
+      align-self: flex-start; }
+      .accountManage .info_account .logged.list_account table.table-listAccount {
+        max-height: 60vh;
+        overflow-y: auto;
+        display: block; }
     .accountManage .info_account .logged.address {
       display: flex;
       gap: 15px;
