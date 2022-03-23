@@ -13,20 +13,29 @@ class ProductController {
     index(req, res, next) {
         let perPage = 24 // số lượng sản phẩm xuất hiện trên 1 page
         let page = req.query.page || 1
+        let sort = {}
+        if (Object.keys(req.query)[0]) {
+            const key = Object.keys(req.query)[0]
+            sort = {
+                [key]: req.query[key]
+            }
+        }
         Products
-            .find({}) // find tất cả các data
+            .find(sort) // find tất cả các data
             .skip((perPage * page) - perPage) // Trong page đầu tiên sẽ bỏ qua giá trị là 0
             .limit(perPage)
             .exec((err, products) => {
                 Products.countDocuments((err, count) => { // đếm để tính có bao nhiêu trang
                     if (err) return next(err);
 
-                    let pages = Math.ceil(count / perPage)
+                    if (req.query.type || req.query.miniType) {
+                        count = products.length
+                    }
 
+                    let pages = Math.ceil(count / perPage)
                     const img = mutipleMongoosetoObject(products).map(Products => {
                         return Products.imageProducts[0]
                     })
-                    
                     res.render('products/homeProducts', {
                         products: mutipleMongoosetoObject(products).map((product, index) => {
                             if (product.imageProducts.length > 3) {
@@ -36,10 +45,53 @@ class ProductController {
                             return product
                         }),
                         currentPage: page, // page hiện tại
-                        pages, // tổng số các page
+                        pages: pages > 1 ? pages : '', // tổng số các page
                     }) // Trả về dữ liệu các sản phẩm theo định dạng như JSON, XML,...
                 });
             });
+    }
+
+    //[post] /search
+    searchProducts(req, res, next) {
+        Products.find({})
+            .then(products => {
+                let searchValue = []
+                products.map((item, index) => {
+                    function setText(text) {
+                        return text.normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+                    }
+                    const name = setText(item.name.toLowerCase())
+                    const search = setText(req.body.inputSearch.toLowerCase())
+
+                    if (name.includes(search)) {
+                        searchValue.push(item)
+                    }
+                    if(products.length == index + 1 && searchValue.length == 0){
+                        products.map(item => {
+                            const type = setText(item.miniType.toLowerCase())
+                            if(type.includes(search) || search.includes(type)){
+                                searchValue.push(item)
+                            }
+                        })
+                    }
+                })
+                
+                    const img = mutipleMongoosetoObject(searchValue).map(Products => {
+                        return Products.imageProducts[0]
+                    })
+                    res.render('products/searchProducts', {
+                        data: mutipleMongoosetoObject(searchValue).map((product, index) => {
+                            if (product.imageProducts.length > 3) {
+                                product.imageProducts.length = 3
+                            }
+                            product.img = img[index]
+                            return product
+                        })
+                    })
+            })
+            .catch(err => console.log(err))
     }
 
     //[get] /products/:slug
@@ -61,13 +113,13 @@ class ProductController {
 
     //[post] /products/addCart/:slug
     Cart(req, res, next) {
-        if (req.session.accountID) {
+        if (req.session.account) {
             Cart.find({
-                    userId: req.session.accountID
+                    userId: res.locals.user.id
                 })
                 .then(cart => {
                     if (cart.length === 0) {
-                        req.body.userId = req.session.accountID
+                        req.body.userId = res.locals.user.id
                         req.body.slug = req.params.slug
                         req.body.count = 1
                         let data = new Cart(req.body)
@@ -92,11 +144,11 @@ class ProductController {
                     } else {
                         const check = cart.filter(item => {
                             return item.color === req.body.color && item.size === req.body.size &&
-                                item.slug === req.body.slug && item.userId === req.session.accountID
+                                item.slug === req.body.slug && item.userId == res.locals.user.id
                         })
                         if (check.length == 0) {
                             const data = new Cart({
-                                userId: req.session.accountID,
+                                userId: res.locals.user.id,
                                 slug: req.params.slug,
                                 count: 1,
                                 color: req.body.color,
@@ -127,18 +179,19 @@ class ProductController {
 
                         } else {
                             check[0].count += 1
-                            if(check[0].count >= 10){
+                            if (check[0].count > 10) {
                                 res.json({
-                                    err:'Số lượng tối đa là 10/sản phẩm nếu bạn muốn mua sỉ vui lòng liên hệ hotline'
+                                    err: 'Số lượng tối đa là 10/sản phẩm nếu bạn muốn mua sỉ vui lòng liên hệ hotline'
                                 })
+                            } else {
+                                Cart.updateOne({
+                                        _id: check[0]._id
+                                    }, check[0])
+                                    .then(() => {
+                                        res.json(check[0])
+                                    })
+                                    .catch(next)
                             }
-                            Cart.updateOne({
-                                    _id: check[0]._id
-                                }, check[0])
-                                .then(() => {
-                                    res.json(check[0])
-                                })
-                                .catch(next)
                         }
                     }
                 })
@@ -150,9 +203,9 @@ class ProductController {
 
     //[post] /products/cart
     updateCart(req, res, next) {
-        req.body.userId = req.session.accountID
+        req.body.userId = res.locals.user.id
         Cart.updateOne({
-                userId: req.session.accountID,
+                userId: res.locals.user.id,
                 slug: req.body.slug,
                 color: req.body.color,
                 size: req.body.size

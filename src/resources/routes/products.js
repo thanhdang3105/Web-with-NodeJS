@@ -7,6 +7,8 @@ router.delete('/removeCart', productController.removeItemCart)
 
 router.post('/cart', productController.updateCart)
 
+router.post('/search', productController.searchProducts)
+
 router.get('/:slug',productController.showProducts)
 
 router.post('/addCart/:slug',productController.Cart)

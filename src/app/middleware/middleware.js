@@ -16,7 +16,7 @@ module.exports = async function middleware(req, res, next) {
         })
         .catch(next)
         await Cart.find({
-                userId: req.session.accountID
+                userId: res.locals.user.id
             })
             .then(cart => {
                 arrcart = mutipleMongoosetoObject(cart)

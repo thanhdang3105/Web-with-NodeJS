@@ -605,6 +605,8 @@ nav.navbar_header {
         max-height: 60vh;
         overflow-y: auto;
         display: block; }
+        .accountManage .info_account .logged.list_account table.table-listAccount th {
+          width: fit-content; }
     .accountManage .info_account .logged.address {
       display: flex;
       gap: 15px;

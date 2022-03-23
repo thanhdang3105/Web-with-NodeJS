@@ -92,6 +92,6 @@ app.set('views', path.join(__dirname, 'resources', 'views'))
 //Khởi tạo router
 routes(app)
 //Lắng nghe sever
-app.listen(process.env.PORT, () =>{
-    console.log(`App listening at http://localhost:${port}/`)
+app.listen((process.env.PORT || 3000), () =>{
+    console.log(`App listening at http://localhost:${(process.env.PORT || 3000)}/`)
 })

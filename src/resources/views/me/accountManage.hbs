@@ -98,11 +98,11 @@
                         </th>
                         <th scope="col">Admin</th>
                         <th scope="col">Tên tài khoản</th>
-                        <th scope="col">Họ</th>
+                        <th scope="col">Họ tên</th>
                         <th scope="col">Ngày sinh</th>
                         <th scope="col">Giới tính</th>
-                        <th scope="col">Số điện thoại</th>
-                        <th scope="col">Địa chỉ</th>
+                        <th scope="col" style="width: 1%">Số điện thoại</th>
+                        <th scope="col" colspan="2">Địa chỉ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,6 +126,9 @@
                         <td>{{this.sex}}</td>
                         <td>{{this.phoneNumber}}</td>
                         <td>{{this.address}}</td>
+                        <td style="text-align:center">
+                        <button type="button" onclick="delAccount(this)" data-toggle="modal" data-target="#removeAccount" class="btn btn-danger">Xoá</button>
+                    </td>
                     </tr>
                     {{/each}}
                 </tbody>
@@ -255,6 +258,9 @@
              return `${index +1}.${checkbox.value}\n`
         }).join('')
         btnRemove.toggleAttribute('disabled',!checkbox.checked)
+    }
+    function delAccount(btn) {
+        btn.parentElement.parentElement.querySelector('input[name="accountName[]"]').click()
     }
     
     function removeIvalid(element) {

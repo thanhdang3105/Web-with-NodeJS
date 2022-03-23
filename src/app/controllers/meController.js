@@ -10,6 +10,7 @@ const {
     mutipleMongoosetoObject,
     setImageProducts
 } = require('../../resources/util/mongoose')
+const { resourceUsage } = require('process')
 class MeController {
 
     index(req, res, next) {
@@ -40,8 +41,19 @@ class MeController {
     create(req, res, next) {
         TypeProducts.find({})
             .then(type => {
+                var miniType = type.map(type => type.miniType)
+                miniType = miniType.map(mIniType => {
+                    return mIniType.map(miniType => {
+                        if(miniType.miniType){
+                            return miniType.miniType
+                        }
+                        return miniType
+                    })
+                })
+                const Type = mutipleMongoosetoObject(type)
+                Type.map((type,index) => type.miniType = miniType[index])
                 res.render('me/createProducts', {
-                    type: mutipleMongoosetoObject(type)
+                    type: Type
                 })
             })
             .catch(next);
@@ -186,10 +198,20 @@ class MeController {
                     type: fields.type
                 })
                 .then(type => {
+                    let imgMiniType
+                        if(typeof fields.imageProducts == 'array'){
+                            imgMiniType = fields.imageProducts[0]
+                        }
+                        else {
+                            imgMiniType = fields.imageProducts
+                        }
                     if (type.length == 0) {
                         const typeProducts = new TypeProducts({
                             type: fields.type,
-                            miniType: [fields.miniType]
+                            miniType: [{
+                                miniType: fields.miniType,
+                                img: imgMiniType
+                            }]
                         })
                         typeProducts.save(err => {
                             if (err) {
@@ -224,7 +246,10 @@ class MeController {
                                 next()
                             }
                         })
-                        const newMiniType = [...type[0].miniType, fields.miniType]
+                        const newMiniType = [...type[0].miniType, {
+                            miniType: fields.miniType,
+                            img: imgMiniType
+                        }]
                         TypeProducts.updateOne({
                                 type: fields.type
                             }, {
@@ -287,7 +312,7 @@ class MeController {
                 if (res.locals.user) {
                     req.body.admin = res.locals.user.admin
                 }
-                 User.findOne({
+                User.findOne({
                         accountName: req.body.accountName
                     })
                     .then(user => {
@@ -335,22 +360,26 @@ class MeController {
                     req.session.account = user.accountName;
                     res.redirect(`/products/${page}`)
                 } else {
-                    if(user.admin){
-                        User.find({})
-                        .then(listUsers => {
+                    if (user) {
+                        if (user.admin) {
+                            User.find({})
+                                .then(listUsers => {
+                                    res.render('me/accountManage', {
+                                        user: mongoosetoObject(user),
+                                        listUsers: mutipleMongoosetoObject(listUsers)
+                                    })
+                                })
+                                .catch(err => console.log(err))
+                        } else {
                             res.render('me/accountManage', {
-                                user: mongoosetoObject(user),
-                                listUsers: mutipleMongoosetoObject(listUsers)
+                                user: mongoosetoObject(user)
                             })
-                        })
-                        .catch(err => console.log(err))
-                    }
-                    else{
+                        }
+                    } else {
                         res.render('me/accountManage', {
                             user: mongoosetoObject(user)
                         })
                     }
-                    
                 }
             })
             .catch(next)
@@ -411,14 +440,14 @@ class MeController {
     //[delete] /me/account
     deleteAccount(req, res, next) {
         User.deleteMany({
-            accountName : {
-                $in: req.body.accountName
-            }
-        })
-        .then(() => {
-            res.redirect('back')
-        })
-        .catch(next)
+                accountName: {
+                    $in: req.body.accountName
+                }
+            })
+            .then(() => {
+                res.redirect('back')
+            })
+            .catch(next)
     }
 }
 

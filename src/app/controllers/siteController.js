@@ -1,4 +1,5 @@
 const Products = require('../models/Products')
+const TypeProducts = require('../models/TypeProducts')
 const {
     mutipleMongoosetoObject
 } = require('../../resources/util/mongoose')
@@ -8,8 +9,17 @@ class SiteController {
 
     //[Get] /
     index(req, res, next) {
-        Products.find({})
-            .then(products => {
+        Promise.all([Products.find({}),TypeProducts.find({})])
+            .then(([products,type]) => {
+                var miniType = type.map(type => type.miniType)
+                var arr = []
+                miniType.map(miniTypeImg => {
+                    return miniTypeImg.map(miniType => {
+                        arr.push(miniType)
+                    })
+                })
+                // const Type = mutipleMongoosetoObject(type)
+                // Type.map((type,index) => type.miniType = miniType[index])
                 const img = mutipleMongoosetoObject(products).map(Products => {
                     return Products.imageProducts[0]
                 })
@@ -25,6 +35,7 @@ class SiteController {
                 data.length = 8
                 res.render('home', {
                     products: data,
+                    type: arr
                 })
             })
             .catch(next)

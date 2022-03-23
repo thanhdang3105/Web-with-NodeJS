@@ -887,6 +887,9 @@ nav.navbar_header {
                 max-height: 60vh;
                 overflow-y: auto;
                 display: block;
+                th{
+                    width: fit-content;
+                }
             }
         }
 

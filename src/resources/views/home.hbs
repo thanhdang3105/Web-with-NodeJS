@@ -26,66 +26,14 @@
         </a>
     </div>
     <ul class="container listShortcut_productSort">
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/IMG_0986.JPG" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Áo sơ mi</span>
+        {{#each type}}
+        <li class="itemShortcut_productSort"><a href="/products?miniType={{this.miniType}}" class="itemShortcut--link">
+                <img src="/img/products/{{this.img}}" alt="image_itemShortcut" class="itemShortcut--img">
+                <span class="itemShortcut--nameSort">{{this.miniType}}</span>
             </a>
         </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/bombernyden.png" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Áo thun</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/bombernyvangtrang.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Áo polo</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/bothethaobrool.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Áo nỉ</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/botthaonikeden.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Áo khoác</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/botthaoniketrang.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Quần jean</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/depchampion.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Quần jogger</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/shortessential.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Quần short</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/shortessential.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Quần short</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/shortessential.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Quần short</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/shortessential.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Quần short</span>
-            </a>
-        </li>
-        <li class="itemShortcut_productSort"><a href="/products?sort=top" class="itemShortcut--link">
-                <img src="/img/products/shortessential.jpg" alt="image_itemShortcut" class="itemShortcut--img">
-                <span class="itemShortcut--nameSort">Quần short</span>
-            </a>
-        </li>
+        {{/each}}
+        
     </ul>
     <div class="container newArrival_products">
         <a href="/products" class="banner_newArrival">
