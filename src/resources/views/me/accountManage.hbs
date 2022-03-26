@@ -13,7 +13,7 @@
     </ul>
     <div class="info_account">
         {{#if user}}
-        <div class="logged information">
+        <div class="logged information disabled">
             <form method="POST" action="/me/user?_method=put">
                 <div class="form_info">
                     <h1>Thông tin tài khoản</h1>
@@ -214,6 +214,35 @@
                 </div>
                 <button class="btn btn-primary add_address">Thêm địa chỉ</button>
             </form>
+        </div>
+        <div class="logged order">
+            <table class="table table-striped mt-1 table-listAccount">
+                <thead style="background-color: #569BDB;color:white">
+                    <tr>
+                        
+                        <th scope="col">Đơn hàng</th>
+                        <th scope="col">Ngày đặt</th>
+                        <th scope="col">Địa chỉ</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col">Phương thức</th>
+                        <th scope="col">Giới tính</th>
+                        <th scope="col" style="width: 1%">Số điện thoại</th>
+                        <th scope="col" colspan="2">Địa chỉ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each order}}
+                    <tr>
+                        <td>{{this._id}}</td>
+                        <td>{{this.datedAt}}</td>
+                        <td>{{this.Address}}</td>
+                        <td>{{this.Phone}}</td>
+                        <td>{{this.shipperCheck}}</td>
+                        
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </div>
         {{else}}
         <div class="unlogged">

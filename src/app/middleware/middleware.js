@@ -9,14 +9,19 @@ module.exports = async function middleware(req, res, next) {
     if (req.session.account) {
         await User.findOne({accountName : req.session.account })
         .then(user => {
-            res.locals.user = {
-                id: user._id,
-                admin: user.admin,
+            if(user){
+                res.locals.user = {
+                    id: user._id,
+                    admin: user.admin,
+                    name: user.firstName + user.lastName,
+                    address: user.address,
+                    phoneNumber: user.phoneNumber,
+                }
             }
         })
         .catch(next)
         await Cart.find({
-                userId: res.locals.user.id
+                userId: res.locals.user ? res.locals.user.id : ''
             })
             .then(cart => {
                 arrcart = mutipleMongoosetoObject(cart)

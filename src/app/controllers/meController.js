@@ -2,6 +2,7 @@ const Products = require('../models/Products')
 const Carts = require('../models/Cart')
 const TypeProducts = require('../models/TypeProducts')
 const User = require('../models/User')
+const Order = require('../models/Order')
 const formidable = require('formidable')
 const path = require('path')
 
@@ -10,13 +11,13 @@ const {
     mutipleMongoosetoObject,
     setImageProducts
 } = require('../../resources/util/mongoose')
-const { resourceUsage } = require('process')
+
 class MeController {
 
     index(req, res, next) {
 
     }
-
+    // [get] /me/products/cart-list
     cartList(req, res, next) {
         Carts.find({})
             .then(() => {
@@ -25,8 +26,26 @@ class MeController {
             .catch(next)
     }
 
+    // [post] /me/products/cart-list
     payment(req, res, next) {
-        res.json(req.body)
+        req.body.userId = res.locals.user.id
+        req.body.Products = req.body.Products.map(product => {
+            return Object.fromEntries(product.split(',').map(key =>{
+                return key.split(':')
+            
+        }))
+        })
+        const data = new Order(req.body)
+        data.save(err => {
+            if(err) return console.error(err)
+            Carts.deleteMany({
+                userId: req.body.userId
+            })
+            .then(() => {
+                res.redirect('/me/account')
+            })
+            .catch(err => console.log(err))
+        })        
     }
 
     listProducts(req, res, next) {
@@ -352,8 +371,8 @@ class MeController {
     // [get] /me/account
     accountManage(req, res, next) {
         User.findOne({
-                accountName: req.session.account
-            })
+            accountName: req.session.account
+        })
             .then(user => {
                 if (req.session.page) {
                     const page = req.session.page
@@ -361,24 +380,35 @@ class MeController {
                     res.redirect(`/products/${page}`)
                 } else {
                     if (user) {
-                        if (user.admin) {
-                            User.find({})
-                                .then(listUsers => {
-                                    res.render('me/accountManage', {
-                                        user: mongoosetoObject(user),
-                                        listUsers: mutipleMongoosetoObject(listUsers)
-                                    })
-                                })
-                                .catch(err => console.log(err))
-                        } else {
-                            res.render('me/accountManage', {
-                                user: mongoosetoObject(user)
-                            })
-                        }
-                    } else {
-                        res.render('me/accountManage', {
-                            user: mongoosetoObject(user)
+                        Order.find({
+                            userId: res.locals.user.id
                         })
+                        .then(order => {
+                            if (user.admin) {
+                                User.find({})
+                                    .then(listUsers => {
+                                        res.render('me/accountManage', {
+                                            user: mongoosetoObject(user),
+                                            listUsers: mutipleMongoosetoObject(listUsers),
+                                            order: mutipleMongoosetoObject(order).map(order => {
+                                                order.datedAt = new Date(order.createdAt).getDate()
+                                                return order
+                                            }),
+                                        })
+                                    })
+                                    .catch(err => console.log(err))
+                            } else {
+                                res.render('me/accountManage', {
+                                    user: mongoosetoObject(user),
+                                    order: mutipleMongoosetoObject(order).map(order => {
+                                        order.datedAt = new Date(order.createdAt).getDate()
+                                        return order
+                                    }),
+                                })
+                            }
+                        })
+                    } else {
+                        res.render('me/accountManage')
                     }
                 }
             })

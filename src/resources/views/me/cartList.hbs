@@ -1,54 +1,50 @@
 <form method="post" action="" class="container Cart_list">
   <div class="infomation_form">
     <h1>Thông tin giao hàng</h1>
-    <p>Bạn đã có tài khoản? <a href="/me/user">Đăng nhập</a></p>
     <div class="form-group">
-      <input type="text" class="form-control" name="Name" placeholder="Họ và tên">
+      <input type="text" class="form-control" name="Name" placeholder="Họ và tên" value="{{user.name}}">
     </div>
     <div class="form-group">
-      <input type="tel" class="form-control" name="Phone" placeholder="Điện thoại">
+      <input type="tel" class="form-control" name="Phone" placeholder="Điện thoại" value="{{user.phoneNumber}}">
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" name="Address" placeholder="Địa chỉ">
+      <input type="text" class="form-control" name="Address" placeholder="Địa chỉ" value="{{user.address}}">
     </div>
     <div class="form-row">
-      <div class="form-group col-md-4">
-        <select id="inputState" class="form-control">
-          <option selected>Chọn tỉnh / thành</option>
-          <option>...</option>
+      <div class="form-group col-md-6">
+        <select name="TP" class="form-control" required>
         </select>
       </div>
-      <div class="form-group col-md-4">
-        <select id="inputState" class="form-control">
-          <option selected>Chọn quận / huyện</option>
-          <option>...</option>
-        </select>
-      </div>
-      <div class="form-group col-md-4">
-        <select id="inputState" class="form-control">
-          <option selected>Chọn phường / xã </option>
-          <option>...</option>
+      <div class="form-group col-md-6">
+        <select name="District" disabled required class="form-control">
+          <option value="">Chọn quận / huyện</option>
         </select>
       </div>
     </div>
     <div class="input-group shipper">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-           <input type="radio" aria-label="Radio button for following text input" name="CheckShip" value="COD" checked>
-           </div>
-      <input type="text" class="form-control" aria-label="Text input with radio button" value="Thanh toán nhận hàng (COD)" disabled>
+      <div class="checkBox">
+        <input type="radio" name="shipperCheck" id="radio1" value="COD" checked>
+        <div class="text">
+          <label for="radio1">Nhận hàng thanh toán</label>
+          <p class="showText">Nhận hàng -> kiểm tra -> Thanh toán</p>
+        </div>
       </div>
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-           <input type="radio" aria-label="Radio button for following text input" name="CheckShip" value="MOMO">
-           </div>
-      <input type="text" class="form-control" aria-label="Text input with radio button" value="Ví điện tử Momo" disabled>
+      <div class="checkBox">
+        <input type="radio" id="radio2" name="shipperCheck" value="MOMO">
+        <div class="text">
+          <label for="radio2">Thanh toán Momo</label>
+          <p class="showText">Momo: 0852407686</p>
+        </div>
       </div>
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-           <input type="radio" aria-label="Radio button for following text input" name="CheckShip" value="BANKING">
-           </div>
-      <input type="text" class="form-control" aria-label="Text input with radio button" value="Chuyển khoản ngân hàng" disabled>
+      <div class="checkBox">
+        <input type="radio" id="radio3" name="shipperCheck" value="BANKING">
+        <div class="text">
+          <label for="radio3">Chuyển khoản ngân hàng</label>
+          <p class="showText">Ngân hàng: MB Bank <br>
+            STK: 3210131052000<br>
+            Chủ tài khoản: Đặng Hữu Thanh
+          </p>
+        </div>
       </div>
     </div>
     <button type="submit" class="btn btn-primary">Hoàn tất đơn hàng</button>
@@ -66,10 +62,10 @@
           <span class="item_type">{{this.color}} / {{this.size}}</span>
           <span class="item_price"><strong>{{this.price}}</strong> đ</span>
           <p class="item_count"><strong>{{this.count}}</strong>
-            </p>
+          </p>
         </div>
         <div class="d-none">
-          <input type="text" name="id" value="{{this._id}}" class="hide">
+          <input type="text" name="Products" value="slug: {{this.slug}},color: {{this.color}},size: {{this.size}},count: {{this.count}}" class="hide">
         </div>
         <a onclick="removeCart('{{this._id}}')" style="color:black" class="oi oi-trash mr-3"></a>
       </li>
@@ -77,17 +73,41 @@
       <h5>Chưa có sản phẩm nào</h5>
       {{/each}}
     </ul>
-    <p class="total_price">Thành tiền: <strong>1231456</strong></p>
+    <p class="total_price">Thành tiền: <strong></strong></p>
   </div>
 </form>
 
 <script>
-    const priceItem = [...document.querySelectorAll('.form_carlist .item_price strong')]
-    const totalPrice = document.querySelector('.form_carlist .total_price strong')
-        var total = 0
-    priceItem.map(price => {
-        total = total + Number(price.innerText.split(',').join(''))
+  const priceItem = [...document.querySelectorAll('.form_carlist .item_price strong')]
+  const totalPrice = document.querySelector('.form_carlist .total_price strong')
+  var total = 0
+  priceItem.map(price => {
+    total = total + Number(price.innerText.split(',').join(''))
+  })
+  totalPrice.innerText = total.toLocaleString('en-gb') + ' đ'
+      
+  fetch('https://provinces.open-api.vn/api/?depth=2')
+    .then(res => res.json())
+    .then(res => {
+      const selectCity = document.querySelector('select[name="TP"]')
+      const html = res.map(data => {
+        return `<option value="${data.name}">${data.name}</option>`
+      }).join('')
+      selectCity.innerHTML = '<option value="">Chọn tỉnh / thành</option>' + html
+      selectCity.onchange = function() {
+        document.querySelector('select[name="District"]').removeAttribute('disabled')
+         if(this.value === ''){
+           document.querySelector('select[name="District"]').setAttribute('disabled',true)
+         }
+         res.map(data =>{
+           if(data.name === this.value){
+             const html = data.districts.map(district => {
+                  return `<option value="${district.name}">${district.name}</option>`
+             }).join('')
+             document.querySelector('select[name="District"]').innerHTML = '<option value="">Chọn quận / huyện</option>' + html
+           }
+         })
+      }
     })
-    totalPrice.innerText = total.toLocaleString('en-gb') +' đ'
-
+    .catch(err => console.log(err))
 </script>
