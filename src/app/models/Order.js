@@ -30,6 +30,9 @@ const Order = new Schema({
     datedAt: {
         type: Date,
         default: Date.now(),
+    },
+    totalPrice: {
+        type: String,
     }
 })
 

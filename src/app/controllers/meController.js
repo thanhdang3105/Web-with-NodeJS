@@ -26,26 +26,66 @@ class MeController {
             .catch(next)
     }
 
+    //[get] /me/order/:id
+    showOrder(req, res, next) {
+        Order.findOne({
+                _id: req.params.id
+            })
+            .then(order => {
+                const arSlug = order.Products.map(product => {
+                    return product.slug.split(' ').join('')
+                })
+                Products.find({
+                        slug: {
+                            $in: arSlug
+                        }
+                    })
+                    .then(products => {
+                        const data = mongoosetoObject(order)
+                        let date = new Date(data.datedAt)
+                        data.datedAt = date.getDate() + '/' + (Number(date.getMonth()) + 1) + '/' + date.getFullYear()
+                        data.Products.map(product => {
+                            products.map(item => {
+                                product.slug = product.slug.split(' ').join('')
+                                if (product.slug === item.slug) {
+                                    product.name = item.name
+                                    product.totalPrice = (Number(item.price.split(',').join('')) * Number(product.count)).toLocaleString('en-gb') + 'đ'
+                                    product.price = item.price + 'đ'
+                                }
+                            })
+                        })
+                        res.render('me/showOrder', {
+                            data
+                        })
+                    })
+            })
+    }
+
     // [post] /me/products/cart-list
     payment(req, res, next) {
         req.body.userId = res.locals.user.id
-        req.body.Products = req.body.Products.map(product => {
-            return Object.fromEntries(product.split(',').map(key =>{
+        if (typeof req.body.Products === 'string') {
+            req.body.Products = Object.fromEntries(req.body.Products.split(',').map(key => {
                 return key.split(':')
-            
-        }))
-        })
+            }))
+        } else if (typeof req.body.Products === 'object') {
+            req.body.Products = req.body.Products.map(product => {
+                return Object.fromEntries(product.split(',').map(key => {
+                    return key.split(':')
+                }))
+            })
+        }
         const data = new Order(req.body)
         data.save(err => {
-            if(err) return console.error(err)
+            if (err) return console.error(err)
             Carts.deleteMany({
-                userId: req.body.userId
-            })
-            .then(() => {
-                res.redirect('/me/account')
-            })
-            .catch(err => console.log(err))
-        })        
+                    userId: req.body.userId
+                })
+                .then(() => {
+                    res.redirect('/me/account')
+                })
+                .catch(err => console.log(err))
+        })
     }
 
     listProducts(req, res, next) {
@@ -63,14 +103,14 @@ class MeController {
                 var miniType = type.map(type => type.miniType)
                 miniType = miniType.map(mIniType => {
                     return mIniType.map(miniType => {
-                        if(miniType.miniType){
+                        if (miniType.miniType) {
                             return miniType.miniType
                         }
                         return miniType
                     })
                 })
                 const Type = mutipleMongoosetoObject(type)
-                Type.map((type,index) => type.miniType = miniType[index])
+                Type.map((type, index) => type.miniType = miniType[index])
                 res.render('me/createProducts', {
                     type: Type
                 })
@@ -218,12 +258,11 @@ class MeController {
                 })
                 .then(type => {
                     let imgMiniType
-                        if(typeof fields.imageProducts == 'array'){
-                            imgMiniType = fields.imageProducts[0]
-                        }
-                        else {
-                            imgMiniType = fields.imageProducts
-                        }
+                    if (typeof fields.imageProducts == 'array') {
+                        imgMiniType = fields.imageProducts[0]
+                    } else {
+                        imgMiniType = fields.imageProducts
+                    }
                     if (type.length == 0) {
                         const typeProducts = new TypeProducts({
                             type: fields.type,
@@ -371,8 +410,8 @@ class MeController {
     // [get] /me/account
     accountManage(req, res, next) {
         User.findOne({
-            accountName: req.session.account
-        })
+                accountName: req.session.account
+            })
             .then(user => {
                 if (req.session.page) {
                     const page = req.session.page
@@ -380,33 +419,38 @@ class MeController {
                     res.redirect(`/products/${page}`)
                 } else {
                     if (user) {
-                        Order.find({
-                            userId: res.locals.user.id
-                        })
-                        .then(order => {
-                            if (user.admin) {
-                                User.find({})
-                                    .then(listUsers => {
-                                        res.render('me/accountManage', {
-                                            user: mongoosetoObject(user),
-                                            listUsers: mutipleMongoosetoObject(listUsers),
-                                            order: mutipleMongoosetoObject(order).map(order => {
-                                                order.datedAt = new Date(order.createdAt).getDate()
-                                                return order
-                                            }),
-                                        })
-                                    })
-                                    .catch(err => console.log(err))
-                            } else {
-                                res.render('me/accountManage', {
-                                    user: mongoosetoObject(user),
-                                    order: mutipleMongoosetoObject(order).map(order => {
-                                        order.datedAt = new Date(order.createdAt).getDate()
+                        if (user.admin) {
+                            Promise.all([User.find({}),Order.find({})])
+                                .then(([listUsers,order]) => {
+                                    const donhang = mutipleMongoosetoObject(order).map(order => {
+                                        let date = new Date(order.datedAt)
+                                        order.datedAt = date.getDate() + '/' + (Number(date.getMonth()) + 1) + '/' + date.getFullYear()
                                         return order
-                                    }),
+                                    })
+                                    res.render('me/accountManage', {
+                                        user: mongoosetoObject(user),
+                                        listUsers: mutipleMongoosetoObject(listUsers),
+                                        order: donhang,
+                                    })
                                 })
-                            }
-                        })
+                                .catch(err => console.log(err))
+                        } else {
+                            Order.find({
+                                    userId: res.locals.user.id
+                                })
+                                .then(order => {
+                                    const donhang = mutipleMongoosetoObject(order).map(order => {
+                                        let date = new Date(order.datedAt)
+                                        order.datedAt = date.getDate() + '/' + (Number(date.getMonth()) + 1) + '/' + date.getFullYear()
+                                        return order
+                                    })
+                                    res.render('me/accountManage', {
+                                        user: mongoosetoObject(user),
+                                        order: donhang,
+                                    })
+                                })
+
+                        }
                     } else {
                         res.render('me/accountManage')
                     }

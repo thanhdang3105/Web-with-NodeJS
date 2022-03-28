@@ -625,6 +625,14 @@ nav.navbar_header {
         display: block; }
         .accountManage .info_account .logged.list_account table.table-listAccount th {
           width: fit-content; }
+    .accountManage .info_account .logged.order {
+      width: 100%;
+      align-self: flex-start;
+      max-height: 100%;
+      overflow: hidden; }
+      .accountManage .info_account .logged.order table {
+        max-height: 70vh;
+        overflow-y: auto; }
     .accountManage .info_account .logged.address {
       display: flex;
       gap: 15px;

@@ -1,0 +1,52 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb d-flex justify-content-center">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="/me/account">Tài khoản</a></li>
+        <li class="breadcrumb-item active">Đơn hàng({{data._id}})</li>
+    </ol>
+</nav>
+<div class="container">
+    <h3>Chi tiết đơn hàng</h3>
+    <h5>Ngày tạo đơn: {{data.datedAt}}</h5>
+    <h5>Phương thức thanh toán: {{data.shipperCheck}}</h5>
+    <div class="info d-flex justify-content-between p-3"
+        style="font-size: 1.2rem;">
+        <div class="text">
+            
+            <p><span class="oi oi-person"></span> : {{data.Name}}</p>
+        </div>
+        <div class="text">
+            <p><span class="oi oi-phone"></span> : {{data.Phone}}</p>
+        </div>
+        <div class="text">
+            <p><span class="oi oi-map-marker"></span> : {{data.Address}},{{data.District}},{{data.TP}}</p>
+        </div>
+    </div>
+    <table class="table table-striped mt-1">
+        <thead style="background-color: #569BDB;color:white">
+            <tr>
+
+                <th scope="col">Sản phẩm</th>
+                <th scope="col">Màu</th>
+                <th scope="col">Size</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data.Products}}
+            <tr>
+                <td><a href="/products/{{this.slug}}">{{this.name}}</a></td>
+                <td>{{this.color}}</td>
+                <td>{{this.size}}</td>
+                <td>{{this.count}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.totalPrice}}</td>
+
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    <h3 style="text-align: right; width:100%">Tổng đơn: {{data.totalPrice}}</h3>
+</div>

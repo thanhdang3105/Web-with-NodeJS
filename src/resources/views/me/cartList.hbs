@@ -73,19 +73,20 @@
       <h5>Chưa có sản phẩm nào</h5>
       {{/each}}
     </ul>
-    <p class="total_price">Thành tiền: <strong></strong></p>
+    <p class="total_price">Thành tiền: <strong>0</strong> <input type="text" name="totalPrice" class="hide"></p>
   </div>
 </form>
 
 <script>
   const priceItem = [...document.querySelectorAll('.form_carlist .item_price strong')]
   const totalPrice = document.querySelector('.form_carlist .total_price strong')
+  const inputtotalPrice = document.querySelector('.form_carlist .total_price input')
   var total = 0
   priceItem.map(price => {
     total = total + Number(price.innerText.split(',').join(''))
   })
   totalPrice.innerText = total.toLocaleString('en-gb') + ' đ'
-      
+      inputtotalPrice.value = total.toLocaleString('en-gb') + ' đ'
   fetch('https://provinces.open-api.vn/api/?depth=2')
     .then(res => res.json())
     .then(res => {

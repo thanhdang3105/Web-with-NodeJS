@@ -916,6 +916,17 @@ nav.navbar_header {
             }
         }
 
+        .logged.order{
+            width: 100%;
+            align-self: flex-start;
+            max-height: 100%;
+            overflow: hidden;
+            table{
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+        }
+
         .logged.address {
             display: flex;
             gap: 15px;

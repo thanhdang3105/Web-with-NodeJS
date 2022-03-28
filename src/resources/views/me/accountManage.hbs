@@ -216,7 +216,7 @@
             </form>
         </div>
         <div class="logged order">
-            <table class="table table-striped mt-1 table-listAccount">
+            <table class="table table-striped">
                 <thead style="background-color: #569BDB;color:white">
                     <tr>
                         
@@ -225,20 +225,36 @@
                         <th scope="col">Địa chỉ</th>
                         <th scope="col">Số điện thoại</th>
                         <th scope="col">Phương thức</th>
-                        <th scope="col">Giới tính</th>
-                        <th scope="col" style="width: 1%">Số điện thoại</th>
-                        <th scope="col" colspan="2">Địa chỉ</th>
+                        <th scope="col">Giá</th>
+                        <th scope="col">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each order}}
                     <tr>
-                        <td>{{this._id}}</td>
+                        <td><a href="/me/order/{{this._id}}">{{this._id}}</a></td>
                         <td>{{this.datedAt}}</td>
                         <td>{{this.Address}}</td>
                         <td>{{this.Phone}}</td>
                         <td>{{this.shipperCheck}}</td>
-                        
+                        <td>{{this.totalPrice}}</td>
+                        {{#if user.admin}}
+                            <td>
+                                {{!-- <button type="button" class="btn btn-primary">Đang đóng hàng</button> --}}
+                                <button type="button" class="btn btn-primary">Thành công</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger">Xoá</button>
+                            </td>
+                        {{else}}
+                            <td>
+                                <button type="button" class="btn btn-primary">Đang đóng hàng</button>
+                            </td>
+                        {{/if}}
+                        {{else}}
+                        <td colspan="7">
+                            <h1>Chưa có đơn hàng nào!</h1>
+                        </td>
                     </tr>
                     {{/each}}
                 </tbody>
