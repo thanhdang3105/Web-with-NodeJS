@@ -1,4 +1,5 @@
 const Products = require('../models/Products')
+const TypeProducts = require('../models/TypeProducts')
 const Cart = require('../models/Cart')
 const User = require('../models/User')
 const {
@@ -6,6 +7,11 @@ const {
 } = require('../../resources/util/mongoose')
 
 module.exports = async function middleware(req, res, next) {
+    await TypeProducts.find({})
+                      .then(type =>{
+                        res.locals.headerMenuType = mutipleMongoosetoObject(type)
+                      })
+    res.locals.sort = req.query.sort ? req.query.sort : 'default'
     if (req.session.account) {
         await User.findOne({accountName : req.session.account })
         .then(user => {
@@ -13,7 +19,7 @@ module.exports = async function middleware(req, res, next) {
                 res.locals.user = {
                     id: user._id,
                     admin: user.admin,
-                    name: user.firstName + user.lastName,
+                    name: user.firstName + ' ' + user.lastName,
                     address: user.address,
                     phoneNumber: user.phoneNumber,
                 }

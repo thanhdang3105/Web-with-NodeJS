@@ -57,10 +57,21 @@ nav.navbar_header {
   nav.navbar_header .control_heading .dropdown-item {
     display: flex;
     justify-content: space-between;
-    align-items: center; }
+    align-items: center;
+    position: relative; }
+    nav.navbar_header .control_heading .dropdown-item a {
+      flex: 1;
+      color: black; }
     nav.navbar_header .control_heading .dropdown-item span.oi {
       font-size: 0.7rem;
-      color: #999; }
+      color: #999;
+      cursor: pointer;
+      line-height: 1.5rem;
+      width: 20%;
+      text-align: right; }
+    nav.navbar_header .control_heading .dropdown-item .subMenu {
+      left: 100%;
+      top: -50%; }
   nav.navbar_header input.input_search {
     opacity: 0;
     order: 1;

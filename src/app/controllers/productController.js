@@ -68,28 +68,28 @@ class ProductController {
                     if (name.includes(search)) {
                         searchValue.push(item)
                     }
-                    if(products.length == index + 1 && searchValue.length == 0){
+                    if (products.length == index + 1 && searchValue.length == 0) {
                         products.map(item => {
                             const type = setText(item.miniType.toLowerCase())
-                            if(type.includes(search) || search.includes(type)){
+                            if (type.includes(search) || search.includes(type)) {
                                 searchValue.push(item)
                             }
                         })
                     }
                 })
-                
-                    const img = mutipleMongoosetoObject(searchValue).map(Products => {
-                        return Products.imageProducts[0]
+
+                const img = mutipleMongoosetoObject(searchValue).map(Products => {
+                    return Products.imageProducts[0]
+                })
+                res.render('products/searchProducts', {
+                    data: mutipleMongoosetoObject(searchValue).map((product, index) => {
+                        if (product.imageProducts.length > 3) {
+                            product.imageProducts.length = 3
+                        }
+                        product.img = img[index]
+                        return product
                     })
-                    res.render('products/searchProducts', {
-                        data: mutipleMongoosetoObject(searchValue).map((product, index) => {
-                            if (product.imageProducts.length > 3) {
-                                product.imageProducts.length = 3
-                            }
-                            product.img = img[index]
-                            return product
-                        })
-                    })
+                })
             })
             .catch(err => console.log(err))
     }

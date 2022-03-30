@@ -28,7 +28,7 @@ class SiteController {
                         product.imageProducts.length = 3
                     }
                     product.img = img[index]
-                    product.datedAt = new Date(Date.now() - product.datedAt).getDate()
+                    product.datedAt = new Date(Date.now() - product.datedAt).getUTCDate()
                     return product
                 })
                 const data = newArrival.sort((a,b) => a.datedAt - b.datedAt)

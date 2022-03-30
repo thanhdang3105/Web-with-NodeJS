@@ -36,6 +36,10 @@ router.post('/checkAccount', meController.checkAccount)
 
 router.delete('/account', meController.deleteAccount)
 
+router.delete('/account/:id', meController.removeOrder)
+
+router.put('/account/:id', meController.updateOrder)
+
 router.get('/account', meController.accountManage)
 
 router.get('/', meController.index)

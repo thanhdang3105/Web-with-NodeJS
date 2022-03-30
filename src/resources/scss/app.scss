@@ -89,12 +89,25 @@ nav.navbar_header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-
+            position: relative;
+            a{
+                flex:1;
+                color:black;
+            }
             span.oi {
                 font-size: 0.7rem;
                 color: #999;
+                cursor: pointer;
+                line-height: 1.5rem;
+                width: 20%;
+                text-align: right;
             }
-        }
+            
+            .subMenu{
+                left: 100%;
+                top: -50%;
+            }
+       }
     }
 
     //Search Input

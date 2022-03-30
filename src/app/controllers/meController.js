@@ -88,11 +88,23 @@ class MeController {
         })
     }
 
+    //[get] /products/list-products
     listProducts(req, res, next) {
         Products.find({})
-            .then(products => {
+        .then(products => {
+            let data = mutipleMongoosetoObject(products)
+            if(req.query.hasOwnProperty('sort')){
+                data = data.sort((a,b) => {
+                    if(req.query.sort === 'asc'){
+                        return Number(a.price.split(',').join('')) - Number(b.price.split(',').join(''))
+                    }
+                    else{
+                        return Number(b.price.split(',').join('')) - Number(a.price.split(',').join(''))
+                    }
+                })
+            }
                 res.render('me/listProducts', {
-                    products: mutipleMongoosetoObject(products),
+                    products: data,
                 })
             })
     }
@@ -120,21 +132,31 @@ class MeController {
 
     edit(req, res, next) {
         Promise.all([Products.findById(req.params.id), TypeProducts.find({})])
-            .then(([products, types]) => {
-                const listType = mutipleMongoosetoObject(types)
-                listType.map(type => {
-                    if (type.type == products.type) {
-                        type.selected = 'selected';
-                        type.miniType.map((miniType, index) => {
-                            if (miniType == products.miniType) {
-                                type.miniTypeIndex = index
-                            }
-                        })
+            .then(([products, type]) => {
+                const Type = mutipleMongoosetoObject(type)
+                var miniTypeIndex
+                var miniType = type.map(type => type.miniType)
+                miniType = miniType.map((mIniType,index) => {
+                    return mIniType.map(miniType => {
+                        if (miniType.miniType === products.miniType) {
+                            miniTypeIndex = index
+                        }
+                        if (miniType.miniType) {
+                            return miniType.miniType
+                        }
+                        return miniType
+                    })
+                })
+                Type.map((type, index) => {
+                    if(type.type === products.type){
+                        type.selected = true
+                        type.miniTypeIndex = miniTypeIndex
                     }
+                    type.miniType = miniType[index]
                 })
                 res.render('me/updateProducts', {
                     products: mongoosetoObject(products),
-                    type: listType
+                    type: Type
                 })
             })
             .catch(next)
@@ -161,10 +183,19 @@ class MeController {
                 })
                 .then(type => {
                     fields.imageProducts = imageProducts
+                    let testMiniType = false
+                    type[0].miniType.map(miniType => {
+                        if(miniType.miniType === fields.miniType){
+                            testMiniType = true
+                        }
+                    })
                     if (type.length == 0) {
                         const typeProducts = new TypeProducts({
                             type: fields.type,
-                            miniType: [fields.miniType]
+                            miniType: [{
+                                img: imageProducts[0],
+                                miniType: fields.miniType
+                            }]
                         })
                         typeProducts.save(err => {
                             if (err) {
@@ -180,7 +211,7 @@ class MeController {
                                 res.redirect('/me/products/list-products')
                             })
                             .catch(next)
-                    } else if (type[0].miniType.includes(fields.miniType)) {
+                    } else if (testMiniType) {
                         Products.updateOne({
                                 _id: req.params.id
                             }, fields)
@@ -196,7 +227,10 @@ class MeController {
                                 res.redirect('/me/products/list-products')
                             })
                             .catch(next)
-                        const newMiniType = [...type[0].miniType, fields.miniType]
+                        const newMiniType = [...type[0].miniType, {
+                            img: imageProducts[0],
+                            miniType: fields.miniType
+                        }]
                         TypeProducts.updateOne({
                                 type: fields.type
                             }, {
@@ -263,6 +297,12 @@ class MeController {
                     } else {
                         imgMiniType = fields.imageProducts
                     }
+                    let testMiniType = false
+                    type[0].miniType.map(miniType => {
+                        if(miniType.miniType === fields.miniType){
+                            testMiniType = true
+                        }
+                    })
                     if (type.length == 0) {
                         const typeProducts = new TypeProducts({
                             type: fields.type,
@@ -286,7 +326,7 @@ class MeController {
                                 res.redirect('/me/products/list-products')
                             }
                         })
-                    } else if (type[0].miniType.includes(fields.miniType)) {
+                    } else if (testMiniType) {
                         const products = new Products(fields)
                         products.save(err => {
                             if (err) {
@@ -335,7 +375,7 @@ class MeController {
 
     //[get] /me/user
     login(req, res, next) {
-        if (req.query.page) {
+        if (!req.session.account && req.query.page) {
             req.session.page = req.query.page
         }
         Products.find({})
@@ -416,6 +456,7 @@ class MeController {
                 if (req.session.page) {
                     const page = req.session.page
                     req.session.account = user.accountName;
+                    req.session.page = false
                     res.redirect(`/products/${page}`)
                 } else {
                     if (user) {
@@ -425,6 +466,7 @@ class MeController {
                                     const donhang = mutipleMongoosetoObject(order).map(order => {
                                         let date = new Date(order.datedAt)
                                         order.datedAt = date.getDate() + '/' + (Number(date.getMonth()) + 1) + '/' + date.getFullYear()
+                                        order.admin = user.admin
                                         return order
                                     })
                                     res.render('me/accountManage', {
@@ -522,6 +564,31 @@ class MeController {
                 res.redirect('back')
             })
             .catch(next)
+    }
+
+    // [put] /me/account/:id 
+    updateOrder(req, res, next) {
+        Order.findOne({_id: req.params.id})
+        .then(order =>{
+            if(order.status === 'Đang đóng hàng'){
+                order.status = 'Đã sẵn sàng'
+            }
+            else if(order.status === 'Đã sẵn sàng'){
+                order.status = 'Hoàn thành'
+            }
+            const data = new Order(order)
+            data.save(err =>{
+                err ? console.error(err) : res.json({success: order.status})
+            })
+        })
+    }
+
+    // [delete] /me/account/:id 
+    removeOrder(req, res, next) {
+        Order.deleteOne({_id: req.params.id})
+        .then(() => {
+            res.json({success: 'Thành công'})
+        })
     }
 }
 

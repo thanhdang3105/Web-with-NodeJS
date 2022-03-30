@@ -13,7 +13,7 @@
     </ul>
     <div class="info_account">
         {{#if user}}
-        <div class="logged information disabled">
+        <div class="logged information">
             <form method="POST" action="/me/user?_method=put">
                 <div class="form_info">
                     <h1>Thông tin tài khoản</h1>
@@ -93,7 +93,8 @@
                     <tr>
                         <th scope="col">
                             <div class="form-check form-check-inline">
-                                <input  onchange="checkAllAccount(this)" class="form-check-input" type="checkbox" id="checkAll">
+                                <input onchange="checkAllAccount(this)" class="form-check-input" type="checkbox"
+                                    id="checkAll">
                             </div>
                         </th>
                         <th scope="col">Admin</th>
@@ -110,8 +111,8 @@
                     <tr>
                         <th>
                             <div class="form-check form-check-inline">
-                                <input onclick="accountCheckbox(this)" class="form-check-input checkAccount" type="checkbox" name="accountName[]"
-                                    value="{{this.accountName}}">
+                                <input onclick="accountCheckbox(this)" class="form-check-input checkAccount"
+                                    type="checkbox" name="accountName[]" value="{{this.accountName}}">
                             </div>
                         </th>
                         <td>{{#if this.admin}}
@@ -127,8 +128,9 @@
                         <td>{{this.phoneNumber}}</td>
                         <td>{{this.address}}</td>
                         <td style="text-align:center">
-                        <button type="button" onclick="delAccount(this)" data-toggle="modal" data-target="#removeAccount" class="btn btn-danger">Xoá</button>
-                    </td>
+                            <button type="button" onclick="delAccount(this)" data-toggle="modal"
+                                data-target="#removeAccount" class="btn btn-danger">Xoá</button>
+                        </td>
                     </tr>
                     {{/each}}
                 </tbody>
@@ -215,18 +217,18 @@
                 <button class="btn btn-primary add_address">Thêm địa chỉ</button>
             </form>
         </div>
-        <div class="logged order">
+        <div class="logged order disabled">
             <table class="table table-striped">
                 <thead style="background-color: #569BDB;color:white">
                     <tr>
-                        
+
                         <th scope="col">Đơn hàng</th>
                         <th scope="col">Ngày đặt</th>
                         <th scope="col">Địa chỉ</th>
                         <th scope="col">Số điện thoại</th>
                         <th scope="col">Phương thức</th>
                         <th scope="col">Giá</th>
-                        <th scope="col">Trạng thái</th>
+                        <th scope="col" colspan="2">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -238,22 +240,23 @@
                         <td>{{this.Phone}}</td>
                         <td>{{this.shipperCheck}}</td>
                         <td>{{this.totalPrice}}</td>
-                        {{#if user.admin}}
-                            <td>
-                                {{!-- <button type="button" class="btn btn-primary">Đang đóng hàng</button> --}}
-                                <button type="button" class="btn btn-primary">Thành công</button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger">Xoá</button>
-                            </td>
+                        {{#if this.admin}}
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="fetchDataOrder(this,'put','{{this._id}}')">{{this.status}}</button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger"
+                                onclick="fetchDataOrder(this,'delete','{{this._id}}')">Xoá</button>
+                        </td>
                         {{else}}
-                            <td>
-                                <button type="button" class="btn btn-primary">Đang đóng hàng</button>
-                            </td>
+                        <td>
+                            <button type="button" class="btn btn-primary">{{this.status}}</button>
+                        </td>
                         {{/if}}
                         {{else}}
                         <td colspan="7">
                             <h1>Chưa có đơn hàng nào!</h1>
+                            <a href="/products">Đến trang mua hàng</a> 
                         </td>
                     </tr>
                     {{/each}}
@@ -292,6 +295,39 @@
 </div>
 
 <script>
+    function fetchDataOrder(btn,method, id) {
+        if(btn.innerText === 'Hoàn thành'){
+
+        }
+        else{
+            fetch(`/me/account/${id}`, {
+            method: `${method}`, // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.success && method === 'put'){
+                    btn.innerText = res.success
+                }
+                else{
+                    document.querySelector('.order table tbody').removeChild(btn.parentElement.parentElement)
+                    document.querySelector('.order table tbody').children.length === 0 ? document.querySelector('.order table tbody').innerHTML =  `<td colspan="7">
+                            <h1>Chưa có đơn hàng nào!</h1>
+                        </td>` : ''
+                }
+            })
+            .catch(() => alert('loi'))
+        }
+    }
+    console.log()
     const btnRemove = document.querySelector('button.remove')
     function checkAllAccount(checkbox) {
         const listAccount = [...document.querySelectorAll('input.checkAccount')]
@@ -299,15 +335,15 @@
             account.checked = checkbox.checked
         })
         const checkedAccounts = [...document.querySelectorAll('input[name="accountName[]"]:checked')]
-        document.querySelector('.modal .modal-body').innerText = 'Bạn chắc chắn muốn xoá tài khoản:\n' + checkedAccounts.map((checkbox,index) => {
-             return `${index +1}.${checkbox.value}\n`
+        document.querySelector('.modal .modal-body').innerText = 'Bạn chắc chắn muốn xoá tài khoản:\n' + checkedAccounts.map((checkbox, index) => {
+            return `${index + 1}.${checkbox.value}\n`
         }).join('')
-        btnRemove.toggleAttribute('disabled',!checkbox.checked)
+        btnRemove.toggleAttribute('disabled', !checkbox.checked)
     }
     function delAccount(btn) {
         btn.parentElement.parentElement.querySelector('input[name="accountName[]"]').click()
     }
-    
+
     function removeIvalid(element) {
         const ivalid = element.parentElement.querySelector('span').innerText
         if (ivalid !== '') {
@@ -318,19 +354,19 @@
     function accountCheckbox(check) {
         const checkboxAccounts = document.querySelectorAll('input[name="accountName[]"]')
         const checkedAccounts = [...document.querySelectorAll('input[name="accountName[]"]:checked')]
-        document.querySelector('.modal .modal-body').innerText = 'Bạn chắc chắn muốn xoá tài khoản:\n' + checkedAccounts.map((checkbox,index) => {
-             return `${index +1}.${checkbox.value}\n`
+        document.querySelector('.modal .modal-body').innerText = 'Bạn chắc chắn muốn xoá tài khoản:\n' + checkedAccounts.map((checkbox, index) => {
+            return `${index + 1}.${checkbox.value}\n`
         }).join('')
-        if(checkedAccounts.length >= 1) {
+        if (checkedAccounts.length >= 1) {
             btnRemove.removeAttribute('disabled')
         }
-        else if(checkedAccounts.length === checkboxAccounts.length) {
+        else if (checkedAccounts.length === checkboxAccounts.length) {
             document.getElementById('checkAll').checked = true
             btnRemove.removeAttribute('disabled')
         }
-        else{
+        else {
             document.getElementById('checkAll').checked = false
-            btnRemove.setAttribute('disabled',true)
+            btnRemove.setAttribute('disabled', true)
         }
     }
 
@@ -343,21 +379,25 @@
             case 0:
                 infoBody.querySelector('.logged.information').classList.remove('disabled')
                 infoBody.querySelector('.logged.address').classList.add('disabled')
+                infoBody.querySelector('.logged.order').classList.add('disabled')
                 form_listAccount.classList.add('disabled')
                 break
             case 1:
                 infoBody.querySelector('.logged.information').classList.add('disabled')
                 infoBody.querySelector('.logged.address').classList.add('disabled')
+                infoBody.querySelector('.logged.order').classList.add('disabled')
                 form_listAccount.classList.remove('disabled')
                 break
             case 2:
                 infoBody.querySelector('.logged.information').classList.add('disabled')
                 infoBody.querySelector('.logged.address').classList.remove('disabled')
+                infoBody.querySelector('.logged.order').classList.add('disabled')
                 form_listAccount.classList.add('disabled')
                 break
             case 3:
                 infoBody.querySelector('.logged.information').classList.add('disabled')
                 infoBody.querySelector('.logged.address').classList.add('disabled')
+                infoBody.querySelector('.logged.order').classList.remove('disabled')
                 form_listAccount.classList.add('disabled')
                 break
         }

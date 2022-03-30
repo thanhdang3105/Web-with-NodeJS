@@ -33,6 +33,10 @@ const Order = new Schema({
     },
     totalPrice: {
         type: String,
+    },
+    status: {
+        type: String,
+        default: 'Đang đóng hàng'
     }
 })
 

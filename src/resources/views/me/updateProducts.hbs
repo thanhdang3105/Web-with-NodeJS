@@ -28,7 +28,7 @@
                 <select name="type" class="form-control" required>
                     <option value="">--Chọn--</option>
                     {{#each type}}
-                        <option value="{{this.type}}" {{this.selected}} data-indexMiniType="{{this.miniTypeIndex}}" data-miniType="{{this.miniType}}">{{this.type}}</option>
+                        <option value="{{this.type}}" {{#if this.selected}}selected{{/if}} {{#if this.miniTypeIndex includeZero=true}}data-indexMiniType="{{this.miniTypeIndex}}"{{/if}}   data-miniType="{{this.miniType}}">{{this.type}}</option>
                     {{/each}}
                     <option value="addTypeProducts">thêm loại hàng...</option>
                 </select>

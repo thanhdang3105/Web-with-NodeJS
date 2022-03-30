@@ -83,6 +83,19 @@ app.engine('hbs', hbs.engine({
             if(data === '' && value === 'Nam'){
                 return 'checked'
             }
+        },
+        setAble: (sort) =>{
+            const icon = {
+                default: 'oi-elevator',
+                asc: 'oi-sort-ascending',
+                desc: 'oi-sort-descending'
+            }
+            const Sort = {
+                default: 'asc',
+                asc: 'desc',
+                desc: 'asc'
+            }
+            return `<a href="/me/products/list-products?sort=${Sort[sort]}" style="color:white;" class="oi ${icon[sort]}"></a>`
         }
     }
 }))

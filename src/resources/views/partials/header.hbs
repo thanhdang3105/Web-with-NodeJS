@@ -14,21 +14,30 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto control_heading">
-                <li class="nav-item">
+                {{!-- <li class="nav-item">
                     <a class="nav-link" href="/products?sale=sale">Sale</a>
-                </li>
+                </li> --}}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        data-toggle="dropdown">
                         Sản phẩm
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/products">Tất cả sản phẩm</a>
-                        <a class="dropdown-item" href="/products?type=Áo">Áo<span
-                                class="oi oi-chevron-right"></span></a>
-                        <a class="dropdown-item" href="/products?type=Quần">Quần<span
-                                class="oi oi-chevron-right"></span></a>
-                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li class="dropdown-item"><a href="/products">Tất cả sản phẩm</a></li>
+                        {{#each headerMenuType}}
+                        <li class="dropdown-item">
+                            <a href="/products?type={{this.type}}">{{this.type}}</a>
+                            <span class="oi oi-chevron-right"  data-boundary="viewport"  onclick="ShowDrop(this)"></span>
+                            <ul class="dropdown-menu subMenu">
+                                {{#each this.miniType}}
+                                <li class="dropdown-item">
+                                    <a href="/products?miniType={{this.miniType}}">{{this.miniType}}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                        {{/each}}
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/introduce">Giới thiệu</a>
@@ -37,7 +46,8 @@
             <form class="form-inline my-2 my-lg-0 d-flex mr-2" action="/products/search" method="post">
                 <button class="btn my-2 my-sm-0 btn_submitSearch" type="submit"><a
                         class="oi oi-magnifying-glass"></a></button>
-                <input class="form-control mr-sm-2 input_search" type="search" name="inputSearch" placeholder="Search" aria-label="Search" required>
+                <input class="form-control mr-sm-2 input_search" type="search" name="inputSearch" placeholder="Search"
+                    aria-label="Search" required>
             </form>
             {{#if user}}
             <div class="menu_cart">
@@ -64,7 +74,8 @@
                                 <input type="text" name="size" value="{{this.size}}" class="hide">
                                 <input type="text" name="count" value="{{this.count}}" class="hide">
                             </div>
-                            <a onclick="removeCart('{{this._id}}',this)" style="color:black;cursor:pointer" class="oi oi-trash mr-3"></a>
+                            <a onclick="removeCart('{{this._id}}',this)" style="color:black;cursor:pointer"
+                                class="oi oi-trash mr-3"></a>
                         </li>
                         {{else}}
                         <h5>Chưa có sản phẩm nào</h5>
@@ -102,11 +113,11 @@
     const navbarHeader = document.querySelector('.navbar_header')
 
     document.onscroll = (e) => {
-        if (e.target.scrollingElement.scrollTop > 100) {
+        if (e.target.scrollingElement.scrollTop > 50) {
             navbarHeader.style.position = 'fixed'
             navbarHeader.style.animation = 'fadeIn 0.5s linear'
         }
-        else {
+        else if (e.target.scrollingElement.scrollTop == 0) {
             navbarHeader.style.position = 'unset'
             navbarHeader.style.animation = 'unset'
         }
@@ -188,12 +199,19 @@
             .catch(() => alert('loi'))
     }
 
-    function removeCart(id,element) {
+    function removeCart(id, element) {
         element.parentElement.classList.add('disabled')
         const data = { id }
         fetchData(data, `/products/removeCart?_method=delete&_id=${id}`)
     }
 
-
+    function ShowDrop(icon) {
+        event.stopPropagation()
+        const showed = document.querySelector('.dropdown-menu.subMenu.show')
+        if(!icon.nextElementSibling.classList.contains('show') && showed){
+            showed.classList.remove('show')
+        }
+        icon.nextElementSibling.classList.toggle('show')
+    }
 
 </script>
