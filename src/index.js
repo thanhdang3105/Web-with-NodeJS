@@ -7,7 +7,6 @@ const routes = require('./resources/routes')
 const methodOverride = require('method-override')
 
 const app = express()
-const port = 3000
 
 db.connect()
 

@@ -19,11 +19,9 @@ class MeController {
     }
     // [get] /me/products/cart-list
     cartList(req, res, next) {
-        Carts.find({})
-            .then(() => {
-                res.render('me/cartList')
-            })
-            .catch(next)
+        res.render('me/cartList',{
+            itemsCart: res.locals.itemsCart
+        })
     }
 
     //[get] /me/order/:id
